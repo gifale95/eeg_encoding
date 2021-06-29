@@ -1,6 +1,6 @@
 """Correlation of each predicted EEG data feature (EEG_channels x
-EEG_time_points) with the corresponding biological EEG data feature, and noise
-ceiling calculation.
+EEG_time_points) with the corresponding biological EEG data feature across the
+image-conditions dimension, and noise ceiling calculation.
 
 Parameters
 ----------
