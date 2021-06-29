@@ -79,9 +79,9 @@ pred_data = pred_data['predicted_test_data']
 # Results and noise ceiling (NC) matrices of shape:
 # (Iterations x EEG_channels x EEG_time_points)
 correlation = np.zeros((args.n_iter, bio_data.shape[2], bio_data.shape[3]))
-noise_ceiling_lower_bound = np.zeros((args.n_iter,bio_data.shape[2],
+correlation_nc_lower = np.zeros((args.n_iter,bio_data.shape[2],
 	bio_data.shape[3]))
-noise_ceiling_upper_bound = np.zeros((args.n_iter,bio_data.shape[2],
+correlation_nc_upper = np.zeros((args.n_iter,bio_data.shape[2],
 	bio_data.shape[3]))
 
 # Averaging across all biological data repetitions for the NC upper bound
@@ -105,15 +105,15 @@ for i in tqdm(range(args.n_iter)):
 			# Computing the correlation and noise ceilings
 			correlation[i,c,t] = corr(pred_data[:,c,t],
 				bio_data_avg_half_1[:,c,t])[0]
-			corr_nc_lower[i,c,t] = corr(bio_data_avg_half_2[:,c,t],
+			correlation_nc_lower[i,c,t] = corr(bio_data_avg_half_2[:,c,t],
 				bio_data_avg_half_1[:,c,t])[0]
-			corr_nc_upper[i,c,t] = corr(bio_data_avg_all[:,c,t],
+			correlation_nc_upper[i,c,t] = corr(bio_data_avg_all[:,c,t],
 				bio_data_avg_half_1[:,c,t])[0]
 
 # Averaging the results across iterations
 correlation = np.mean(correlation, 0)
-corr_nc_lower = np.mean(corr_nc_lower, 0)
-corr_nc_upper = np.mean(corr_nc_upper, 0)
+correlation_nc_lower = np.mean(correlation_nc_lower, 0)
+correlation_nc_upper = np.mean(correlation_nc_upper, 0)
 
 
 # =============================================================================
@@ -122,8 +122,8 @@ corr_nc_upper = np.mean(corr_nc_upper, 0)
 # Storing the results into a dictionary
 results_dict = {
 	'correlation' : correlation,
-	'correlation_nc_lower': corr_nc_lower,
-	'correlation_nc_upper': corr_nc_upper,
+	'correlation_nc_lower': correlation_nc_lower,
+	'correlation_nc_upper': correlation_nc_upper,
 	'times': times,
 	'ch_names': ch_names
 }
