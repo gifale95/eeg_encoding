@@ -10,8 +10,6 @@ sfreq : int
 	Downsampling frequency.
 dnn : str
 	Used DNN network.
-n_pca : int
-	PCA downsampling dimensionality of DNN activations.
 n_iter : int
 	Number of analysis iterations.
 project_dir : str
@@ -34,7 +32,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--sfreq', default=100, type=int)
 parser.add_argument('--dnn', default='CORnet-S', type=str)
-parser.add_argument('--n_pca', default=1000, type=int)
 parser.add_argument('--n_iter', default=100, type=int)
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
@@ -66,8 +63,7 @@ bio_data = bio_data['preprocessed_data']
 # Loading the predicted test data
 # =============================================================================
 data_dir = os.path.join('predicted_eeg_data', 'sub-'+format(args.sub,'02'),
-	'dnn-' + args.dnn, 'pca-'+format(args.n_pca,'05'), 'hz-'+
-	format(args.sfreq,'04'), 'predicted_data.npy')
+	'dnn-' + args.dnn, 'hz-'+format(args.sfreq,'04'), 'predicted_data.npy')
 pred_data = np.load(os.path.join(args.project_dir, data_dir),
 	allow_pickle=True).item()
 pred_data = pred_data['predicted_test_data']
@@ -130,8 +126,7 @@ results_dict = {
 
 # Saving directory
 save_dir = os.path.join('results', 'sub-'+format(args.sub,'02'), 'correlation',
-	'dnn-'+args.dnn, 'pca-'+format(args.n_pca,'05'), 'hz-'+
-	format(args.sfreq,'04'))
+	'dnn-'+args.dnn, 'hz-'+format(args.sfreq,'04'))
 file_name = 'correlation.npy'
 
 # Creating the directory if not existing and saving
