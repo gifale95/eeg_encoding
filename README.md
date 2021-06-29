@@ -1,5 +1,5 @@
 # EEG encoding using Deep Neural Networks
-Here we provide the code to reproduce the results of the paper:<br/>
+Here we provide the code to reproduce the results of the paper:</br>
 ["Paper title"][paper_link].</br>
 Alessandro T. Gifford, Kshitij Dwivedi, Radoslaw M. Cichy
 </br>
