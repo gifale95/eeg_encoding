@@ -34,7 +34,7 @@ The raw and preprocessed EEG dataset, along with the used image set, are availab
 * **03_encoding_model:** training of a linear regression to predict the EEG responses to images using the DNN feature maps of those same images as predictors.
 * **04_predicted_data_analyses:** assessing the quality of the predicted EEG data using correlation and decoding analyses.
 * **05_stats:** assessing the statistical significance of the analyses results.
-* **06_plotting:** plotting the results of the predicted data analyses.
+* **06_plotting:** plotting the analyses results.
 </br>
 
 
