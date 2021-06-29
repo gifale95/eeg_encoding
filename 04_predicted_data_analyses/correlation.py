@@ -137,4 +137,4 @@ file_name = 'correlation.npy'
 # Creating the directory if not existing and saving
 if os.path.isdir(os.path.join(args.project_dir, save_dir)) == False:
 	os.makedirs(os.path.join(args.project_dir, save_dir))
-np.save(os.path.join(args.project_dir, save_dir, file_name), corr_dict)
+np.save(os.path.join(args.project_dir, save_dir, file_name), results_dict)
