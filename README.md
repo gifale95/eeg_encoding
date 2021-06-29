@@ -38,11 +38,6 @@ The raw and preprocessed EEG dataset, along with the used image set, are availab
 </br>
 
 
-## Acknowledgements
-The code to extract the feature maps of the different DNN architectures is borrowed from [where from?][fmaps_code].
-</br>
-
-
 ## Cite
 If you use our code, partly or as it is, please cite the paper:
 
