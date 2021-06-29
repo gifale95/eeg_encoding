@@ -5,17 +5,17 @@ ceiling calculation.
 Parameters
 ----------
 sub : int
-		Used subject.
+	Used subject.
 sfreq : int
-		Downsampling frequency.
+	Downsampling frequency.
 dnn : str
-		Used DNN network.
+	Used DNN network.
 n_pca : int
-		PCA downsampling dimensionality of DNN activations.
+	PCA downsampling dimensionality of DNN activations.
 n_iter : int
-		Number of analysis iterations.
+	Number of analysis iterations.
 project_dir : str
-		Directory of the project folder.
+	Directory of the project folder.
 
 """
 
