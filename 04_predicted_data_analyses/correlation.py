@@ -97,7 +97,7 @@ for i in tqdm(range(args.n_iter)):
 	bio_data_avg_half_1 = np.mean(np.delete(bio_data, shuffle_idx, 1), 1)
 	# Averaging across the other half of the biological data repetitions for the
 	# NC lower bound calculation
-	bio_data_avg_half_2 = bio_data[:,shuffle_idx,:,:]
+	bio_data_avg_half_2 = np.mean(bio_data[:,shuffle_idx,:,:], 1)
 
 	# Loop over EEG time points and channels
 	for t in range(bio_data.shape[3]):
