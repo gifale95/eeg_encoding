@@ -8,8 +8,6 @@ sub : int
 		Used subject.
 sfreq : int
 		Downsampling frequency.
-n_bio_rep : int
-		Number of biological data repetitions used.
 dnn : str
 		Used DNN network.
 n_pca : int
@@ -35,7 +33,6 @@ from scipy.stats import pearsonr as corr
 parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--sfreq', default=100, type=int)
-parser.add_argument('--n_bio_rep', default=40, type=int)
 parser.add_argument('--dnn', default='CORnet-S', type=str)
 parser.add_argument('--n_pca', default=1000, type=int)
 parser.add_argument('--n_iter', default=100, type=int)
@@ -101,9 +98,6 @@ for i in tqdm(range(args.n_iter)):
 	# Averaging across the other half of the biological data repetitions for the
 	# NC lower bound calculation
 	bio_data_avg_half_2 = bio_data[:,shuffle_idx,:,:]
-	rep_idx = resample(np.arange(0, sing_bio_data.shape[1]), replace=False)\
-		[:args.n_bio_rep]
-	sing_bio_data = np.mean(sing_bio_data[:,rep_idx,:,:], 1)
 
 	# Loop over EEG time points and channels
 	for t in range(bio_data.shape[3]):
