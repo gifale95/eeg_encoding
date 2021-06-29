@@ -44,11 +44,10 @@ The code to extract the feature maps of the different DNN architectures is borro
 
 
 ## Cite
-If you use our code, partly or as is, please cite the paper below.
+If you use our code, partly or as it is, please cite the paper:
 
 ```
 Paper citation
-
 ```
 
 [paper_link]: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
