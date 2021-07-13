@@ -1,8 +1,8 @@
-"""Pairwise decoding of the predicted EEG test data, and noise ceiling
-calculation. For each EEG time point, a SVM classifier is trained to correctly
-decode between two biological data image-conditions (using the EEG channels
-data), and is then tested on the corresponding two predicted data
-image-conditions.
+"""Pairwise decoding of the synthetic EEG test data, and noise ceiling
+calculation. For each EEG time point, a SVM classifier is trained to decode
+between each combination of two biological data image conditions (using the EEG
+channels data), and is then tested on the corresponding combinations of two
+synthetic data image conditions.
 
 Parameters
 ----------
