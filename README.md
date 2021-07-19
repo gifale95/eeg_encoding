@@ -31,9 +31,9 @@ The raw and preprocessed EEG dataset, the stimuli image set and the extracted DN
 
 ## Code description
 * **01_eeg_preprocessing:** preprocessing of the raw EEG data.
-* **02_dnn_feature_maps_extraction:** extraction of the image-related feature maps from four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo).
-* **03_encoding_model:** training of a linear regression to predict the EEG responses to images using the DNN feature maps of those same images as predictors.
-* **04_predicted_data_analyses:** assessing the quality of the predicted EEG data using correlation and decoding analyses.
+* **02_dnn_feature_maps_extraction:** extraction and PCA downsampling of the image-related feature maps from four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo).
+* **03_linear_regression_fitting:** training of a linear regression to predict the synthetic EEG responses to images using the DNN feature maps of those same images as predictors.
+* **04_synthetic_data_analyses:** performing four analyses on the synthetic EEG data.
 * **05_stats:** assessing the statistical significance of the analyses results.
 * **06_plotting:** plotting the analyses results.
 </br>
