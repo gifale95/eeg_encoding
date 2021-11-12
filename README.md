@@ -20,13 +20,12 @@ conda activate eeg_encoding
 </br>
 
 ## Data availability
-The raw and preprocessed EEG dataset, the training and test images, the extracted DNN feature maps and the synthesized EEG data are available on [OSF][osf]. Tu run the code, the data must be downloaded and extracted into the following directories:
+The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. Tu run the code, the data must be downloaded and extracted into the following directories:
 
 * **Raw EEG data:** `~/project_dir/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `~/project_dir/eeg_dataset/preprocessed_data/`.
 * **Training/test images:** `~/project_dir/image_set/`. !!!!!!!!!!!!!!!!!!!! Edit
 * **DNN feature maps:** `~/project_dir/dnn_feature_maps/`. !!!!!!!!!!!!!!!!!!!! Edit
-* **Synthesized EEG data:** `~/project_dir/dnn_feature_maps/`. !!!!!!!!!!!!!!!!!!!! Edit
 </br>
 
 
