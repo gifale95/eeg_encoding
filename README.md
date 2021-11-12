@@ -32,9 +32,9 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 ## Code description
 * **01_eeg_preprocessing:** preprocessing of the raw EEG data.
 * **02_dnn_feature_maps_extraction:** extraction and PCA downsampling of the training, test and ILSVRC2012 (validation and test partition) feature maps from four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo). !!!!!!!!!!!!!!!!!!!! Edit
-* **03_synthetic_data_prediction:** training of a linear regression to predict the synthetic EEG responses to images using the DNN feature maps of those same images as predictors.
-* **04_synthetic_data_analyses:** performing several analyses on the synthetic EEG data.
-* **05_plotting:** plotting the analyses results.
+* **03_synthetic_data_prediction:** training of a linear regression to predict the synthetic EEG responses to images using the DNN feature maps of those same images as predictors. !!!!!!!!!!!!!!!!!!!! Edit
+* **04_synthetic_data_analyses:** performing several analyses on the synthetic EEG data. !!!!!!!!!!!!!!!!!!!! Edit
+* **05_plotting:** plotting the analyses results. !!!!!!!!!!!!!!!!!!!! Edit
 </br>
 
 
@@ -42,7 +42,7 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 If you use our code, partly or as it is, please cite the paper:
 
 ```
-Paper citation
+Paper citation !!!!!!!!!!!!!!!!!!!! Edit
 ```
 
 [paper_link]: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
