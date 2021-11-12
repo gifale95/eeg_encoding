@@ -1,7 +1,7 @@
 # EEG encoding using Deep Neural Networks
 Here we provide the code to reproduce the results of the paper:</br>
 ["Paper title"][paper_link].</br>
-Alessandro T. Gifford, Kshitij Dwivedi, Radoslaw M. Cichy
+Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 </br>
 
 
@@ -20,22 +20,22 @@ conda activate eeg_encoding
 </br>
 
 ## Data availability
-The raw and preprocessed EEG dataset, the stimuli image set and the extracted DNN feature maps are available on [OSF][osf]. Tu run the code, the data must be downloaded and extracted into the following directories:
+The raw and preprocessed EEG dataset, the training and test images, the extracted DNN feature maps and the synthesized EEG data are available on [OSF][osf]. Tu run the code, the data must be downloaded and extracted into the following directories:
 
 * **Raw EEG data:** `~/project_dir/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `~/project_dir/eeg_dataset/preprocessed_data/`.
-* **Stimuli images:** `~/project_dir/stimuli_images/`.
-* **DNN feature maps:** `~/project_dir/dnn_feature_maps/`.
+* **Stimuli images:** `~/project_dir/stimuli_images/`. !!!!!!!!!!!!!!!!!!!! Edit
+* **DNN feature maps:** `~/project_dir/dnn_feature_maps/`. !!!!!!!!!!!!!!!!!!!! Edit
+* **Synthesized EEG data:** `~/project_dir/dnn_feature_maps/`. !!!!!!!!!!!!!!!!!!!! Edit
 </br>
 
 
 ## Code description
 * **01_eeg_preprocessing:** preprocessing of the raw EEG data.
-* **02_dnn_feature_maps_extraction:** extraction and PCA downsampling of the image-related feature maps from four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo).
-* **03_linear_regression_fitting:** training of a linear regression to predict the synthetic EEG responses to images using the DNN feature maps of those same images as predictors.
-* **04_synthetic_data_analyses:** performing four analyses on the synthetic EEG data.
-* **05_stats:** assessing the statistical significance of the analyses results.
-* **06_plotting:** plotting the analyses results.
+* **02_dnn_feature_maps_extraction:** extraction and PCA downsampling of the training, test and ILSVRC2012 (validation and test partition) feature maps from four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo). !!!!!!!!!!!!!!!!!!!! Edit
+* **03_synthetic_data_prediction:** training of a linear regression to predict the synthetic EEG responses to images using the DNN feature maps of those same images as predictors.
+* **04_synthetic_data_analyses:** performing several analyses on the synthetic EEG data.
+* **05_plotting:** plotting the analyses results.
 </br>
 
 
