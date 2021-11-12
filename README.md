@@ -24,7 +24,7 @@ The raw and preprocessed EEG dataset, the training and test images, the extracte
 
 * **Raw EEG data:** `~/project_dir/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `~/project_dir/eeg_dataset/preprocessed_data/`.
-* **Stimuli images:** `~/project_dir/stimuli_images/`. !!!!!!!!!!!!!!!!!!!! Edit
+* **Training/test images:** `~/project_dir/image_set/`. !!!!!!!!!!!!!!!!!!!! Edit
 * **DNN feature maps:** `~/project_dir/dnn_feature_maps/`. !!!!!!!!!!!!!!!!!!!! Edit
 * **Synthesized EEG data:** `~/project_dir/dnn_feature_maps/`. !!!!!!!!!!!!!!!!!!!! Edit
 </br>
