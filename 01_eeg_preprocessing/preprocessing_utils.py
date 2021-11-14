@@ -227,14 +227,14 @@ def save_prepr(args, whitened_test, whitened_train, img_conditions_train,
 	}
 	del merged_test
 	# Saving directories
-	save_dir = os.path.join('eeg_dataset', 'preprocessed_data', 'sub-'+
-		format(args.sub,'02'))
+	save_dir = os.path.join(args.project_dir, 'eeg_dataset',
+		'preprocessed_data', 'sub-'+format(args.sub,'02'))
 	file_name_test = 'preprocessed_eeg_test.npy'
 	file_name_train = 'preprocessed_eeg_training.npy'
 	# Creating the directory if not existing and saving the data
-	if os.path.isdir(os.path.join(args.project_dir, save_dir)) == False:
-		os.makedirs(os.path.join(args.project_dir, save_dir))
-	np.save(os.path.join(args.project_dir, save_dir, file_name_test), test_dict)
+	if os.path.isdir(save_dir) == False:
+		os.makedirs(save_dir)
+	np.save(os.path.join(save_dir, file_name_test), test_dict)
 	del test_dict
 
 	### Merging and saving the training data ###
@@ -270,8 +270,8 @@ def save_prepr(args, whitened_test, whitened_train, img_conditions_train,
 	}
 	del merged_train
 	# Creating the directory if not existing and saving the data
-	if os.path.isdir(os.path.join(args.project_dir, save_dir)) == False:
-		os.makedirs(os.path.join(args.project_dir, save_dir))
-	np.save(os.path.join(args.project_dir, save_dir, file_name_train),
+	if os.path.isdir(save_dir) == False:
+		os.makedirs(save_dir)
+	np.save(os.path.join(save_dir, file_name_train),
 		train_dict)
 	del train_dict
