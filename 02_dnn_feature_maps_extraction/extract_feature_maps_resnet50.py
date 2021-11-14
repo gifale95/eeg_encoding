@@ -71,7 +71,6 @@ class BasicBlock(nn.Module):
 		out = self.relu(out)
 		return out
 
-
 class Bottleneck(nn.Module):
 	expansion = 4
 
