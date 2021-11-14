@@ -26,7 +26,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> Extracting feature maps ResNet50 <<<')
+print('\n\n\n>>> Extracting feature maps MoCo <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
