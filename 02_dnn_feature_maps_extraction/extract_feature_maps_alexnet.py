@@ -23,7 +23,7 @@ from PIL import Image
 # Input arguments
 # =============================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument('--project_dir', default='/home/ale/Downloads/aaa_delete', type=str)
+parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
 print('\n\n\n>>> Extracting feature maps AlexNet <<<')
