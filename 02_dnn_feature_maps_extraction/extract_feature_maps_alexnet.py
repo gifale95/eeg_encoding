@@ -103,7 +103,7 @@ for p in img_partitions:
 	# Extracting and saving the feature maps
 	idx = 1
 	for image in image_list:
-		img = Image.open(image)
+		img = Image.open(image).convert('RGB')
 		filename=image.split("/")[-1].split(".")[0]
 		input_img = V(centre_crop(img).unsqueeze(0))
 		if torch.cuda.is_available():

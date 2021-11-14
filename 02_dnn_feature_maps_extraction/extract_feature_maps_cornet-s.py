@@ -99,7 +99,7 @@ def get_features(model, layer, sublayer, time_step, transform, img_dir):
 	model_layer = getattr(getattr(m, layer), sublayer)
 	model_layer.register_forward_hook(_store_feats)
 	with torch.no_grad():
-		im = Image.open(img_dir)
+		im = Image.open(img_dir).convert('RGB')
 		im = transform(im)
 		im = im.unsqueeze(0) # adding extra dimension for batch size of 1
 		_model_feats = []
