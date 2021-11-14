@@ -227,7 +227,7 @@ for p in img_partitions:
 		if torch.cuda.is_available():
 			input_img=input_img.cuda()
 		x = model.forward(input_img)
-		feats={}
+		feats = {}
 		for i,feat in tqdm(enumerate(x)):
 			feats[model.feat_list[i]] = feat.data.cpu().numpy()
 
