@@ -20,7 +20,7 @@ conda activate eeg_encoding
 </br>
 
 ## Data availability
-The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. Tu run the code, the data must be downloaded and extracted into the following directories:
+The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. The ILSVRC-2012 validation and test images can be found on [ImageNet][imagenet]. Tu run the code, the data must be downloaded and extracted into the following directories:
 
 * **Raw EEG data:** `~/project_dir/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `~/project_dir/eeg_dataset/preprocessed_data/`.
@@ -49,3 +49,4 @@ Paper citation !!!!!!!!!!!!!!!!!!!! Edit
 [conda]: https://www.anaconda.com/
 [env_file]: https://github.com/gifale95/eeg_encoding_model/blob/main/environment.yml
 [osf]: https://osf.io/3jk45/s
+[imagenet]: https://www.image-net.org/download.php
