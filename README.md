@@ -25,7 +25,7 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 * **Raw EEG data:** `~/project_dir/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `~/project_dir/eeg_dataset/preprocessed_data/`.
 * **Training and test images; ILSVRC-2012 validation and test images:** `~/project_dir/image_set/`.
-* **DNN feature maps:** `~/project_dir/dnn_feature_maps/`. !!!!!!!!!!!!!!!!!!!! Edit
+* **DNN feature maps:** `~/project_dir/dnn_feature_maps/pca_feature_maps`.
 </br>
 
 
