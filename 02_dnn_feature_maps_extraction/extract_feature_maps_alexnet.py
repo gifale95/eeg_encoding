@@ -13,7 +13,6 @@ import torch.nn as nn
 import numpy as np
 import torch
 from torch.autograd import Variable as V
-from tqdm import tqdm
 from torchvision import transforms as trn
 import os
 from PIL import Image
@@ -110,7 +109,7 @@ for p in img_partitions:
 			input_img=input_img.cuda()
 		x = model.forward(input_img)
 		feats = {}
-		for i,feat in tqdm(enumerate(x)):
+		for i,feat in enumerate(x):
 			feats[model.feat_list[i]] = feat.data.cpu().numpy()
 
 		# Creating the directory if not existing and saving
