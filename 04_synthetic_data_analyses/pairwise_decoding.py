@@ -47,7 +47,7 @@ np.random.seed(seed=20200220)
 
 
 # =============================================================================
-# Loading the biological test data
+# Loading the biological EEG test data
 # =============================================================================
 data_dir = os.path.join('eeg_dataset', 'preprocessed_data', 'sub-'+
 	format(args.sub,'02'), 'preprocessed_eeg_test.npy')
@@ -60,7 +60,7 @@ del bio_data
 
 
 # =============================================================================
-# Loading the synthetic test data
+# Loading the synthetic EEG test data
 # =============================================================================
 data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_test.npy')
