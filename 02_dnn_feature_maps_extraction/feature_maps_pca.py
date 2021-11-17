@@ -98,7 +98,6 @@ fmaps_test = np.asarray(fmaps_test)
 fmaps_test = zscore_params.transform(fmaps_test)
 
 # Applying PCA
-pca.fit(fmaps_test)
 fmaps_test = pca.transform(fmaps_test)
 
 # Creating the directory if not existing and saving
@@ -138,7 +137,6 @@ for p in range(0, len(fmaps_list), n_img_part):
 	fmaps_part = zscore_params.transform(fmaps_part)
 
 	# Applying PCA
-	pca.fit(fmaps_part)
 	fmaps_part = pca.transform(fmaps_part)
 	if p == 0:
 		fmaps_ilsvrc2012_val = fmaps_part
@@ -182,7 +180,6 @@ for p in range(0, len(fmaps_list), n_img_part):
 	fmaps_part = zscore_params.transform(fmaps_part)
 
 	# Applying PCA
-	pca.fit(fmaps_part)
 	fmaps_part = pca.transform(fmaps_part)
 	if p == 0:
 		fmaps_ilsvrc2012_test = fmaps_part
