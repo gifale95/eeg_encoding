@@ -1,6 +1,6 @@
 # Building and evaluating linearizing encoding models of EEG visual responses using DNNs
 Here we provide the code to reproduce the results of the paper:</br>
-["Paper title"][paper_link].</br>
+["Paper title"][paper_link].!!!!!!!!!!!!!!!!!!!!!!!!! Edit</br>
 Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 </br>
 
@@ -12,7 +12,7 @@ curl -O https://raw.githubusercontent.com/gifale95/eeg_encoding_model/main/envir
 conda env create -f environment.yml
 conda activate eeg_encoding
 ```
-Alternatively, after installing Anaconda you can download the [environment.yml][env_file] file, open the terminal in the download directory and type:
+Alternatively, after installing Anaconda you can download the [environment.yml][env_file]!!!!!!!!!!!!!!!!!!!!!!!!!!!!Edit file, open the terminal in the download directory and type:
 ```shell
 conda env create -f environment.yml
 conda activate eeg_encoding
@@ -20,7 +20,7 @@ conda activate eeg_encoding
 </br>
 
 ## Data availability
-The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. The ILSVRC-2012 validation and test images can be found on [ImageNet][imagenet]. Tu run the code, the data must be downloaded and extracted into the following directories:
+The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. The ILSVRC-2012 validation and test images can be found on [ImageNet][imagenet]. Tu run the code, the data must be downloaded and placed into the following directories:
 
 * **Raw EEG data:** `~/project_dir/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `~/project_dir/eeg_dataset/preprocessed_data/`.
@@ -32,9 +32,9 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 ## Code description
 * **01_eeg_preprocessing:** preprocessing of the raw EEG data.
 * **02_dnn_feature_maps_extraction:** extracting the feature maps of all images using four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo), and downsampling them using principal component analysis (PCA).
-* **03_predicting_eeg_data:** predicting the EEG responses to images through a linear regression using the DNN feature maps of those same images as predictors.
+* **03_synthesizing_eeg_data:** synthesizing the EEG responses to images through a linear regression using the DNN feature maps of those same images as predictors.
 * **04_predicted_data_analyses:** performing several analyses on the synthetic EEG data. !!!!!!!!!!!!!!!!!!!! Edit
-* **05_plotting:** plotting the analyses results. !!!!!!!!!!!!!!!!!!!! Edit
+* **05_plotting:** plotting the analyses results.
 </br>
 
 
