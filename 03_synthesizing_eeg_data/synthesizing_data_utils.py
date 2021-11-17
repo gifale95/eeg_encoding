@@ -27,8 +27,8 @@ def load_dnn_data(args):
 	# Feature maps directories
 	print('\n>>> Loading the DDN feature maps <<<')
 	data_dir = os.path.join('dnn_feature_maps', 'pca_feature_maps', args.dnn)
-	training_file = 'pca_feature_maps_test.npy'
-	test_file = 'pca_feature_maps_training.npy'
+	training_file = 'pca_feature_maps_training.npy'
+	test_file = 'pca_feature_maps_test.npy'
 	ilsvrc2012_val_file = 'pca_feature_maps_ilsvrc2012_val.npy'
 	ilsvrc2012_test_file = 'pca_feature_maps_ilsvrc2012_test.npy'
 	# Loading the feature maps

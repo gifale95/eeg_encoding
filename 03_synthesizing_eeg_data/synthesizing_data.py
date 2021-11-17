@@ -43,7 +43,7 @@ for key, val in vars(args).items():
 # =============================================================================
 # Loading the DNN feature maps
 # =============================================================================
-X_train, X_test, X_ilsvrc2012_test, X_ilsvrc2012_val = load_dnn_data(args)
+X_train, X_test, X_ilsvrc2012_val, X_ilsvrc2012_test = load_dnn_data(args)
 
 
 # =============================================================================
