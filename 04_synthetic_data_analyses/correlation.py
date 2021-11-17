@@ -32,8 +32,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='/scratch/giffordale95/studies/'
-	'eeg_encoding/paradigm_3', type=str)
+parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
 print('\n\n\n>>> Correlation <<<')
