@@ -53,7 +53,7 @@ data_dir = os.path.join('eeg_dataset', 'preprocessed_data', 'sub-'+
 	format(args.sub,'02'), 'preprocessed_eeg_test.npy')
 bio_data = np.load(os.path.join(args.project_dir, data_dir),
 	allow_pickle=True).item()
-bio_test = bio_data['prepr_data']
+bio_test = bio_data['preprocessed_eeg_data']
 times = bio_data['times']
 ch_names = bio_data['ch_names']
 del bio_data
