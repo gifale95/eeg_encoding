@@ -11,6 +11,8 @@ dependencies:
 - scikit-learn
 - matplotlib
 - pytorch
+- torchvision
+- tqdm
 - pip
 - pip:
   - mne
