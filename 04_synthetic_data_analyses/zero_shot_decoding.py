@@ -80,7 +80,7 @@ synt_train = np.reshape(data['synthetic_within_data'],
 # Test data
 test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_test.npy')
-data = np.load(os.path.join(args.project_dir, train_dir),
+data = np.load(os.path.join(args.project_dir, test_dir),
 	allow_pickle=True).item()
 synt_test = np.reshape(data['synthetic_within_data'],
 	(data['synthetic_within_data'].shape[0],-1))
