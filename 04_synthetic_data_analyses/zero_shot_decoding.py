@@ -86,18 +86,18 @@ synt_test = np.reshape(data['synthetic_within_data'],
 	(data['synthetic_within_data'].shape[0],-1))
 
 # ILSVRC-2012 validation data
-test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
+ilsvrc2012_val_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_ilsvrc2012_val.npy')
-data = np.load(os.path.join(args.project_dir, train_dir),
+data = np.load(os.path.join(args.project_dir, ilsvrc2012_val_dir),
 	allow_pickle=True).item()
 synt_ilsvrc2012_val = np.reshape(data['synthetic_within_data'],
 	(data['synthetic_within_data'].shape[0],-1))
 
 # ILSVRC-2012 test data
-test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
+ilsvrc2012_test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn,
 	'synthetic_eeg_ilsvrc2012_test.npy')
-data = np.load(os.path.join(args.project_dir, train_dir),
+data = np.load(os.path.join(args.project_dir, ilsvrc2012_test_dir),
 	allow_pickle=True).item()
 synt_ilsvrc2012_test = np.reshape(data['synthetic_within_data'],
 	(data['synthetic_within_data'].shape[0],-1))
