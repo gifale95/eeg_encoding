@@ -52,16 +52,14 @@ np.random.seed(seed=20200220)
 # Samples × Features format
 # Training data
 train_dir = os.path.join('eeg_dataset', 'preprocessed_data', 'sub-'+
-		format(args.sub,'02'), 'hz-'+format(100,'04'),
-		'preprocessed_eeg_training.npy')
+		format(args.sub,'02'), 'preprocessed_eeg_training.npy')
 bio_train = np.load(os.path.join(args.project_dir, train_dir),
 		allow_pickle=True).item()['preprocessed_eeg_data']
 bio_train = np.reshape(np.mean(bio_train, 1), (bio_train.shape[0],-1))
 
 # Test data
 test_dir = os.path.join('eeg_dataset', 'preprocessed_data', 'sub-'+
-		format(args.sub,'02'), 'hz-'+format(100,'04'),
-		'preprocessed_eeg_test.npy')
+		format(args.sub,'02'), 'preprocessed_eeg_test.npy')
 bio_test = np.load(os.path.join(args.project_dir, test_dir),
 		allow_pickle=True).item()['preprocessed_eeg_data']
 bio_test = np.reshape(np.mean(bio_test, 1), (bio_test.shape[0],-1))
@@ -123,9 +121,9 @@ del bio_train, synt_train
 # Sorting the features based on their correlation index, and selecting the
 # maximum number of features
 idx = np.argsort(correlation)[::-1]
-bio_test = bio_test[:,idx:args.n_used_features]
-synt_test = synt_test[:,idx:args.n_used_features]
-synt_ilsvrc2012 = synt_ilsvrc2012[:,idx:args.n_used_features]
+bio_test = bio_test[:,idx[:args.n_used_features]]
+synt_test = synt_test[:,idx[:args.n_used_features]]
+synt_ilsvrc2012 = synt_ilsvrc2012[:,idx[:args.n_used_features]]
 del correlation, idx
 
 
