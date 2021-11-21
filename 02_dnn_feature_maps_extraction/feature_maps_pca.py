@@ -193,4 +193,3 @@ file_name = 'pca_feature_maps_ilsvrc2012_test'
 if os.path.isdir(save_dir) == False:
 	os.makedirs(save_dir)
 np.save(os.path.join(save_dir, file_name), fmaps_ilsvrc2012_test)
-del fmaps_ilsvrc2012_test
