@@ -64,8 +64,8 @@ data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_test.npy')
 synt_data = np.load(os.path.join(args.project_dir, data_dir),
 	allow_pickle=True).item()
-synt_test_within = synt_data['synthetic_within_data']
-synt_test_between = synt_data['synthetic_between_data']
+synt_test_within = synt_data['synthetic_data_within']
+synt_test_between = synt_data['synthetic_data_between']
 del synt_data
 
 

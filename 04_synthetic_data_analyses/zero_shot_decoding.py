@@ -74,24 +74,24 @@ train_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_training.npy')
 data = np.load(os.path.join(args.project_dir, train_dir),
 	allow_pickle=True).item()
-synt_train = np.reshape(data['synthetic_within_data'],
-	(data['synthetic_within_data'].shape[0],-1))
+synt_train = np.reshape(data['synthetic_data_within'],
+	(data['synthetic_data_within'].shape[0],-1))
 
 # Test data
 test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_test.npy')
 data = np.load(os.path.join(args.project_dir, test_dir),
 	allow_pickle=True).item()
-synt_test = np.reshape(data['synthetic_within_data'],
-	(data['synthetic_within_data'].shape[0],-1))
+synt_test = np.reshape(data['synthetic_data_within'],
+	(data['synthetic_data_within'].shape[0],-1))
 
 # ILSVRC-2012 validation data
 ilsvrc2012_val_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_ilsvrc2012_val.npy')
 data = np.load(os.path.join(args.project_dir, ilsvrc2012_val_dir),
 	allow_pickle=True).item()
-synt_ilsvrc2012_val = np.reshape(data['synthetic_within_data'],
-	(data['synthetic_within_data'].shape[0],-1))
+synt_ilsvrc2012_val = np.reshape(data['synthetic_data_within'],
+	(data['synthetic_data_within'].shape[0],-1))
 
 # ILSVRC-2012 test data
 ilsvrc2012_test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
@@ -99,8 +99,8 @@ ilsvrc2012_test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
 	'synthetic_eeg_ilsvrc2012_test.npy')
 data = np.load(os.path.join(args.project_dir, ilsvrc2012_test_dir),
 	allow_pickle=True).item()
-synt_ilsvrc2012_test = np.reshape(data['synthetic_within_data'],
-	(data['synthetic_within_data'].shape[0],-1))
+synt_ilsvrc2012_test = np.reshape(data['synthetic_data_within'],
+	(data['synthetic_data_within'].shape[0],-1))
 
 # Appending the ILSVRC-2012 data across the image conditions
 synt_ilsvrc2012 = np.append(synt_ilsvrc2012_val, synt_ilsvrc2012_test, 0)
