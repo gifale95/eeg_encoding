@@ -184,7 +184,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	np.save(os.path.join(save_dir, file_name), data_dict)
 	# ILSVRC-2012 validation data
 	data_dict = {
-		'synthetic_data_within': synt_ilsvrc2012_val_within,
+		'synthetic_within_data': synt_ilsvrc2012_val_within,
 		'ch_names': ch_names,
 		'times': times
 		}
@@ -192,7 +192,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	np.save(os.path.join(save_dir, file_name), data_dict)
 	# ILSVRC-2012 test data
 	data_dict = {
-		'synthetic_data_within': synt_ilsvrc2012_test_within,
+		'synthetic_within_data': synt_ilsvrc2012_test_within,
 		'ch_names': ch_names,
 		'times': times
 		}
