@@ -55,5 +55,5 @@ y_train_within, y_train_between, ch_names, times = load_eeg_data(args)
 # =============================================================================
 # Training the linear regression and saving the predicted data
 # =============================================================================
-perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_test,
-	X_ilsvrc2012_val, y_train_within, y_train_between)
+perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
+	X_ilsvrc2012_test, y_train_within, y_train_between)
