@@ -177,8 +177,8 @@ results_dict = {
 }
 
 # Saving directory
-save_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'zero_shot_decoding', 'dnn-'+args.dnn)
+save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
+	format(args.sub,'02'), 'zero_shot_decoding', 'dnn-'+args.dnn)
 file_name = 'zero_shot_decoding.npy'
 
 # Creating the directory if not existing and saving
