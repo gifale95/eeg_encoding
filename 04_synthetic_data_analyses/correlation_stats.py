@@ -1,4 +1,5 @@
-"""Confidence intervals and significance of the correlation analysis results.
+"""Confidence intervals and significance of the correlation analysis results,
+and of the differences between the results and the noise ceiling.
 
 Parameters
 ----------
@@ -29,7 +30,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--n_tot_sub', default=10, type=int)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--n_boot_iter', default=10000, type=int)
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--project_dir', default='/scratch/giffordale95/studies/'
+	'eeg_encoding/paradigm_3', type=str)
 args = parser.parse_args()
 
 print('\n\n\n>>> Correlation stats <<<')
@@ -64,6 +66,8 @@ correlation_between = np.mean(np.asarray(correlation_between), 1)
 noise_ceiling = np.mean(np.asarray(noise_ceiling), 1)
 del results_dict
 
+# Difference between noise ceiling and predicted data results
+diff_noise_ceiling = noise_ceiling - correlation_within
 
 # =============================================================================
 # Bootstrapping the confidence intervals (CIs)
@@ -73,20 +77,26 @@ ci_lower_within = np.zeros((correlation_within.shape[1]))
 ci_upper_within = np.zeros((correlation_within.shape[1]))
 ci_lower_between = np.zeros((correlation_between.shape[1]))
 ci_upper_between = np.zeros((correlation_between.shape[1]))
+ci_lower_diff_noise_ceiling = np.zeros((diff_noise_ceiling.shape[1]))
+ci_upper_diff_noise_ceiling = np.zeros((diff_noise_ceiling.shape[1]))
 
 # Calculating the CIs independently at each time point
 for t in tqdm(range(correlation_within.shape[1])):
 	sample_dist_within = np.zeros(args.n_boot_iter)
 	sample_dist_between = np.zeros(args.n_boot_iter)
+	sample_dist_diff = np.zeros(args.n_boot_iter)
 	for i in range(args.n_boot_iter):
 		# Calculating the sample distribution
 		sample_dist_within[i] = np.mean(resample(correlation_within[:,t]))
 		sample_dist_between[i] = np.mean(resample(correlation_between[:,t]))
+		sample_dist_diff[i] = np.mean(resample(diff_noise_ceiling[:,t]))
 	# Calculating the confidence intervals
 	ci_lower_within[t] = np.percentile(sample_dist_within, 2.5)
 	ci_upper_within[t] = np.percentile(sample_dist_within, 97.5)
 	ci_lower_between[t] = np.percentile(sample_dist_between, 2.5)
 	ci_upper_between[t] = np.percentile(sample_dist_between, 97.5)
+	ci_lower_diff_noise_ceiling[t] = np.percentile(sample_dist_diff, 2.5)
+	ci_upper_diff_noise_ceiling[t] = np.percentile(sample_dist_diff, 97.5)
 
 
 # =============================================================================
@@ -95,17 +105,22 @@ for t in tqdm(range(correlation_within.shape[1])):
 # p-values matrices of shape: Time
 p_values_within = np.ones((correlation_within.shape[1]))
 p_values_between = np.ones((correlation_between.shape[1]))
+p_values_difference_noise_ceiling = np.ones((diff_noise_ceiling.shape[1]))
 for t in range(correlation_within.shape[1]):
 	_, p_values_within[t] = ttest_1samp(correlation_within[:,t], 0,
 		alternative='greater')
 	_, p_values_between[t] = ttest_1samp(correlation_between[:,t], 0,
 		alternative='greater')
+	_, p_values_difference_noise_ceiling[t] = ttest_1samp(
+		diff_noise_ceiling[:,t], 0, alternative='greater')
 
 # Correcting for multiple comparisons
 results_within = multipletests(p_values_within, 0.05, 'bonferroni')
 significance_within = results_within[0]
 results_between = multipletests(p_values_between, 0.05, 'bonferroni')
 significance_between = results_between[0]
+results_diff_noise_ceiling = multipletests(p_values_between, 0.05, 'bonferroni')
+significance_diff_noise_ceiling = results_diff_noise_ceiling[0]
 
 
 # =============================================================================
@@ -122,6 +137,10 @@ stats_dict = {
 	'ci_upper_between': ci_upper_between,
 	'significance_between': significance_between,
 	'noise_ceiling': noise_ceiling,
+	'diff_noise_ceiling': diff_noise_ceiling,
+	'ci_lower_diff_noise_ceiling': ci_lower_diff_noise_ceiling,
+	'ci_upper_diff_noise_ceiling': ci_upper_diff_noise_ceiling,
+	'significance_diff_noise_ceiling': significance_diff_noise_ceiling,
 	'times': times,
 	'ch_names': ch_names
 }
