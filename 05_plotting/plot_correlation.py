@@ -240,7 +240,7 @@ for s in range(args.n_tot_sub):
 	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
 			linewidth=3)
 	# Other plot parameters
-	if s in [8, 9, 7, 6]:
+	if s in [8, 9]:
 		axs[s].set_xlabel('Time (s)', fontsize=30)
 		plt.xticks(ticks=[0, .4, max(times)], labels=[0, 0.4, 0.8])
 	if s in [0, 4, 8]:
