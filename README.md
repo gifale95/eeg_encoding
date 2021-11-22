@@ -35,7 +35,6 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 * **03_synthesizing_eeg_data:** synthesizing the EEG responses to images through a linear regression using the DNN feature maps of those same images as predictors.
 * **04_synthetic_data_analyses:** performing the correlation, pairwise decoding and zero-shot decoding analyses on the synthetic EEG data.
 * **05_plotting:** plotting the analyses results.
-* **06_supplementary_analyses:** !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!.
 </br>
 
 
