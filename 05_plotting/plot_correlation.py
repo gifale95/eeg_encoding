@@ -3,9 +3,9 @@
 Parameters
 ----------
 n_tot_sub : int
-	Number of total subjects used.
+		Number of total subjects used.
 project_dir : str
-	Directory of the project folder.
+		Directory of the project folder.
 
 Returns
 -------
@@ -51,6 +51,13 @@ for d, dnn in enumerate(dnns):
 		significance_between = np.expand_dims(data_dict['significance_between'],
 			0)
 		noise_ceiling = np.expand_dims(data_dict['noise_ceiling'], 0)
+		diff_noise_ceiling = np.expand_dims(data_dict['diff_noise_ceiling'], 0)
+		ci_lower_diff_noise_ceiling = np.expand_dims(
+			data_dict['ci_lower_diff_noise_ceiling'], 0)
+		ci_upper_diff_noise_ceiling = np.expand_dims(
+			data_dict['ci_upper_diff_noise_ceiling'], 0)
+		significance_diff_noise_ceiling = np.expand_dims(
+			data_dict['significance_diff_noise_ceiling'], 0)
 		times = data_dict['times']
 	else:
 		correlation_within = np.append(correlation_within, np.expand_dims(
@@ -58,19 +65,28 @@ for d, dnn in enumerate(dnns):
 		ci_lower_within = np.append(ci_lower_within, np.expand_dims(
 			data_dict['ci_lower_within'], 0), 0)
 		ci_upper_within = np.append(ci_upper_within, np.expand_dims(
-				data_dict['ci_upper_within'], 0), 0)
+			data_dict['ci_upper_within'], 0), 0)
 		significance_within = np.append(significance_within, np.expand_dims(
 			data_dict['significance_within'], 0), 0)
 		correlation_between = np.append(correlation_between, np.expand_dims(
-				data_dict['correlation_between'], 0), 0)
+			data_dict['correlation_between'], 0), 0)
 		ci_lower_between = np.append(ci_lower_between, np.expand_dims(
-				data_dict['ci_lower_between'], 0), 0)
+			data_dict['ci_lower_between'], 0), 0)
 		ci_upper_between = np.append(ci_upper_between, np.expand_dims(
-				data_dict['ci_upper_between'], 0), 0)
+			data_dict['ci_upper_between'], 0), 0)
 		significance_between = np.append(significance_between, np.expand_dims(
-				data_dict['significance_between'], 0), 0)
+			data_dict['significance_between'], 0), 0)
 		noise_ceiling = np.append(noise_ceiling, np.expand_dims(
-				data_dict['noise_ceiling'], 0), 0)
+			data_dict['noise_ceiling'], 0), 0)
+		diff_noise_ceiling = np.append(diff_noise_ceiling, np.expand_dims(
+			data_dict['diff_noise_ceiling'], 0), 0)
+		ci_lower_diff_noise_ceiling = np.append(ci_lower_diff_noise_ceiling,
+			np.expand_dims(data_dict['ci_lower_diff_noise_ceiling'], 0), 0)
+		ci_upper_diff_noise_ceiling = np.append(ci_upper_diff_noise_ceiling,
+			np.expand_dims(data_dict['ci_upper_diff_noise_ceiling'], 0), 0)
+		significance_diff_noise_ceiling = np.append(
+			significance_diff_noise_ceiling, np.expand_dims(
+			data_dict['significance_diff_noise_ceiling'], 0), 0)
 
 # Averaging the noise ceiling across DNNs
 noise_ceiling = np.mean(noise_ceiling, 0)
@@ -78,6 +94,7 @@ noise_ceiling = np.mean(noise_ceiling, 0)
 # Organizing the significance values for plotting
 sig_within = np.zeros(significance_within.shape)
 sig_between = np.zeros(significance_between.shape)
+sig_diff_noise_ceiling = np.zeros(significance_diff_noise_ceiling.shape)
 for d in range(len(dnns)):
 	for t in range(significance_within.shape[1]):
 		if significance_within[d,t] == False:
@@ -88,6 +105,11 @@ for d in range(len(dnns)):
 			sig_between[d,t] = -100
 		else:
 			sig_between[d,t] = 0.74 + (abs(d+1-len(dnns)) / 100 * 1.5)
+		if significance_diff_noise_ceiling[d,t] == False:
+			sig_diff_noise_ceiling[d,t] = -100
+		else:
+			sig_diff_noise_ceiling[d,t] = 0.27 + (abs(d+1-len(dnns)) /\
+				100 * 0.7)
 
 
 # =============================================================================
@@ -223,7 +245,7 @@ for s in range(args.n_tot_sub):
 			linewidth=3)
 
 	# Other plot parameters
-	if s in [8, 9]:
+	if s in [8, 9, 7, 6]:
 		axs[s].set_xlabel('Time (s)', fontsize=30)
 		plt.xticks(ticks=[0, .4, max(times)], labels=[0, 0.4, 0.8])
 	if s in [0, 4, 8]:
@@ -231,6 +253,66 @@ for s in range(args.n_tot_sub):
 		plt.yticks(ticks=np.arange(0, .81, 0.4), labels=[0, 0.4, 0.8])
 	axs[s].set_xlim(left=min(times), right=max(times))
 	axs[s].set_ylim(bottom=-.05, top=.8)
+	tit = 'Participant ' + str(s+1)
+	axs[s].set_title(tit, fontsize=30)
+axs[10].set_xlabel('Time (s)', fontsize=30)
+axs[11].set_xlabel('Time (s)', fontsize=30)
+
+
+# =============================================================================
+# Plotting the difference from the noise ceiling averaged across subjects
+# =============================================================================
+plt.figure(figsize=(9,6))
+for d in range(len(dnns)):
+	# Plotting the results
+	plt.plot(times, np.mean(diff_noise_ceiling[d], 0), color=colors[d],
+		linewidth=4)
+for d in range(len(dnns)):
+	# Plotting the confidence intervals
+	plt.fill_between(times, ci_upper_diff_noise_ceiling[d],
+		ci_lower_diff_noise_ceiling[d], color=colors[d], alpha=.2)
+	# Plotting the significance markers
+	plt.plot(times, sig_diff_noise_ceiling[d], 'o', color=colors[d],
+		markersize=4)
+# Plotting chance and stimulus onset dashed lines
+plt.plot([-10, 10], [0, 0], 'k--', [0, 0], [10, -10], 'k--', linewidth=4)
+
+# Other plot parameters
+plt.xlabel('Time (s)', fontsize=30)
+xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
+plt.xticks(ticks=[-.2, 0, .2, .4, .6, max(times)], labels=xlabels)
+plt.xlim(left=min(times), right=max(times))
+plt.ylabel('$\Delta$ Pearson\'s $r$', fontsize=30)
+ylabels = [0, 0.1, 0.2, 0.3]
+plt.yticks(ticks=np.arange(0, .31, .1), labels=ylabels)
+plt.ylim(bottom=-.1, top=.30)
+leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
+plt.legend(leg, fontsize=30, ncol=2)
+
+
+# =============================================================================
+# Plotting the difference from the noise ceiling for single subjects
+# =============================================================================
+fig, axs = plt.subplots(3, 4, 'all', 'all')
+axs = np.reshape(axs, (-1))
+for s in range(args.n_tot_sub):
+	for d in range(len(dnns)):
+		# Plotting the results
+		axs[s].plot(times, diff_noise_ceiling[d,s], color=colors[d],
+			linewidth=3)
+	# Plotting chance and stimulus onset dashed lines
+	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
+			linewidth=3)
+
+	# Other plot parameters
+	if s in [8, 9]:
+		axs[s].set_xlabel('Time (s)', fontsize=30)
+		plt.xticks(ticks=[0, .4, max(times)], labels=[0, 0.4, 0.8])
+	if s in [0, 4, 8]:
+		axs[s].set_ylabel('$\Delta$ Pearson\'s $r$', fontsize=30)
+		plt.yticks(ticks=np.arange(0, .41, .2), labels=[0, 0.2, 0.4])
+	axs[s].set_xlim(left=min(times), right=max(times))
+	axs[s].set_ylim(bottom=-.15, top=.4)
 	tit = 'Participant ' + str(s+1)
 	axs[s].set_title(tit, fontsize=30)
 axs[10].set_xlabel('Time (s)', fontsize=30)
