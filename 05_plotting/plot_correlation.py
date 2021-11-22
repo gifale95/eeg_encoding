@@ -147,7 +147,6 @@ for d in range(len(dnns)):
 	plt.plot(times, sig_within[d], 'o', color=colors[d], markersize=4)
 # Plotting chance and stimulus onset dashed lines
 plt.plot([-10, 10], [0, 0], 'k--', [0, 0], [10, -10], 'k--', linewidth=4)
-
 # Other plot parameters
 plt.xlabel('Time (s)', fontsize=30)
 xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
@@ -177,7 +176,6 @@ for s in range(args.n_tot_sub):
 	# Plotting chance and stimulus onset dashed lines
 	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
 			linewidth=3)
-
 	# Other plot parameters
 	if s in [8, 9]:
 		axs[s].set_xlabel('Time (s)', fontsize=30)
@@ -210,10 +208,8 @@ for d in range(len(dnns)):
 		color=colors[d], alpha=.2)
 	# Plotting the significance markers
 	plt.plot(times, sig_between[d], 'o', color=colors[d], markersize=4)
-
 # Plotting chance and stimulus onset dashed lines
 plt.plot([-10, 10], [0, 0], 'k--', [0, 0], [10, -10], 'k--', linewidth=4)
-
 # Other plot parameters
 plt.xlabel('Time (s)', fontsize=30)
 xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
@@ -243,7 +239,6 @@ for s in range(args.n_tot_sub):
 	# Plotting chance and stimulus onset dashed lines
 	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
 			linewidth=3)
-
 	# Other plot parameters
 	if s in [8, 9, 7, 6]:
 		axs[s].set_xlabel('Time (s)', fontsize=30)
@@ -276,7 +271,6 @@ for d in range(len(dnns)):
 		markersize=4)
 # Plotting chance and stimulus onset dashed lines
 plt.plot([-10, 10], [0, 0], 'k--', [0, 0], [10, -10], 'k--', linewidth=4)
-
 # Other plot parameters
 plt.xlabel('Time (s)', fontsize=30)
 xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
@@ -303,7 +297,6 @@ for s in range(args.n_tot_sub):
 	# Plotting chance and stimulus onset dashed lines
 	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
 			linewidth=3)
-
 	# Other plot parameters
 	if s in [8, 9]:
 		axs[s].set_xlabel('Time (s)', fontsize=30)
