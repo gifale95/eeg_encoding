@@ -118,7 +118,8 @@ results_within = multipletests(p_values_within, 0.05, 'bonferroni')
 significance_within = results_within[0]
 results_between = multipletests(p_values_between, 0.05, 'bonferroni')
 significance_between = results_between[0]
-results_diff_noise_ceiling = multipletests(p_values_between, 0.05, 'bonferroni')
+results_diff_noise_ceiling = multipletests(p_values_difference_noise_ceiling,
+	0.05, 'bonferroni')
 significance_diff_noise_ceiling = results_diff_noise_ceiling[0]
 
 
