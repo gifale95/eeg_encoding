@@ -7,10 +7,6 @@ n_tot_sub : int
 project_dir : str
 		Directory of the project folder.
 
-Returns
--------
-Plot of the correlation with the selected parameters.
-
 """
 
 import argparse
