@@ -49,8 +49,8 @@ pairwise_decoding_within = []
 pairwise_decoding_between = []
 noise_ceiling = []
 for s in range(args.n_tot_sub):
-	data_dir = os.path.join('results', 'sub-'+format(s+1,'02'), 'correlation',
-		'dnn-'+args.dnn, 'pairwise_decoding.npy')
+	data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
+		'pairwise_decoding', 'dnn-'+args.dnn, 'pairwise_decoding.npy')
 	results_dict = np.load(os.path.join(args.project_dir, data_dir),
 		allow_pickle=True).item()
 	pairwise_decoding_within.append(results_dict['pairwise_decoding_within'])
