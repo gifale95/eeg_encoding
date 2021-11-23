@@ -111,7 +111,7 @@ for d in range(len(dnns)):
 	# Plotting the significance markers
 	plt.plot(steps, sig[d], 'o', color=colors[d], markersize=4)
 # Plotting chance and stimulus onset dashed lines
-plt.plot([0, 150001], [chance, chance], 'k--', linewidth=4)
+plt.plot(steps, chance, 'k--', linewidth=4)
 # Other plot parameters
 plt.xlabel('Image set size', fontsize=25)
 xlabels = ['0', '30k', '60k', '90k', '120k', '150k']
@@ -135,7 +135,7 @@ for s in range(args.n_tot_sub):
 		# Plotting the results
 		axs[s].plot(steps, decoding_accuracy[d,s], color=colors[d], linewidth=3)
 	# Plotting chance and stimulus onset dashed lines
-	axs[s].plot([0, 150001], [chance, chance], 'k--', linewidth=4)
+	axs[s].plot(steps, chance, 'k--', linewidth=4)
 	# Other plot parameters
 	if s in [8, 9]:
 		axs[s].set_xlabel('Image set size', fontsize=30)
