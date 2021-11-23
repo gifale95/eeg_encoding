@@ -118,9 +118,9 @@ def power_law(x, a, b):
 # results of candidate image set sizes 50,200 to 150,200
 popt_pow = []
 for s in range(decoding_accuracy.shape[0]):
-	popt_pow_wit, _ = curve_fit(power_law, steps[50:]+200,
+	popt_pow_sub, _ = curve_fit(power_law, steps[50:]+200,
 		decoding_accuracy[s,50:])
-	popt_pow.append(popt_pow)
+	popt_pow.append(popt_pow_sub)
 
 # Extrapolating how many image conditions are required for the decoding
 # accuracy to drop below 10%
@@ -139,8 +139,8 @@ for i in range(args.n_boot_iter):
 	# Calculating the sample distribution
 	sample_dist[i] = np.mean(resample(extr_10_percent[:]))
 # Calculating the confidence intervals
-ci_lower_extr = np.percentile(sample_dist, 2.5, axis=1)
-ci_upper_extr = np.percentile(sample_dist, 97.5, axis=1)
+ci_lower_extr = np.percentile(sample_dist, 2.5)
+ci_upper_extr = np.percentile(sample_dist, 97.5)
 
 
 # =============================================================================
