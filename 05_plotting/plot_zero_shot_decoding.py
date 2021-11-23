@@ -113,11 +113,11 @@ for d in range(len(dnns)):
 # Plotting chance and stimulus onset dashed lines
 plt.plot(steps, chance, 'k--', linewidth=4)
 # Other plot parameters
-plt.xlabel('Image set size', fontsize=25)
+plt.xlabel('Image set size', fontsize=30)
 xlabels = ['0', '30k', '60k', '90k', '120k', '150k']
 plt.xticks(ticks=np.arange(0,150001,30000), labels=xlabels)
 plt.xlim(left=0, right=150000)
-plt.ylabel('Decoding\naccuracy (%)', fontsize=25)
+plt.ylabel('Decoding\naccuracy (%)', fontsize=30)
 ylabels = [0, 20, 40, 60, 80, 100]
 plt.yticks(ticks=np.arange(0,101,20), labels=ylabels)
 plt.ylim(bottom=0, top=100)
