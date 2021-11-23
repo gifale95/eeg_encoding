@@ -105,9 +105,9 @@ p_values_within = np.ones((pairwise_decoding_within.shape[1]))
 p_values_between = np.ones((pairwise_decoding_between.shape[1]))
 p_values_difference_noise_ceiling = np.ones((diff_noise_ceiling.shape[1]))
 for t in range(pairwise_decoding_within.shape[1]):
-	_, p_values_within[t] = ttest_1samp(pairwise_decoding_within[:,t], 0,
+	_, p_values_within[t] = ttest_1samp(pairwise_decoding_within[:,t], 0.5,
 		alternative='greater')
-	_, p_values_between[t] = ttest_1samp(pairwise_decoding_between[:,t], 0,
+	_, p_values_between[t] = ttest_1samp(pairwise_decoding_between[:,t], 0.5,
 		alternative='greater')
 	_, p_values_difference_noise_ceiling[t] = ttest_1samp(
 		diff_noise_ceiling[:,t], 0, alternative='greater')
