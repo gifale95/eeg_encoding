@@ -58,12 +58,10 @@ for s in range(args.n_tot_sub):
 	noise_ceiling.append(results_dict['noise_ceiling'])
 	times = results_dict['times']
 	ch_names = results_dict['ch_names']
-
-# Averaging the results across EEG channels
-pairwise_decoding_within = np.mean(np.asarray(pairwise_decoding_within), 1)
-pairwise_decoding_between = np.mean(np.asarray(pairwise_decoding_between), 1)
-noise_ceiling = np.mean(np.asarray(noise_ceiling), 1)
 del results_dict
+pairwise_decoding_within = np.asarray(pairwise_decoding_within)
+pairwise_decoding_between = np.asarray(pairwise_decoding_between)
+noise_ceiling = np.asarray(noise_ceiling)
 
 # Difference between noise ceiling and predicted data results
 diff_noise_ceiling = noise_ceiling - pairwise_decoding_within

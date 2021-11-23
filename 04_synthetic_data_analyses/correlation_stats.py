@@ -58,12 +58,12 @@ for s in range(args.n_tot_sub):
 	noise_ceiling.append(results_dict['noise_ceiling'])
 	times = results_dict['times']
 	ch_names = results_dict['ch_names']
+del results_dict
 
 # Averaging the results across EEG channels
 correlation_within = np.mean(np.asarray(correlation_within), 1)
 correlation_between = np.mean(np.asarray(correlation_between), 1)
 noise_ceiling = np.mean(np.asarray(noise_ceiling), 1)
-del results_dict
 
 # Difference between noise ceiling and predicted data results
 diff_noise_ceiling = noise_ceiling - correlation_within
