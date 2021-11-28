@@ -105,7 +105,7 @@ for d in range(len(dnns)):
 		if significance_diff_noise_ceiling[d,t] == False:
 			sig_diff_noise_ceiling[d,t] = -100
 		else:
-			sig_diff_noise_ceiling[d,t] = 0.28 + (abs(d+1-len(dnns)) /\
+			sig_diff_noise_ceiling[d,t] = 0.275 + (abs(d+1-len(dnns)) /\
 				100 * 0.6)
 
 
