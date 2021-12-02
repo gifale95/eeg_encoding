@@ -1,6 +1,6 @@
 def load_dnn_data(args):
-	"""Loading the DNN feature maps of the training and test data, and of the
-	ILSVRC-2012 test and validation data.
+	"""Loading the DNN feature maps of the training and test images, and of the
+	ILSVRC-2012 test and validation images.
 
 	Parameters
 	----------
