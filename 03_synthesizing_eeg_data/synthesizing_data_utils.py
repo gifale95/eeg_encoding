@@ -98,8 +98,8 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	X_ilsvrc2012_test, y_train_within, y_train_between):
 	"""Training a linear regression on the training images DNN feature maps (X)
 	and training EEG data (Y), and use the trained weights to synthesize the EEG
-	training and test images (within and between subjects) and test/validation
-	ILSVRC-2012 images (within subjects).
+	responses to the training and test images (within and between subjects), and
+	to the test/validation ILSVRC-2012 images (within subjects).
 
 	Parameters
 	----------
