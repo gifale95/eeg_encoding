@@ -123,7 +123,7 @@ for s in range(decoding_accuracy.shape[0]):
 	popt_pow.append(popt_pow_sub)
 
 # Extrapolating how many image conditions are required for the decoding
-# accuracy to drop below 10%
+# accuracy to drop below 10% (with steps of 100 images)
 extr_10_percent = np.zeros(decoding_accuracy.shape[0])
 for s in range(len(popt_pow)):
 	n = 0
@@ -133,14 +133,16 @@ for s in range(len(popt_pow)):
 		n += 10
 	extr_10_percent[s] = n
 
-# Bootstrapping the confidence intervals
-sample_dist = np.zeros((args.n_boot_iter))
-for i in range(args.n_boot_iter):
-	# Calculating the sample distribution
-	sample_dist[i] = np.mean(resample(extr_10_percent[:]))
-# Calculating the confidence intervals
-ci_lower_extr = np.percentile(sample_dist, 2.5)
-ci_upper_extr = np.percentile(sample_dist, 97.5)
+# Extrapolating how many image conditions are required for the decoding
+# accuracy to drop below 0.5% (with steps of 100 images)
+extr_0point5_percent = np.zeros(decoding_accuracy.shape[0])
+for s in range(len(popt_pow)):
+	n = 0
+	acc = 100
+	while acc >= 0.5:
+		acc = power_law(n+200, *popt_pow[s])
+		n += 10
+	extr_0point5_percent[s] = n
 
 
 # =============================================================================
@@ -153,8 +155,7 @@ stats_dict = {
 	'ci_upper': ci_upper,
 	'significance': significance,
 	'extr_10_percent': extr_10_percent,
-	'ci_lower_extr': ci_lower_extr,
-	'ci_upper_extr': ci_upper_extr,
+	'extr_0point5_percent': extr_0point5_percent,
 	'steps': steps
 }
 
