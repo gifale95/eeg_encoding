@@ -1,9 +1,9 @@
 """Fitting a linear regression to predict EEG data using the DNN feature maps as
 predictors. The linear regression is trained using the training images EEG data
 (Y) and feature maps (X), and the learned weights are used to synthesize the EEG
-data of the test images, and also of the ILSVRC-2012 test and validation images.
-The linear regression is trained both within and between subjects in a
-leave-one-subject out fashion.
+data of the training and test images, and also of the ILSVRC-2012 test and
+validation images. The linear regression is trained both within and between
+subjects in a leave-one-subject out fashion.
 
 Parameters
 ----------
