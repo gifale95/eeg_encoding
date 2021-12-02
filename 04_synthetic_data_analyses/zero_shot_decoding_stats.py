@@ -130,7 +130,7 @@ for s in range(len(popt_pow)):
 	acc = 100
 	while acc >= 10:
 		acc = power_law(n+200, *popt_pow[s])
-		n += 10
+		n += 100
 	extr_10_percent[s] = n
 
 # Extrapolating how many image conditions are required for the decoding
@@ -141,7 +141,7 @@ for s in range(len(popt_pow)):
 	acc = 100
 	while acc >= 0.5:
 		acc = power_law(n+200, *popt_pow[s])
-		n += 10
+		n += 100
 	extr_0point5_percent[s] = n
 
 
