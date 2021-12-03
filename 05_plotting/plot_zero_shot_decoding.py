@@ -122,7 +122,7 @@ ylabels = [0, 20, 40, 60, 80, 100]
 plt.yticks(ticks=np.arange(0,101,20), labels=ylabels)
 plt.ylim(bottom=0, top=100)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
-plt.legend(leg, fontsize=30, ncol=2)
+plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 
 # =============================================================================

@@ -154,7 +154,7 @@ ylabels = [50, 60, 70, 80, 90, 100]
 plt.yticks(ticks=np.arange(.5,1.01,.1), labels=ylabels)
 plt.ylim(bottom=.47, top=1)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo', 'Noise ceiling']
-plt.legend(leg, fontsize=30, ncol=2)
+plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 
 # =============================================================================
@@ -217,7 +217,7 @@ ylabels = [50, 60, 70, 80, 90, 100]
 plt.yticks(ticks=np.arange(.5,1.01,.1), labels=ylabels)
 plt.ylim(bottom=.47, top=1)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo', 'Noise ceiling']
-plt.legend(leg, fontsize=30, ncol=2)
+plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 
 # =============================================================================
@@ -278,7 +278,7 @@ ylabels = [0, 10, 20, 30]
 plt.yticks(ticks=np.arange(0, .31, .1), labels=ylabels)
 plt.ylim(bottom=-.03, top=.3)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
-plt.legend(leg, fontsize=30, ncol=2)
+plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 
 # =============================================================================
