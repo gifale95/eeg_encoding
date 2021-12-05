@@ -3,11 +3,11 @@
 Parameters
 ----------
 n_tot_sub : int
-		Number of total subjects used.
+	Number of total subjects used.
 rank_correct : int
 	Accepted correlation rank of the correct synthetic data image condition.
 project_dir : str
-		Directory of the project folder.
+	Directory of the project folder.
 
 """
 

@@ -3,9 +3,9 @@
 Parameters
 ----------
 n_tot_sub : int
-		Number of total subjects used.
+	Number of total subjects used.
 project_dir : str
-		Directory of the project folder.
+	Directory of the project folder.
 
 """
 
