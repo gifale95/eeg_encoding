@@ -1,4 +1,4 @@
-"""Plotting the zero-shot decoding analysis results.
+"""Plotting the zero-shot identification analysis results.
 
 Parameters
 ----------
@@ -34,13 +34,13 @@ args = parser.parse_args()
 dnns = ['alexnet', 'resnet50', 'cornet_s', 'moco']
 for d, dnn in enumerate(dnns):
 	data_dir = os.path.join(args.project_dir, 'results', 'stats',
-		'zero_shot_decoding', 'dnn-'+dnn, 'rank_correct-'+
-		format(args.rank_correct,'02'), 'zero_shot_decoding_stats.npy')
+		'zero_shot_identification', 'dnn-'+dnn, 'rank_correct-'+
+		format(args.rank_correct,'02'), 'zero_shot_identification_stats.npy')
 	# Loading the data
 	data_dict = np.load(data_dir, allow_pickle=True).item()
 	if d == 0:
-		decoding_accuracy = np.expand_dims(
-			data_dict['decoding_accuracy'], 0)
+		identification_accuracy = np.expand_dims(
+			data_dict['identification_accuracy'], 0)
 		ci_lower = np.expand_dims(data_dict['ci_lower'], 0)
 		ci_upper = np.expand_dims(data_dict['ci_upper'], 0)
 		significance = np.expand_dims(data_dict['significance'],
@@ -51,8 +51,8 @@ for d, dnn in enumerate(dnns):
 		ci_upper_extr = np.expand_dims(data_dict['ci_upper_extr'], 0)
 		steps = data_dict['steps']
 	else:
-		decoding_accuracy = np.append(decoding_accuracy,
-			np.expand_dims(data_dict['decoding_accuracy'], 0), 0)
+		identification_accuracy = np.append(identification_accuracy,
+			np.expand_dims(data_dict['identification_accuracy'], 0), 0)
 		ci_lower = np.append(ci_lower, np.expand_dims(
 			data_dict['ci_lower'], 0), 0)
 		ci_upper = np.append(ci_upper, np.expand_dims(
@@ -103,7 +103,7 @@ colors = [(31/255, 119/255, 180/255), (255/255, 127/255, 14/255),
 plt.figure(figsize=(9,6))
 for d in range(len(dnns)):
 	# Plotting the results
-	plt.plot(steps, np.mean(decoding_accuracy[d], 0), color=colors[d],
+	plt.plot(steps, np.mean(identification_accuracy[d], 0), color=colors[d],
 		linewidth=4)
 for d in range(len(dnns)):
 	# Plotting the confidence intervals
@@ -133,7 +133,8 @@ axs = np.reshape(axs, (-1))
 for s in range(args.n_tot_sub):
 	for d in range(len(dnns)):
 		# Plotting the results
-		axs[s].plot(steps, decoding_accuracy[d,s], color=colors[d], linewidth=3)
+		axs[s].plot(steps, identification_accuracy[d,s], color=colors[d],
+			linewidth=3)
 	# Plotting chance and stimulus onset dashed lines
 	axs[s].plot(steps, chance, 'k--', linewidth=4)
 	# Other plot parameters

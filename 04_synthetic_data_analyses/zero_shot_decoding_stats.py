@@ -1,5 +1,5 @@
 """Confidence intervals, significance and function fitting of the zero-shot
-decoding analysis results.
+identification analysis results.
 
 Parameters
 ----------
@@ -37,7 +37,7 @@ parser.add_argument('--n_boot_iter', default=10000, type=int)
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> Zero-shot decoding stats <<<')
+print('\n\n\n>>> zero_shot_identification stats <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
@@ -52,10 +52,11 @@ np.random.seed(seed=20200220)
 zero_shot_decoding = []
 for s in range(args.n_tot_sub):
 	data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
-		'zero_shot_decoding', 'dnn-'+args.dnn, 'zero_shot_decoding.npy')
+		'zero_shot_identification', 'dnn-'+args.dnn,
+		'zero_shot_identification.npy')
 	results_dict = np.load(os.path.join(args.project_dir, data_dir),
 		allow_pickle=True).item()
-	zero_shot_decoding.append(results_dict['zero_shot_decoding'])
+	zero_shot_decoding.append(results_dict['zero_shot_identification'])
 	steps = results_dict['steps']
 zero_shot_decoding = np.asarray(zero_shot_decoding)
 del results_dict
@@ -65,28 +66,28 @@ del results_dict
 # Calculating the accuracy
 # =============================================================================
 # Accuracy matrix of shape: Subjects × Iterations × Steps
-decoding_accuracy = np.zeros((zero_shot_decoding.shape[0],
+identification_accuracy = np.zeros((zero_shot_decoding.shape[0],
 	zero_shot_decoding.shape[1], zero_shot_decoding.shape[3]))
-for s in range(decoding_accuracy.shape[0]):
-	for i in range(decoding_accuracy.shape[1]):
-		for st in range(decoding_accuracy.shape[2]):
-			decoding_accuracy[s,i,st] = len(np.where(
+for s in range(identification_accuracy.shape[0]):
+	for i in range(identification_accuracy.shape[1]):
+		for st in range(identification_accuracy.shape[2]):
+			identification_accuracy[s,i,st] = len(np.where(
 				zero_shot_decoding[s,i,:,st] <= args.rank_correct-1)[0]) /\
 				zero_shot_decoding.shape[2] * 100
 del zero_shot_decoding
 
 # Averaging across iterations
-decoding_accuracy = np.mean(decoding_accuracy, 1)
+identification_accuracy = np.mean(identification_accuracy, 1)
 
 
 # =============================================================================
 # Bootstrapping the confidence intervals
 # =============================================================================
-sample_dist = np.zeros((decoding_accuracy.shape[1],args.n_boot_iter))
-for st in tqdm(range(decoding_accuracy.shape[1])):
+sample_dist = np.zeros((identification_accuracy.shape[1],args.n_boot_iter))
+for st in tqdm(range(identification_accuracy.shape[1])):
 	for i in range(args.n_boot_iter):
 		# Calculating the sample distribution
-		sample_dist[st,i] = np.mean(resample(decoding_accuracy[:,st]))
+		sample_dist[st,i] = np.mean(resample(identification_accuracy[:,st]))
 # Calculating the confidence intervals
 ci_lower = np.percentile(sample_dist, 2.5, axis=1)
 ci_upper= np.percentile(sample_dist, 97.5, axis=1)
@@ -95,10 +96,10 @@ ci_upper= np.percentile(sample_dist, 97.5, axis=1)
 # =============================================================================
 # Performing the t-tests & multiple comparisons correction
 # =============================================================================
-p_values = np.zeros((decoding_accuracy.shape[1]))
-for st in range(decoding_accuracy.shape[1]):
+p_values = np.zeros((identification_accuracy.shape[1]))
+for st in range(identification_accuracy.shape[1]):
 	chance = args.rank_correct / (200+steps[st]) * 100
-	_, p_val = ttest_1samp(decoding_accuracy[:,st], chance,
+	_, p_val = ttest_1samp(identification_accuracy[:,st], chance,
 		alternative='greater')
 	p_values[st] = p_val
 
@@ -114,17 +115,17 @@ significance = results[0]
 def power_law(x, a, b):
 	return a*np.power(x, b)
 
-# Fitting the power-law function for each subject, using the zero-shot decoding
-# results of candidate image set sizes 50,200 to 150,200
+# Fitting the power-law function for each subject, using the zero-shot
+# identification results of candidate image set sizes 50,200 to 150,200
 popt_pow = []
-for s in range(decoding_accuracy.shape[0]):
+for s in range(identification_accuracy.shape[0]):
 	popt_pow_sub, _ = curve_fit(power_law, steps[50:]+200,
-		decoding_accuracy[s,50:])
+		identification_accuracy[s,50:])
 	popt_pow.append(popt_pow_sub)
 
-# Extrapolating how many image conditions are required for the decoding
+# Extrapolating how many image conditions are required for the identification
 # accuracy to drop below 10% (with steps of 1000 images)
-extr_10_percent = np.zeros(decoding_accuracy.shape[0])
+extr_10_percent = np.zeros(identification_accuracy.shape[0])
 for s in range(len(popt_pow)):
 	n = 0
 	acc = 100
@@ -133,9 +134,9 @@ for s in range(len(popt_pow)):
 		n += 1000
 	extr_10_percent[s] = n
 
-# Extrapolating how many image conditions are required for the decoding
+# Extrapolating how many image conditions are required for the identification
 # accuracy to drop below 0.5% (with steps of 1000 images)
-extr_0point5_percent = np.zeros(decoding_accuracy.shape[0])
+extr_0point5_percent = np.zeros(identification_accuracy.shape[0])
 for s in range(len(popt_pow)):
 	n = 0
 	acc = 100
@@ -150,7 +151,7 @@ for s in range(len(popt_pow)):
 # =============================================================================
 # Storing the results into a dictionary
 stats_dict = {
-	'decoding_accuracy': decoding_accuracy,
+	'identification_accuracy': identification_accuracy,
 	'ci_lower': ci_lower,
 	'ci_upper': ci_upper,
 	'significance': significance,
@@ -161,9 +162,9 @@ stats_dict = {
 
 # Saving directory
 save_dir = os.path.join(args.project_dir, 'results', 'stats',
-	'zero_shot_decoding', 'dnn-'+args.dnn, 'rank_correct-'+
+	'zero_shot_identification', 'dnn-'+args.dnn, 'rank_correct-'+
 	format(args.rank_correct,'02'))
-file_name = 'zero_shot_decoding_stats.npy'
+file_name = 'zero_shot_identification_stats.npy'
 
 # Creating the directory if not existing and saving
 if os.path.isdir(save_dir) == False:

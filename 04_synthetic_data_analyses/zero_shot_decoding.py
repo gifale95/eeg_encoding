@@ -1,5 +1,5 @@
-"""Zero-shot decoding of the biological test data image conditions using the
-snthetic test and ILSVRC-2012 data.
+"""Zero-shot identification of the biological test data image conditions using
+the synthetic test and ILSVRC-2012 data.
 
 Parameters
 ----------
@@ -36,7 +36,7 @@ parser.add_argument('--project_dir', default='/project/directory/'+
 		'studies/eeg_encoding/paradigm_3', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> Zero-shot decoding <<<')
+print('\n\n\n>>> Zero-shot identification <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
@@ -151,7 +151,7 @@ del bio_test, synt_test, synt_ilsvrc2012
 steps = np.arange(0, correlation.shape[1]+1, 1000)
 n_steps = len(steps)
 # Sorted data matrix of shape: Iterations × Test images × Steps
-zero_shot_dec = np.zeros((args.n_iter,correlation.shape[0],n_steps))
+zero_shot_identification = np.zeros((args.n_iter,correlation.shape[0],n_steps))
 
 for i in tqdm(range(args.n_iter)):
 	for s in range(n_steps):
@@ -163,7 +163,7 @@ for i in tqdm(range(args.n_iter)):
 			# Sorting the correlation values
 			idx = np.argsort(corr[bd,:])[::-1]
 			# Storing the results
-			zero_shot_dec[i,bd,s] = np.where(idx == bd)[0][0]
+			zero_shot_identification[i,bd,s] = np.where(idx == bd)[0][0]
 del correlation, corr
 
 
@@ -172,14 +172,14 @@ del correlation, corr
 # =============================================================================
 # Storing the results into a dictionary
 results_dict = {
-'zero_shot_decoding': zero_shot_dec,
+'zero_shot_identification': zero_shot_identification,
 'steps': steps
 }
 
 # Saving directory
 save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-	format(args.sub,'02'), 'zero_shot_decoding', 'dnn-'+args.dnn)
-file_name = 'zero_shot_decoding.npy'
+	format(args.sub,'02'), 'zero_shot_identification', 'dnn-'+args.dnn)
+file_name = 'zero_shot_identification.npy'
 
 # Creating the directory if not existing and saving
 if os.path.isdir(save_dir) == False:
