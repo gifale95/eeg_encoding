@@ -4,15 +4,15 @@ the synthetic test and ILSVRC-2012 data.
 Parameters
 ----------
 sub : int
-		Used subject.
+	Used subject.
 dnn : str
-		Used DNN network.
+	Used DNN network.
 n_used_features : int
-		Number of best features used for the zero-shot decoding.
+	Number of best features used for the zero-shot decoding.
 n_iter : int
-		Number of analysis iterations.
+	Number of analysis iterations.
 project_dir : str
-		Directory of the project folder.
+	Directory of the project folder.
 
 """
 
