@@ -3,11 +3,11 @@
 Parameters
 ----------
 dnn : str
-		Used DNN architecture.
+	Used DNN architecture.
 n_components : int
-		Number of PCA components retained.
+	Number of PCA components retained.
 project_dir : str
-		Directory of the project folder.
+	Directory of the project folder.
 
 """
 
