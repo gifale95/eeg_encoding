@@ -124,25 +124,35 @@ for s in range(identification_accuracy.shape[0]):
 	popt_pow.append(popt_pow_sub)
 
 # Extrapolating how many image conditions are required for the identification
-# accuracy to drop below 10% (with steps of 1000 images)
+# accuracy to drop below 10%
 extr_10_percent = np.zeros(identification_accuracy.shape[0])
+search_rates= [10**10, 10**9, 10**8, 10**7, 10**6, 10**5, 10**4, 10**3, 10**2,
+	10, 1]
 for s in range(len(popt_pow)):
-	n = 0
 	acc = 100
-	while acc >= 10:
-		acc = power_law(n+200, *popt_pow[s])
-		n += 1000
+	n = 0
+	for rate in search_rates:
+		while acc >= 10:
+			acc = power_law(n+200, *popt_pow[s])
+			if power_law(n+200+rate, *popt_pow[s]) >= 10:
+				n += rate
+			else:
+				break
 	extr_10_percent[s] = n
 
 # Extrapolating how many image conditions are required for the identification
-# accuracy to drop below 0.5% (with steps of 1000 images)
+# accuracy to drop below 0.5%
 extr_0point5_percent = np.zeros(identification_accuracy.shape[0])
 for s in range(len(popt_pow)):
-	n = 0
 	acc = 100
-	while acc >= 0.5:
-		acc = power_law(n+200, *popt_pow[s])
-		n += 1000
+	n = 0
+	for rate in search_rates:
+		while acc >= .5:
+			acc = power_law(n+200, *popt_pow[s])
+			if power_law(n+200+rate, *popt_pow[s]) >= .5:
+				n += rate
+			else:
+				break
 	extr_0point5_percent[s] = n
 
 
