@@ -37,7 +37,7 @@ parser.add_argument('--n_boot_iter', default=10000, type=int)
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> zero_shot_identification stats <<<')
+print('\n\n\n>>> Zero_shot_identification stats <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
@@ -49,16 +49,16 @@ np.random.seed(seed=20200220)
 # =============================================================================
 # Loading the zero-shot decoding results
 # =============================================================================
-zero_shot_decoding = []
+zero_shot_identification = []
 for s in range(args.n_tot_sub):
 	data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
 		'zero_shot_identification', 'dnn-'+args.dnn,
 		'zero_shot_identification.npy')
 	results_dict = np.load(os.path.join(args.project_dir, data_dir),
 		allow_pickle=True).item()
-	zero_shot_decoding.append(results_dict['zero_shot_identification'])
+	zero_shot_identification.append(results_dict['zero_shot_identification'])
 	steps = results_dict['steps']
-zero_shot_decoding = np.asarray(zero_shot_decoding)
+zero_shot_identification = np.asarray(zero_shot_identification)
 del results_dict
 
 
@@ -66,15 +66,15 @@ del results_dict
 # Calculating the accuracy
 # =============================================================================
 # Accuracy matrix of shape: Subjects × Iterations × Steps
-identification_accuracy = np.zeros((zero_shot_decoding.shape[0],
-	zero_shot_decoding.shape[1], zero_shot_decoding.shape[3]))
+identification_accuracy = np.zeros((zero_shot_identification.shape[0],
+	zero_shot_identification.shape[1], zero_shot_identification.shape[3]))
 for s in range(identification_accuracy.shape[0]):
 	for i in range(identification_accuracy.shape[1]):
 		for st in range(identification_accuracy.shape[2]):
 			identification_accuracy[s,i,st] = len(np.where(
-				zero_shot_decoding[s,i,:,st] <= args.rank_correct-1)[0]) /\
-				zero_shot_decoding.shape[2] * 100
-del zero_shot_decoding
+				zero_shot_identification[s,i,:,st] <= args.rank_correct-1)[0]) /\
+				zero_shot_identification.shape[2] * 100
+del zero_shot_identification
 
 # Averaging across iterations
 identification_accuracy = np.mean(identification_accuracy, 1)
