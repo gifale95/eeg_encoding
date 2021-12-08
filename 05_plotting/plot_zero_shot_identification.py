@@ -47,8 +47,8 @@ for d, dnn in enumerate(dnns):
 			0)
 		extr_10_percent = np.expand_dims(
 			data_dict['extr_10_percent'], 0)
-		ci_lower_extr = np.expand_dims(data_dict['ci_lower_extr'], 0)
-		ci_upper_extr = np.expand_dims(data_dict['ci_upper_extr'], 0)
+		extr_0point5_percent = np.expand_dims(
+			data_dict['extr_0point5_percent'], 0)
 		steps = data_dict['steps']
 	else:
 		identification_accuracy = np.append(identification_accuracy,
@@ -61,10 +61,8 @@ for d, dnn in enumerate(dnns):
 			data_dict['significance'], 0), 0)
 		extr_10_percent = np.append(extr_10_percent,
 			np.expand_dims(data_dict['extr_10_percent'], 0), 0)
-		ci_lower_extr = np.append(ci_lower_extr, np.expand_dims(
-			data_dict['ci_lower_extr'], 0), 0)
-		ci_upper_extr = np.append(ci_upper_extr, np.expand_dims(
-			data_dict['ci_upper_extr'], 0), 0)
+		extr_0point5_percent = np.append(extr_0point5_percent,
+			np.expand_dims(data_dict['extr_0point5_percent'], 0), 0)
 
 # Organizing the significance values for plotting
 sig = np.zeros(significance.shape)
