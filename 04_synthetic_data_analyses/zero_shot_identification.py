@@ -36,7 +36,7 @@ parser.add_argument('--project_dir', default='/project/directory/'+
 		'studies/eeg_encoding/paradigm_3', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> Zero-shot identification <<<')
+print('>>> Zero-shot identification <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
