@@ -38,7 +38,7 @@ parser.add_argument('--mvnn_dim', default='time', type=str)
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> EEG data preprocessing <<<')
+print('>>> EEG data preprocessing <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
