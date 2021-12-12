@@ -34,7 +34,7 @@ parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> Predicting the EEG data <<<')
+print('>>> Predicting the EEG data <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))

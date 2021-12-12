@@ -25,7 +25,6 @@ def load_dnn_data(args):
 
 	### Loading the DNN feature maps ###
 	# Feature maps directories
-	print('\n>>> Loading the DDN feature maps <<<')
 	data_dir = os.path.join('dnn_feature_maps', 'pca_feature_maps', args.dnn)
 	training_file = 'pca_feature_maps_training.npy'
 	test_file = 'pca_feature_maps_test.npy'
@@ -70,7 +69,6 @@ def load_eeg_data(args):
 	import numpy as np
 
 	### Loading the EEG data ###
-	print('\n>>> Loading the EEG data <<<')
 	y_train_within = []
 	y_train_between = []
 	for s in range(args.n_tot_sub):
@@ -129,7 +127,6 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	import os
 
 	### Fitting the regression at each time-point and channel ###
-	print('\n>>> Performing the regression <<<')
 	eeg_shape = y_train_within.shape
 	y_train_within = np.reshape(y_train_within, (y_train_within.shape[0],-1))
 	y_train_between = np.reshape(y_train_between, (y_train_between.shape[0],-1))

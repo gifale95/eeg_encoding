@@ -50,7 +50,7 @@ parser.add_argument('--n_iter', default=100, type=int)
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
-print('\n\n\n>>> Training data amount <<<')
+print('>>> Training data amount <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
