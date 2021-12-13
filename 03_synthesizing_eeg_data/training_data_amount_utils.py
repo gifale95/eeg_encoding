@@ -70,7 +70,7 @@ def load_eeg_data(args, cond_idx, rep_idx):
 	y_train = y_train[cond_idx]
 	# Averaging across the selected amount of training repetitions
 	y_train = np.mean(y_train[:,rep_idx], 1)
-	# Selecting the time points between 26-500ms
+	# Selecting the time points between 60-500ms
 	y_train = y_train[:,:,26:71]
 
 	### Loading the EEG test data ###
@@ -80,7 +80,7 @@ def load_eeg_data(args, cond_idx, rep_idx):
 	y_test = data['preprocessed_eeg_data']
 	# Averaging the EEG test data across repetitions
 	y_test = np.mean(y_test, 1)
-	# Selecting the time points between 26-500ms
+	# Selecting the time points between 60-500ms
 	y_test = y_test[:,:,26:71]
 
 	### Output ###
