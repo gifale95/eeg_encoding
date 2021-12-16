@@ -115,7 +115,7 @@ plt.xlabel('Image set size', fontsize=30)
 xlabels = ['0', '30k', '60k', '90k', '120k', '150k']
 plt.xticks(ticks=np.arange(0,150001,30000), labels=xlabels)
 plt.xlim(left=0, right=150000)
-plt.ylabel('Decoding\naccuracy (%)', fontsize=30)
+plt.ylabel('Identification\naccuracy (%)', fontsize=30)
 ylabels = [0, 20, 40, 60, 80, 100]
 plt.yticks(ticks=np.arange(0,101,20), labels=ylabels)
 plt.ylim(bottom=0, top=100)
@@ -140,7 +140,7 @@ for s in range(args.n_tot_sub):
 		axs[s].set_xlabel('Image set size', fontsize=30)
 		plt.xticks(ticks=[0, 75000, 150000], labels=[0, '75k', '150k'])
 	if s in [0, 4, 8]:
-		axs[s].set_ylabel('Decoding\naccuracy (%)', fontsize=30)
+		axs[s].set_ylabel('Identification\naccuracy (%)', fontsize=30)
 		plt.yticks(ticks=np.arange(0, 101, 50), labels=[0, 50, 100])
 	axs[s].set_xlim(left=min(steps), right=max(steps))
 	axs[s].set_ylim(bottom=0, top=100)
