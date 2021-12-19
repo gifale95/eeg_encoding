@@ -47,11 +47,13 @@ used_img_cond = [4135, 8270, 12405, 16540]
 used_eeg_rep = [1, 2, 3, 4]
 dnns = ['alexnet', 'resnet50', 'cornet_s', 'moco']
 correlation = []
+noise_ceiling = []
 
 # Loading the correlation results
 for s in range(args.n_tot_sub):
 	# Results matrix of shape: Used image condition × Used EEG repetitions
 	corr_mat = np.zeros((len(used_img_cond),len(used_eeg_rep)))
+	noise_ceil = []
 	for c,img_cond in enumerate(used_img_cond):
 		for r,eeg_rep in enumerate(used_eeg_rep):
 			for d in dnns:
@@ -61,14 +63,19 @@ for s in range(args.n_tot_sub):
 					'training_data_amount_n_img_cond-'+format(img_cond,'06')+
 					'_n_eeg_rep-'+format(eeg_rep,'02')+'.npy')
 				corr_res.append(np.load(os.path.join(args.project_dir,
-					data_dir)))
-			# Averaging the results across DNNs
+					data_dir), allow_pickle=True).item()['correlation_results'])
+				noise_ceil.append(np.load(os.path.join(args.project_dir,
+					data_dir), allow_pickle=True).item()['noise_ceiling'])
+			# Averaging the correlation results across DNNs
 			corr_res = np.mean(np.asarray(corr_res), 0)
 			corr_mat[c,r] = corr_res
 	correlation.append(corr_mat)
+	# Averaging the noise ceiling across conditions, repetitions and DNNs
+	noise_ceiling.append(np.mean(np.asarray(noise_ceil)))
 
 # Converting to numpy format
 correlation = np.asarray(correlation)
+noise_ceiling = np.asarray(noise_ceiling)
 
 # Selecting the correlation results of the encoding models built using varying
 # amounts of training data (25%, 50%, 75%, 100%), while using either all the
@@ -133,6 +140,7 @@ significance_ttest = results[0]
 # Storing the results into a dictionary
 stats_dict = {
 	'correlation': correlation,
+	'noise_ceiling': noise_ceiling,
 	'ci_lower': ci_lower,
 	'ci_upper': ci_upper,
 	'anova_summary': anova_summary,
