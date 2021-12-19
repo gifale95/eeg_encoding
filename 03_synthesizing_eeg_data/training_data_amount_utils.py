@@ -78,10 +78,8 @@ def load_eeg_data(args, cond_idx, rep_idx):
 	data = np.load(os.path.join(args.project_dir, data_dir, test_file),
 		allow_pickle=True).item()
 	y_test = data['preprocessed_eeg_data']
-	# Averaging the EEG test data across repetitions
-	y_test = np.mean(y_test, 1)
 	# Selecting the time points between 60-500ms
-	y_test = y_test[:,:,26:71]
+	y_test = y_test[:,:,:,26:71]
 
 	### Output ###
 	return y_train, y_test
@@ -122,11 +120,13 @@ def perform_regression(X_train, X_test, y_train):
 	return y_test_pred
 
 
-def correlation_analysis(y_test_pred, y_test):
+def correlation_analysis(args, y_test_pred, y_test):
 	"""Correlation of predicted data with biological data.
 
 	Parameters
 	----------
+	args : Namespace
+		Input arguments.
 	y_test_pred : float
 		Predicted test EEG data.
 	y_test : float
@@ -136,26 +136,46 @@ def correlation_analysis(y_test_pred, y_test):
 	-------
 	correlation : float
 		Correlation results.
+	noise_ceiling : float
+		Noise ceiling results.
 
 	"""
 
 	import numpy as np
+	from tqdm import tqdm
+	from sklearn.utils import resample
 	from scipy.stats import pearsonr as corr
 
 	### Performing the correlation ###
-	# Correlation matrix of shape: EEG channels × EEG time points
-	correlation = np.zeros((y_test.shape[1], y_test.shape[2]))
-	for t in range(y_test.shape[2]):
-		for c in range(y_test.shape[1]):
-			correlation[c,t] = corr(y_test[:,c,t], y_test_pred[:,c,t])[0]
-	# Averaging the results across EEG channels and time points
-	correlation = np.mean(np.mean(correlation, 0), 0)
+	# Correlation matrices of shape:
+	# (Iterations ×  EEG channels × EEG time points)
+	correlation = np.zeros((args.n_iter, y_test.shape[2], y_test.shape[3]))
+	noise_ceiling = np.zeros((args.n_iter, y_test.shape[2], y_test.shape[3]))
+	for i in tqdm(range(args.n_iter)):
+		# Random data repetitions index
+		shuffle_idx = resample(np.arange(0, y_test.shape[1]), replace=False)\
+			[:int(y_test.shape[1]/2)]
+		# Averaging across one half of the biological data repetitions
+		bio_data_avg_half_1 = np.mean(np.delete(y_test, shuffle_idx, 1), 1)
+		# Averaging across the other half of the biological data repetitions for the
+		# noise ceiling calculation
+		bio_data_avg_half_2 = np.mean(y_test[:,shuffle_idx,:,:], 1)
+		# Computing the correlation and noise ceilings
+		for t in range(y_test.shape[3]):
+			for c in range(y_test.shape[2]):
+				correlation[i,c,t] = corr(y_test_pred[:,c,t],
+					bio_data_avg_half_1[:,c,t])[0]
+				noise_ceiling[i,c,t] = corr(bio_data_avg_half_2[:,c,t],
+					bio_data_avg_half_1[:,c,t])[0]
+	# Averaging the results across iterations, EEG channels and time points
+	correlation = np.mean(correlation)
+	noise_ceiling = np.mean(noise_ceiling)
 
 	### Output ###
-	return correlation
+	return correlation, noise_ceiling
 
 
-def save_data(args, correlation_results):
+def save_data(args, correlation_results, noise_ceiling):
 	"""Saving the results.
 
 	Parameters
@@ -164,13 +184,21 @@ def save_data(args, correlation_results):
 		Input arguments.
 	correlation_results : float
 		Correlation results.
+	noise_ceiling : float
+		Noise ceiling results.
 
 	"""
 
 	import numpy as np
 	import os
 
-	### Saving the data ###
+	### Storing the results into a dictionary ###
+	results_dict = {
+		'correlation_results' : correlation_results,
+		'noise_ceiling' : noise_ceiling
+	}
+
+	### Saving the results ###
 	# Save directories
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
 		format(args.sub,'02'), 'training_data_amount_analysis', 'dnn-'+
@@ -180,4 +208,4 @@ def save_data(args, correlation_results):
 	# Creating the directory if not existing and saving the data
 	if not os.path.exists(save_dir):
 		os.makedirs(save_dir)
-	np.save(os.path.join(save_dir, file_name), correlation_results)
+	np.save(os.path.join(save_dir, file_name), results_dict)

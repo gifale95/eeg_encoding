@@ -90,20 +90,22 @@ for i in tqdm(range(args.n_iter)):
 # =============================================================================
 # Training a linear regression and predicting the EEG test data
 # =============================================================================
-	y_test_pred = perform_regression(X_train, X_test, y_train)
+	y_test_pred = perform_regression(args, X_train, X_test, y_train)
 	del X_train, X_test, y_train
 
 
 # =============================================================================
 # Performing the correlation
 # =============================================================================
-	correlation_results[i] = correlation_analysis(y_test_pred, y_test)
+	correlation_results[i], noise_ceiling[i] = correlation_analysis(args,
+		y_test_pred, y_test)
 
-# Averaging the correlation results across iterations
+# Averaging the results across iterations
 correlation_results = np.mean(correlation_results, 0)
+noise_ceiling = np.mean(noise_ceiling, 0)
 
 
 # =============================================================================
 # Saving the predicted test data
 # =============================================================================
-save_data(args, correlation_results)
+save_data(args, correlation_results, noise_ceiling)
