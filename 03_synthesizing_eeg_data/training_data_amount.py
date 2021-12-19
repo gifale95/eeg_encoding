@@ -90,7 +90,7 @@ for i in tqdm(range(args.n_iter)):
 # =============================================================================
 # Training a linear regression and predicting the EEG test data
 # =============================================================================
-	y_test_pred = perform_regression(args, X_train, X_test, y_train)
+	y_test_pred = perform_regression(X_train, X_test, y_train)
 	del X_train, X_test, y_train
 
 
