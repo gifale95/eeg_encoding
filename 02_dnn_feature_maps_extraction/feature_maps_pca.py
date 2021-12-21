@@ -56,9 +56,9 @@ for f in fmaps_list:
 fmaps_train = np.asarray(fmaps_train)
 
 # Standardizing the data
-sc = StandardScaler()
-zscore_params = sc.fit(fmaps_train)
-fmaps_train = zscore_params.transform(fmaps_train)
+scaler = StandardScaler()
+scaler.fit(fmaps_train)
+fmaps_train = scaler.transform(fmaps_train)
 
 # Applying PCA
 pca = KernelPCA(n_components=args.n_components, kernel='poly', degree=4)
@@ -95,7 +95,7 @@ for f in fmaps_list:
 fmaps_test = np.asarray(fmaps_test)
 
 # Standardizing the data
-fmaps_test = zscore_params.transform(fmaps_test)
+fmaps_test = scaler.transform(fmaps_test)
 
 # Applying PCA
 fmaps_test = pca.transform(fmaps_test)
@@ -134,7 +134,7 @@ for p in range(0, len(fmaps_list), n_img_part):
 	fmaps_part = np.asarray(fmaps_part)
 
 	# Standardizing the data
-	fmaps_part = zscore_params.transform(fmaps_part)
+	fmaps_part = scaler.transform(fmaps_part)
 
 	# Applying PCA
 	fmaps_part = pca.transform(fmaps_part)
@@ -177,7 +177,7 @@ for p in range(0, len(fmaps_list), n_img_part):
 	fmaps_part = np.asarray(fmaps_part)
 
 	# Standardizing the data
-	fmaps_part = zscore_params.transform(fmaps_part)
+	fmaps_part = scaler.transform(fmaps_part)
 
 	# Applying PCA
 	fmaps_part = pca.transform(fmaps_part)
