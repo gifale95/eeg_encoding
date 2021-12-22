@@ -31,6 +31,7 @@ data_dir = os.path.join(args.project_dir, 'results', 'stats',
 # Loading the data
 data_dict = np.load(data_dir, allow_pickle=True).item()
 correlation = data_dict['correlation']
+noise_ceiling = data_dict['noise_ceiling']
 ci_lower = data_dict['ci_lower']
 ci_upper = data_dict['ci_upper']
 anova_summary = data_dict['anova_summary']
@@ -42,6 +43,7 @@ significance_ttest = data_dict['significance_ttest']
 correlation = np.mean(correlation, 0)
 corr_res_all_img_cond = np.mean(corr_res_all_img_cond, 0)
 corr_res_all_eeg_rep = np.mean(corr_res_all_eeg_rep, 0)
+noise_ceiling = np.mean(noise_ceiling)
 
 # Organizing the significance values for plotting
 sig_ttest = np.zeros(significance_ttest.shape)
@@ -68,7 +70,10 @@ matplotlib.rcParams['ytick.major.size'] = 5
 matplotlib.rcParams['axes.spines.right'] = False
 matplotlib.rcParams['axes.spines.top'] = False
 colors = [(31/255, 119/255, 180/255), (255/255, 127/255, 14/255)]
+color_noise_ceiling = (150/255, 150/255, 150/255)
 
+# Plotting the the correlation results of the encoding models built using
+# varying amounts of training image conditions and repetitions.
 xlabels = ['4,135', '8,270', '12,405', '16,540']
 x = np.arange(len(xlabels))
 width = 0.2
@@ -78,6 +83,12 @@ plt.bar(x - width*1.5, correlation[:,0], width=width)
 plt.bar(x - width*.5, correlation[:,1], width=width)
 plt.bar(x + width*.5, correlation[:,2], width=width)
 plt.bar(x + width*1.5, correlation[:,3], width=width)
+leg = ['1', '2', '3','4']
+plt.legend(leg, title='EEG repetitions', ncol=2, fontsize=30,
+	frameon=False, loc=2)
+# Plotting the noise ceiling
+plt.plot([x - width*2, x + width*2], [noise_ceiling, noise_ceiling], '--',
+	linewidth=4, color=color_noise_ceiling)
 # Plotting the confidence intervals
 ci_up = ci_upper - correlation
 ci_low = correlation - ci_lower
@@ -98,9 +109,6 @@ plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
 plt.yticks(ticks=np.arange(0,.51,0.1), labels=ylabels)
 plt.ylim(bottom=0, top=.5)
-leg = ['1', '2', '3','4']
-plt.legend(leg, title='EEG repetitions', ncol=2, fontsize=30,
-	frameon=False, loc=2)
 
 # Plotting the the correlation results of the encoding models built using
 # varying amounts of training data (25%, 50%, 75%, 100%), while using either all
@@ -121,7 +129,10 @@ plt.plot(train_data_amounts, corr_res_all_eeg_rep, color=colors[1],
 plt.fill_between(train_data_amounts, ci_upper_cond, ci_lower_cond,
 	color=colors[0], alpha=.2)
 plt.fill_between(train_data_amounts, ci_upper_rep, ci_lower_rep,
-	color=colors[1], alpha=.2)
+	color=colors[1], alpha=.2)#
+# Plotting the noise ceiling
+plt.plot([0, 100], [noise_ceiling, noise_ceiling], '--', linewidth=4,
+	color=color_noise_ceiling)
 # Plotting the significance markers
 plt.plot(train_data_amounts, sig_ttest, 'ok', markersize=10)
 # Other plot parameters
@@ -133,5 +144,5 @@ plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
 plt.yticks(ticks=np.arange(0,.51,0.1), labels=ylabels)
 plt.ylim(bottom=0, top=.5)
-leg = ['All image conditions', 'All EEG repetitions']
+leg = ['All image conditions', 'All EEG repetitions', 'Noise ceiling']
 plt.legend(leg, fontsize=30, loc=4, frameon=False)
