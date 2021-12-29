@@ -1,5 +1,6 @@
 """Extracting and saving the ResNet-50 feature maps of the training and test
 images, and of the ILSVRC-2012 validation and test images.
+
 Parameters
 ----------
 project_dir : str

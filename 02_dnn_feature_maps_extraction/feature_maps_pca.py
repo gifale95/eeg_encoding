@@ -37,7 +37,7 @@ for key, val in vars(args).items():
 # Applying PCA on the training images feature maps
 # =============================================================================
 # The standardization and PCA statistics computed on the training images will
-# then be also be applied on the test images feature maps and tp the ILSVRC-2012
+# then be also be applied to the test images feature maps and to the ILSVRC-2012
 # images feature maps.
 # Loading the feature maps
 fmaps_train = []
