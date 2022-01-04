@@ -84,7 +84,7 @@ plt.bar(x - width*.5, correlation[:,1], width=width)
 plt.bar(x + width*.5, correlation[:,2], width=width)
 plt.bar(x + width*1.5, correlation[:,3], width=width)
 leg = ['1', '2', '3','4']
-plt.legend(leg, title='EEG repetitions', ncol=2, fontsize=30,
+plt.legend(leg, title='Condition repetitions', ncol=2, fontsize=30,
 	frameon=False, loc=2)
 # Plotting the noise ceiling
 plt.plot([x - width*2, x + width*2], [noise_ceiling, noise_ceiling], '--',
@@ -144,5 +144,5 @@ plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
 plt.yticks(ticks=np.arange(0,.51,0.1), labels=ylabels)
 plt.ylim(bottom=0, top=.5)
-leg = ['All image conditions', 'All EEG repetitions', 'Noise ceiling']
+leg = ['All image conditions', 'All condition repetitions', 'Noise ceiling']
 plt.legend(leg, fontsize=30, loc=4, frameon=False)
