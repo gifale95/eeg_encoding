@@ -104,7 +104,6 @@ plt.errorbar(x + width*1.5, correlation[:,3], yerr=conf_int[:,:,3],
 # Other plot parameters
 plt.xlabel('Image conditions', fontsize=30)
 plt.xticks(ticks=x, labels=xlabels)
-#plt.xlim(left=min(times), right=max(times))
 plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
 plt.yticks(ticks=np.arange(0,.51,0.1), labels=ylabels)
