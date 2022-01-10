@@ -12,7 +12,7 @@ curl -O https://raw.githubusercontent.com/gifale95/eeg_encoding_model/main/envir
 conda env create -f environment.yml
 conda activate eeg_encoding
 ```
-Alternatively, after installing Anaconda you can download the [environment.yml][env_file]!!!!!!!!!!!!!!!!!!!!!!!!!!!!Edit file, open the terminal in the download directory and type:
+Alternatively, after installing Anaconda you can download the [environment.yml][env_file] file, open the terminal in the download directory and type:
 ```shell
 conda env create -f environment.yml
 conda activate eeg_encoding
