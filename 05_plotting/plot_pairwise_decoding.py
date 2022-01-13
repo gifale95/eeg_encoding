@@ -153,7 +153,7 @@ plt.ylabel('Decoding\naccuracy (%)', fontsize=30)
 ylabels = [50, 60, 70, 80, 90, 100]
 plt.yticks(ticks=np.arange(.5,1.01,.1), labels=ylabels)
 plt.ylim(bottom=.47, top=1)
-leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo', 'Noise ceiling']
+leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 
@@ -216,7 +216,7 @@ plt.ylabel('Decoding\naccuracy (%)', fontsize=30)
 ylabels = [50, 60, 70, 80, 90, 100]
 plt.yticks(ticks=np.arange(.5,1.01,.1), labels=ylabels)
 plt.ylim(bottom=.47, top=1)
-leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo', 'Noise ceiling']
+leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 

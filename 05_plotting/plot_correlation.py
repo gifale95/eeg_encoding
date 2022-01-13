@@ -152,7 +152,7 @@ plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
 plt.ylim(bottom=-.05, top=.8)
-leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo', 'Noise ceiling']
+leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 
@@ -215,7 +215,7 @@ plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
 plt.ylim(bottom=-.05, top=.8)
-leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo', 'Noise ceiling']
+leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
 
