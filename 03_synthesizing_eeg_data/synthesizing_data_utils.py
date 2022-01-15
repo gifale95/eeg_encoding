@@ -158,7 +158,8 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	print('\n>>> Saving the data <<<')
 	# Creating the saving directories
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'synthetic_eeg_data', 'dnn-'+args.dnn)
+		format(args.sub,'02'), 'synthetic_eeg_data', 'linearizing_encoding',
+		'dnn-'+args.dnn)
 	if not os.path.exists(save_dir):
 		os.makedirs(save_dir)
 	# Training data
