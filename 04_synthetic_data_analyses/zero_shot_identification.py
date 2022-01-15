@@ -71,7 +71,8 @@ bio_test = np.reshape(np.mean(bio_test, 1), (bio_test.shape[0],-1))
 # Loading the synthetic data and reshaping it to Samples × Features format
 # Training data
 train_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_training.npy')
+	'linearizing_encoding', 'synthetic_eeg_data', 'dnn-' + args.dnn,
+	'synthetic_eeg_training.npy')
 data = np.load(os.path.join(args.project_dir, train_dir),
 	allow_pickle=True).item()
 synt_train = np.reshape(data['synthetic_data_within'],
@@ -79,7 +80,8 @@ synt_train = np.reshape(data['synthetic_data_within'],
 
 # Test data
 test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_test.npy')
+	'linearizing_encoding', 'synthetic_eeg_data', 'dnn-' + args.dnn,
+	'synthetic_eeg_test.npy')
 data = np.load(os.path.join(args.project_dir, test_dir),
 	allow_pickle=True).item()
 synt_test = np.reshape(data['synthetic_data_within'],
@@ -87,7 +89,8 @@ synt_test = np.reshape(data['synthetic_data_within'],
 
 # ILSVRC-2012 validation data
 ilsvrc2012_val_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_ilsvrc2012_val.npy')
+	'linearizing_encoding', 'synthetic_eeg_data', 'dnn-' + args.dnn,
+	'synthetic_eeg_ilsvrc2012_val.npy')
 data = np.load(os.path.join(args.project_dir, ilsvrc2012_val_dir),
 	allow_pickle=True).item()
 synt_ilsvrc2012_val = np.reshape(data['synthetic_data_within'],
@@ -95,7 +98,7 @@ synt_ilsvrc2012_val = np.reshape(data['synthetic_data_within'],
 
 # ILSVRC-2012 test data
 ilsvrc2012_test_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'synthetic_eeg_data', 'dnn-' + args.dnn,
+	'linearizing_encoding', 'synthetic_eeg_data', 'dnn-' + args.dnn,
 	'synthetic_eeg_ilsvrc2012_test.npy')
 data = np.load(os.path.join(args.project_dir, ilsvrc2012_test_dir),
 	allow_pickle=True).item()
@@ -178,7 +181,8 @@ results_dict = {
 
 # Saving directory
 save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-	format(args.sub,'02'), 'zero_shot_identification', 'dnn-'+args.dnn)
+	format(args.sub,'02'), 'linearizing_encoding', 'zero_shot_identification',
+	'dnn-'+args.dnn)
 file_name = 'zero_shot_identification.npy'
 
 # Creating the directory if not existing and saving

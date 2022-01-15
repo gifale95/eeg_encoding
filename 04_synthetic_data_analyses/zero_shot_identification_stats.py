@@ -52,7 +52,7 @@ np.random.seed(seed=20200220)
 zero_shot_identification = []
 for s in range(args.n_tot_sub):
 	data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
-		'zero_shot_identification', 'dnn-'+args.dnn,
+		'linearizing_encoding', 'zero_shot_identification', 'dnn-'+args.dnn,
 		'zero_shot_identification.npy')
 	results_dict = np.load(os.path.join(args.project_dir, data_dir),
 		allow_pickle=True).item()
@@ -172,8 +172,8 @@ stats_dict = {
 
 # Saving directory
 save_dir = os.path.join(args.project_dir, 'results', 'stats',
-	'zero_shot_identification', 'dnn-'+args.dnn, 'rank_correct-'+
-	format(args.rank_correct,'02'))
+	'linearizing_encoding', 'zero_shot_identification', 'dnn-'+args.dnn,
+	'rank_correct-'+format(args.rank_correct,'02'))
 file_name = 'zero_shot_identification_stats.npy'
 
 # Creating the directory if not existing and saving
