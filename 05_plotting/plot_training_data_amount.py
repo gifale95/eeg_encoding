@@ -26,7 +26,7 @@ args = parser.parse_args()
 # Loading the correlation results and stats
 # =============================================================================
 data_dir = os.path.join(args.project_dir, 'results', 'stats',
-	'training_data_amount_analysis',
+	'linearizing_encoding', 'training_data_amount_analysis',
 	'training_data_amount_analysis_stats.npy')
 # Loading the data
 data_dict = np.load(data_dir, allow_pickle=True).item()

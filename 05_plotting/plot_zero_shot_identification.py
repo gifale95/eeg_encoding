@@ -34,8 +34,9 @@ args = parser.parse_args()
 dnns = ['alexnet', 'resnet50', 'cornet_s', 'moco']
 for d, dnn in enumerate(dnns):
 	data_dir = os.path.join(args.project_dir, 'results', 'stats',
-		'zero_shot_identification', 'dnn-'+dnn, 'rank_correct-'+
-		format(args.rank_correct,'02'), 'zero_shot_identification_stats.npy')
+		'linearizing_encoding', 'zero_shot_identification', 'dnn-'+dnn,
+		'rank_correct-'+format(args.rank_correct,'02'),
+		'zero_shot_identification_stats.npy')
 	# Loading the data
 	data_dict = np.load(data_dir, allow_pickle=True).item()
 	if d == 0:
