@@ -59,10 +59,9 @@ for s in range(args.n_tot_sub):
 			for d in dnns:
 				corr_res = []
 				data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
-					'linearizing_encoding', 'training_data_amount_analysis',
-					'dnn-'+d, 'training_data_amount_n_img_cond-'+
-					format(img_cond,'06')+'_n_eeg_rep-'+format(eeg_rep,'02')+
-					'.npy')
+					'training_data_amount_analysis', 'dnn-'+d,
+					'training_data_amount_n_img_cond-'+format(img_cond,'06')+
+					'_n_eeg_rep-'+format(eeg_rep,'02')+'.npy')
 				corr_res.append(np.load(os.path.join(args.project_dir,
 					data_dir), allow_pickle=True).item()['correlation_results'])
 				noise_ceil.append(np.load(os.path.join(args.project_dir,
@@ -152,7 +151,7 @@ stats_dict = {
 
 # Saving directory
 save_dir = os.path.join(args.project_dir, 'results', 'stats',
-	'linearizing_encoding', 'training_data_amount_analysis')
+	'training_data_amount_analysis')
 file_name = 'training_data_amount_analysis_stats.npy'
 
 # Creating the directory if not existing and saving

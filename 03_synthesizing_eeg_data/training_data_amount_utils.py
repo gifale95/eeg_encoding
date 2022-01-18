@@ -201,8 +201,7 @@ def save_data(args, correlation_results, noise_ceiling):
 	### Saving the results ###
 	# Save directories
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'linearizing_encoding',
-		'training_data_amount_analysis', 'dnn-'+args.dnn)
+		format(args.sub,'02'), 'training_data_amount_analysis', 'dnn-'+args.dnn)
 	file_name = 'training_data_amount_n_img_cond-'+\
 		format(args.n_img_cond,'06')+'_n_eeg_rep-'+format(args.n_eeg_rep,'02')
 	# Creating the directory if not existing and saving the data
