@@ -191,7 +191,7 @@ data_dict_test = {
 }
 
 save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-	format(args.sub,'02'), 'end_to_end_encoding', 'synthetic_eeg_data',
+	format(args.sub,'02'), 'synthetic_eeg_data', 'end_to_end_encoding',
 	'dnn-'+args.dnn)
 file_name_test = 'synthetic_eeg_test'
 
