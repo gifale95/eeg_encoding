@@ -19,9 +19,9 @@ project_dir : str
 """
 
 import argparse
-from synthesizing_data_utils import load_dnn_data
-from synthesizing_data_utils import load_eeg_data
-from synthesizing_data_utils import perform_regression
+from linearizing_encoding_utils import load_dnn_data
+from linearizing_encoding_utils import load_eeg_data
+from linearizing_encoding_utils import perform_regression
 
 
 # =============================================================================
