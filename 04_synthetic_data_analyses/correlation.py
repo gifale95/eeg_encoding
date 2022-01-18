@@ -32,7 +32,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+#parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Correlation <<<')
@@ -60,12 +60,22 @@ del bio_data
 # =============================================================================
 # Loading the synthetic EEG test data
 # =============================================================================
+# Linearizing encoding synthetic data
 data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_test.npy')
+	'synthetic_eeg_data', 'linearizing_encoding', 'dnn-' + args.dnn,
+	'synthetic_eeg_test.npy')
 synt_data = np.load(os.path.join(args.project_dir, data_dir),
 	allow_pickle=True).item()
 synt_test_within = synt_data['synthetic_data_within']
 synt_test_between = synt_data['synthetic_data_between']
+
+# End-to-end encoding synthetic data
+data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
+	'synthetic_eeg_data', 'end_to_end_encoding', 'dnn-' + args.dnn,
+	'synthetic_eeg_test.npy')
+synt_data = np.load(os.path.join(args.project_dir, data_dir),
+	allow_pickle=True).item()
+synt_test_end = synt_data['synthetic_data']
 del synt_data
 
 
@@ -78,7 +88,13 @@ correlation_within = np.zeros((args.n_iter,bio_test.shape[2],
 	bio_test.shape[3]))
 correlation_between = np.zeros((args.n_iter,bio_test.shape[2],
 	bio_test.shape[3]))
-noise_ceiling = np.zeros((args.n_iter,bio_test.shape[2], bio_test.shape[3]))
+correlation_end = np.zeros((args.n_iter,bio_test.shape[2],
+	bio_test.shape[3]))
+noise_ceiling_low = np.zeros((args.n_iter,bio_test.shape[2], bio_test.shape[3]))
+noise_ceiling_up = np.zeros((args.n_iter,bio_test.shape[2], bio_test.shape[3]))
+
+# Averaging across all the biological data repetitions
+bio_data_avg_all = np.mean(bio_test, 1)
 
 # Loop over iterations
 for i in tqdm(range(args.n_iter)):
@@ -99,13 +115,19 @@ for i in tqdm(range(args.n_iter)):
 				bio_data_avg_half_1[:,c,t])[0]
 			correlation_between[i,c,t] = corr(synt_test_between[:,c,t],
 				bio_data_avg_half_1[:,c,t])[0]
-			noise_ceiling[i,c,t] = corr(bio_data_avg_half_2[:,c,t],
+			correlation_end[i,c,t] = corr(synt_test_end[:,c,t],
+				bio_data_avg_half_1[:,c,t])[0]
+			noise_ceiling_low[i,c,t] = corr(bio_data_avg_half_2[:,c,t],
+				bio_data_avg_half_1[:,c,t])[0]
+			noise_ceiling_up[i,c,t] = corr(bio_data_avg_all[:,c,t],
 				bio_data_avg_half_1[:,c,t])[0]
 
 # Averaging the results across iterations
 correlation_within = np.mean(correlation_within, 0)
 correlation_between = np.mean(correlation_between, 0)
-noise_ceiling = np.mean(noise_ceiling, 0)
+correlation_end = np.mean(correlation_end, 0)
+noise_ceiling_low = np.mean(noise_ceiling_low, 0)
+noise_ceiling_up = np.mean(noise_ceiling_up, 0)
 
 
 # =============================================================================
@@ -115,7 +137,9 @@ noise_ceiling = np.mean(noise_ceiling, 0)
 results_dict = {
 	'correlation_within' : correlation_within,
 	'correlation_between' : correlation_between,
-	'noise_ceiling': noise_ceiling,
+	'correlation_end' : correlation_end,
+	'noise_ceiling_low': noise_ceiling_low,
+	'noise_ceiling_up': noise_ceiling_up,
 	'times': times,
 	'ch_names': ch_names
 }
