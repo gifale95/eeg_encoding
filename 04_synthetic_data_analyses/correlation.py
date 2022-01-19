@@ -96,7 +96,8 @@ correlation_end = np.zeros((args.n_iter,bio_test.shape[2],
 noise_ceiling_low = np.zeros((args.n_iter,bio_test.shape[2], bio_test.shape[3]))
 noise_ceiling_up = np.zeros((args.n_iter,bio_test.shape[2], bio_test.shape[3]))
 
-# Averaging across all the biological data repetitions
+# Averaging across all the biological data repetitions for the noise ceiling
+# upper bound calculation
 bio_data_avg_all = np.mean(bio_test, 1)
 
 # Loop over iterations
@@ -107,7 +108,7 @@ for i in tqdm(range(args.n_iter)):
 	# Averaging across one half of the biological data repetitions
 	bio_data_avg_half_1 = np.mean(np.delete(bio_test, shuffle_idx, 1), 1)
 	# Averaging across the other half of the biological data repetitions for the
-	# noise ceiling calculation
+	# noise ceiling lower bound calculation
 	bio_data_avg_half_2 = np.mean(bio_test[:,shuffle_idx,:,:], 1)
 
 	# Loop over EEG time points and channels
