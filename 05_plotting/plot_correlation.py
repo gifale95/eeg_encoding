@@ -349,7 +349,7 @@ plt.xlabel('Time (s)', fontsize=30)
 xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
 plt.xticks(ticks=[-.2, 0, .2, .4, .6, max(times)], labels=xlabels)
 plt.xlim(left=min(times), right=max(times))
-plt.ylabel('$\Delta$ Pearson\'s $r$', fontsize=30)
+plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
 plt.ylim(bottom=-.1, top=1)
