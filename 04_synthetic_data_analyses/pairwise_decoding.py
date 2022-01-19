@@ -62,17 +62,30 @@ del bio_data
 # =============================================================================
 # Loading the synthetic EEG test data
 # =============================================================================
+# Linearizing encoding synthetic data
 data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'synthetic_eeg_data', 'dnn-' + args.dnn, 'synthetic_eeg_test.npy')
+	'synthetic_eeg_data', 'linearizing_encoding', 'dnn-' + args.dnn,
+	'synthetic_eeg_test.npy')
 synt_data = np.load(os.path.join(args.project_dir, data_dir),
 	allow_pickle=True).item()
-synt_test_within = synt_data['synthetic_data_within']
-synt_test_between = synt_data['synthetic_data_between']
+synt_test_within = synt_data['synthetic_within_data']
+synt_test_between = synt_data['synthetic_between_data']
+
+# End-to-end encoding synthetic data
+if args.dnn == 'alexnet':
+	data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
+		'synthetic_eeg_data', 'end_to_end_encoding', 'dnn-' + args.dnn,
+		'synthetic_eeg_test.npy')
+	synt_data = np.load(os.path.join(args.project_dir, data_dir),
+		allow_pickle=True).item()
+	synt_test_end = synt_data['synthetic_data']
+else:
+	synt_test_end = np.zeros(synt_test_within.shape)
 del synt_data
 
 
 # =============================================================================
-# Computing the pairwise decoding and noise ceiling
+# Computing the pairwise decoding and noise ceilings
 # =============================================================================
 # Results and noise ceiling matrices of shape:
 # (Iterations × Image conditions × Image conditions × EEG time points)
@@ -80,8 +93,16 @@ pair_dec_within = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
 	bio_test.shape[3]))
 pair_dec_between = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
 	bio_test.shape[3]))
-noise_ceiling = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
+pair_dec_end = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
 	bio_test.shape[3]))
+noise_ceiling_low = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
+	bio_test.shape[3]))
+noise_ceiling_up = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
+	bio_test.shape[3]))
+
+# Averaging across all the biological data repetitions for the noise ceiling
+# upper bound calculation
+bio_data_avg_all = np.mean(bio_test, 1)
 
 # Loop over iterations
 for i in tqdm(range(args.n_iter)):
@@ -98,7 +119,7 @@ for i in tqdm(range(args.n_iter)):
 		1)
 	del bio_data_provv
 	# Averaging across the other half of the biological data repetitions for the
-	# noise ceiling calculation
+	# noise ceiling lower bound calculation
 	bio_data_avg_half_2 = np.mean(bio_test[:,shuffle_idx,:,:], 1)
 
 	# Classifier target vectors
@@ -120,23 +141,35 @@ for i in tqdm(range(args.n_iter)):
 					X_test_synt_data_between = np.append(np.expand_dims(
 						synt_test_between[i1,:,t], 0), np.expand_dims(
 						synt_test_between[i2,:,t], 0), 0)
+					X_test_synt_data_end = np.append(np.expand_dims(
+						synt_test_end[i1,:,t], 0), np.expand_dims(
+						synt_test_end[i2,:,t], 0), 0)
 					X_test_avg_half = np.append(np.expand_dims(
 						bio_data_avg_half_2[i1,:,t], 0), np.expand_dims(
 						bio_data_avg_half_2[i2,:,t], 0), 0)
+					X_test_avg_all = np.append(np.expand_dims(
+						bio_data_avg_all[i1,:,t], 0), np.expand_dims(
+						bio_data_avg_all[i2,:,t], 0), 0)
 					# Training the classifier
 					dec_svm = SVC(kernel="linear")
 					dec_svm.fit(X_train, y_train)
 					# Testing the classifier
 					y_pred_within = dec_svm.predict(X_test_synt_data_within)
 					y_pred_between = dec_svm.predict(X_test_synt_data_between)
-					y_pred_noise_ceiling = dec_svm.predict(X_test_avg_half)
+					y_pred_end = dec_svm.predict(X_test_synt_data_end)
+					y_pred_noise_ceiling_low = dec_svm.predict(X_test_avg_half)
+					y_pred_noise_ceiling_up = dec_svm.predict(X_test_avg_all)
 					# Storing the accuracy
-					pair_dec_within[i,i2,i1,t] = sum(y_pred_within == y_test) /\
-						len(y_test)
-					pair_dec_between[i,i2,i1,t] = sum(y_pred_between == y_test) /\
-						len(y_test)
-					noise_ceiling[i,i2,i1,t] = sum(y_pred_noise_ceiling == y_test) /\
-						len(y_test)
+					pair_dec_within[i,i2,i1,t] = sum(
+						y_pred_within == y_test) / len(y_test)
+					pair_dec_between[i,i2,i1,t] = sum(
+						y_pred_between == y_test) / len(y_test)
+					pair_dec_end[i,i2,i1,t] = sum(
+						y_pred_end == y_test) / len(y_test)
+					noise_ceiling_low[i,i2,i1,t] = sum(
+						y_pred_noise_ceiling_low == y_test) / len(y_test)
+					noise_ceiling_up[i,i2,i1,t] = sum(
+						y_pred_noise_ceiling_up == y_test) / len(y_test)
 
 
 # =============================================================================
@@ -145,16 +178,22 @@ for i in tqdm(range(args.n_iter)):
 # Averaging across iterations
 pair_dec_within = np.mean(pair_dec_within, 0)
 pair_dec_between = np.mean(pair_dec_between, 0)
-noise_ceiling = np.mean(noise_ceiling, 0)
+pair_dec_end = np.mean(pair_dec_end, 0)
+noise_ceiling_low = np.mean(noise_ceiling_low, 0)
+noise_ceiling_up = np.mean(noise_ceiling_up, 0)
 
 # Averaging across pairwise comparisons
 idx = np.tril_indices(pair_dec_within.shape[0], -1)
 pair_dec_within = pair_dec_within[idx]
 pair_dec_between = pair_dec_between[idx]
-noise_ceiling = noise_ceiling[idx]
+pair_dec_end = pair_dec_end[idx]
+noise_ceiling_low = noise_ceiling_low[idx]
+noise_ceiling_up = noise_ceiling_up[idx]
 pair_dec_within = np.mean(pair_dec_within, axis=0)
 pair_dec_between = np.mean(pair_dec_between, axis=0)
-noise_ceiling = np.mean(noise_ceiling, axis=0)
+pair_dec_end = np.mean(pair_dec_end, axis=0)
+noise_ceiling_low = np.mean(noise_ceiling_low, axis=0)
+noise_ceiling_up = np.mean(noise_ceiling_up, axis=0)
 
 
 # =============================================================================
@@ -164,7 +203,9 @@ noise_ceiling = np.mean(noise_ceiling, axis=0)
 results_dict = {
 	'pairwise_decoding_within': pair_dec_within,
 	'pairwise_decoding_between': pair_dec_between,
-	'noise_ceiling': noise_ceiling,
+	'pairwise_decoding_end': pair_dec_end,
+	'noise_ceiling_low': noise_ceiling_low,
+	'noise_ceiling_up': noise_ceiling_up,
 	'times': times,
 	'ch_names': ch_names
 }
