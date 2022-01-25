@@ -115,15 +115,15 @@ for d in range(len(dnns)):
 		if significance_within[d,t] == False:
 			sig_within[d,t] = -100
 		else:
-			sig_within[d,t] = 0.74 + (abs(d+1-len(dnns)) / 100 * 1.5)
+			sig_within[d,t] = 0.93 + (abs(d+1-len(dnns)) / 100 * 1.5)
 		if significance_between[d,t] == False:
 			sig_between[d,t] = -100
 		else:
-			sig_between[d,t] = 0.74 + (abs(d+1-len(dnns)) / 100 * 1.5)
+			sig_between[d,t] = 0.93 + (abs(d+1-len(dnns)) / 100 * 1.5)
 		if significance_end[d,t] == False:
 			sig_end[d,t] = -100
 		else:
-			sig_end[d,t] = 0.77 + (0 / 100 * 1.5)
+			sig_end[d,t] = 0.97 + (0 / 100 * 1.5)
 		if significance_diff_noise_ceiling[d,t] == False:
 			sig_diff_noise_ceiling[d,t] = -100
 		else:
@@ -156,8 +156,8 @@ for d in range(len(dnns)):
 	plt.plot(times, np.mean(correlation_within[d], 0), color=colors[d],
 		linewidth=4)
 # Plotting the noise ceiling
-plt.plot(times, np.mean(noise_ceiling_low, 0), '--', color=color_noise_ceiling,
-	linewidth=4)
+plt.fill_between(times, np.mean(noise_ceiling_low, 0), np.mean(
+	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.5)
 for d in range(len(dnns)):
 	# Plotting the confidence intervals
 	plt.fill_between(times, ci_upper_within[d], ci_lower_within[d],
@@ -172,9 +172,9 @@ xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
 plt.xticks(ticks=[-.2, 0, .2, .4, .6, max(times)], labels=xlabels)
 plt.xlim(left=min(times), right=max(times))
 plt.ylabel('Pearson\'s $r$', fontsize=30)
-ylabels = [0, 0.2, 0.4, 0.6, 0.8]
-plt.yticks(ticks=np.arange(0,.81,0.2), labels=ylabels)
-plt.ylim(bottom=-.05, top=.8)
+ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
+plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
+plt.ylim(bottom=-.05, top=1)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
@@ -186,8 +186,8 @@ fig, axs = plt.subplots(3, 4, 'all', 'all')
 axs = np.reshape(axs, (-1))
 for s in range(args.n_tot_sub):
 	# Plotting the noise ceiling
-	axs[s].plot(times, noise_ceiling_low[s], '--', color=color_noise_ceiling,
-		linewidth=3)
+	axs[s].fill_between(times, noise_ceiling_low[s], noise_ceiling_up[s],
+		color=color_noise_ceiling, alpha=.5)
 	for d in range(len(dnns)):
 		# Plotting the results
 		axs[s].plot(times, correlation_within[d,s], color=colors[d],
@@ -201,9 +201,9 @@ for s in range(args.n_tot_sub):
 		plt.xticks(ticks=[0, .4, max(times)], labels=[0, 0.4, 0.8])
 	if s in [0, 4, 8]:
 		axs[s].set_ylabel('Pearson\'s $r$', fontsize=30)
-		plt.yticks(ticks=np.arange(0, .81, 0.4), labels=[0, 0.4, 0.8])
+		plt.yticks(ticks=np.arange(0, 1.01, 0.5), labels=[0, 0.5, 1])
 	axs[s].set_xlim(left=min(times), right=max(times))
-	axs[s].set_ylim(bottom=-.05, top=.8)
+	axs[s].set_ylim(bottom=-.05, top=1)
 	tit = 'Participant ' + str(s+1)
 	axs[s].set_title(tit, fontsize=30)
 axs[10].set_xlabel('Time (s)', fontsize=30)
@@ -219,8 +219,8 @@ for d in range(len(dnns)):
 	plt.plot(times, np.mean(correlation_between[d], 0), color=colors[d],
 		linewidth=4)
 # Plotting the noise ceiling
-plt.plot(times, np.mean(noise_ceiling_low, 0), '--', color=color_noise_ceiling,
-	linewidth=4)
+plt.fill_between(times, np.mean(noise_ceiling_low, 0), np.mean(
+	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.5)
 for d in range(len(dnns)):
 	# Plotting the confidence intervals
 	plt.fill_between(times, ci_upper_between[d], ci_lower_between[d],
@@ -237,7 +237,7 @@ plt.xlim(left=min(times), right=max(times))
 plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
-plt.ylim(bottom=-.05, top=.8)
+plt.ylim(bottom=-.05, top=1)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
@@ -253,8 +253,8 @@ for s in range(args.n_tot_sub):
 		axs[s].plot(times, correlation_between[d,s], color=colors[d],
 			linewidth=3)
 	# Plotting the noise ceiling
-	axs[s].plot(times, noise_ceiling_low[s], '--', color=color_noise_ceiling,
-		linewidth=3)
+	axs[s].fill_between(times, noise_ceiling_low[s], noise_ceiling_up[s],
+		color=color_noise_ceiling, alpha=.5)
 	# Plotting chance and stimulus onset dashed lines
 	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
 			linewidth=3)
@@ -264,9 +264,9 @@ for s in range(args.n_tot_sub):
 		plt.xticks(ticks=[0, .4, max(times)], labels=[0, 0.4, 0.8])
 	if s in [0, 4, 8]:
 		axs[s].set_ylabel('Pearson\'s $r$', fontsize=30)
-		plt.yticks(ticks=np.arange(0, .81, 0.4), labels=[0, 0.4, 0.8])
+		plt.yticks(ticks=np.arange(0, 1.01, 0.5), labels=[0, 0.5, 1])
 	axs[s].set_xlim(left=min(times), right=max(times))
-	axs[s].set_ylim(bottom=-.05, top=.8)
+	axs[s].set_ylim(bottom=-.05, top=1)
 	tit = 'Participant ' + str(s+1)
 	axs[s].set_title(tit, fontsize=30)
 axs[10].set_xlabel('Time (s)', fontsize=30)
@@ -280,8 +280,8 @@ plt.figure(figsize=(9,6))
 # Plotting the results
 plt.plot(times, np.mean(correlation_end[0], 0), color=colors[0], linewidth=4)
 # Plotting the noise ceiling
-plt.plot(times, np.mean(noise_ceiling_low, 0), '--', color=color_noise_ceiling,
-	linewidth=4)
+plt.fill_between(times, np.mean(noise_ceiling_low, 0), np.mean(
+	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.5)
 # Plotting the confidence intervals
 plt.fill_between(times, ci_upper_end[0], ci_lower_end[0], color=colors[0],
 	alpha=.2)
@@ -297,7 +297,7 @@ plt.xlim(left=min(times), right=max(times))
 plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
-plt.ylim(bottom=-.05, top=.8)
+plt.ylim(bottom=-.05, top=1)
 
 
 # =============================================================================
@@ -308,63 +308,6 @@ axs = np.reshape(axs, (-1))
 for s in range(args.n_tot_sub):
 	# Plotting the results
 	axs[s].plot(times, correlation_end[0,s], color=colors[0], linewidth=3)
-	# Plotting the noise ceiling
-	axs[s].plot(times, noise_ceiling_low[s], '--', color=color_noise_ceiling,
-		linewidth=3)
-	# Plotting chance and stimulus onset dashed lines
-	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
-			linewidth=3)
-	# Other plot parameters
-	if s in [8, 9]:
-		axs[s].set_xlabel('Time (s)', fontsize=30)
-		plt.xticks(ticks=[0, .4, max(times)], labels=[0, 0.4, 0.8])
-	if s in [0, 4, 8]:
-		axs[s].set_ylabel('Pearson\'s $r$', fontsize=30)
-		plt.yticks(ticks=np.arange(0, .81, 0.4), labels=[0, 0.4, 0.8])
-	axs[s].set_xlim(left=min(times), right=max(times))
-	axs[s].set_ylim(bottom=-.05, top=.8)
-	tit = 'Participant ' + str(s+1)
-	axs[s].set_title(tit, fontsize=30)
-axs[10].set_xlabel('Time (s)', fontsize=30)
-axs[11].set_xlabel('Time (s)', fontsize=30)
-
-
-# =============================================================================
-# Plotting the noise ceiling averaged across subjects
-# =============================================================================
-plt.figure(figsize=(9,6))
-# Plotting the results
-for d in range(len(dnns)):
-	plt.plot(times, np.mean(correlation_within[d], 0), color=colors[d],
-		linewidth=4)
-# Plotting the noise ceiling
-plt.fill_between(times, np.mean(noise_ceiling_low, 0),
-	np.mean(noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.5)
-for d in range(len(dnns)):
-	# Plotting the confidence intervals
-	plt.fill_between(times, ci_upper_within[d], ci_lower_within[d],
-		color=colors[d], alpha=.2)
-# Plotting chance and stimulus onset dashed lines
-plt.plot([-10, 10], [0, 0], 'k--', [0, 0], [10, -10], 'k--', linewidth=4)
-# Other plot parameters
-plt.xlabel('Time (s)', fontsize=30)
-xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
-plt.xticks(ticks=[-.2, 0, .2, .4, .6, max(times)], labels=xlabels)
-plt.xlim(left=min(times), right=max(times))
-plt.ylabel('Pearson\'s $r$', fontsize=30)
-ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
-plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
-plt.ylim(bottom=-.1, top=1)
-leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
-plt.legend(leg, fontsize=30, ncol=2, frameon=False)
-
-
-# =============================================================================
-# Plotting the noise ceiling for single subjects
-# =============================================================================
-fig, axs = plt.subplots(3, 4, 'all', 'all')
-axs = np.reshape(axs, (-1))
-for s in range(args.n_tot_sub):
 	# Plotting the noise ceiling
 	axs[s].fill_between(times, noise_ceiling_low[s], noise_ceiling_up[s],
 		color=color_noise_ceiling, alpha=.5)
