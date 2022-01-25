@@ -61,7 +61,8 @@ scaler.fit(fmaps_train)
 fmaps_train = scaler.transform(fmaps_train)
 
 # Applying PCA
-pca = KernelPCA(n_components=args.n_components, kernel='poly', degree=4)
+pca = KernelPCA(n_components=args.n_components, kernel='poly', degree=4,
+	random_state=20200220)
 pca.fit(fmaps_train)
 fmaps_train = pca.transform(fmaps_train)
 
