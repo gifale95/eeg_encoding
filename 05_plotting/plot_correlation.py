@@ -157,7 +157,7 @@ for d in range(len(dnns)):
 		linewidth=4)
 # Plotting the noise ceiling
 plt.fill_between(times, np.mean(noise_ceiling_low, 0), np.mean(
-	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.5)
+	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.3)
 for d in range(len(dnns)):
 	# Plotting the confidence intervals
 	plt.fill_between(times, ci_upper_within[d], ci_lower_within[d],
@@ -187,7 +187,7 @@ axs = np.reshape(axs, (-1))
 for s in range(args.n_tot_sub):
 	# Plotting the noise ceiling
 	axs[s].fill_between(times, noise_ceiling_low[s], noise_ceiling_up[s],
-		color=color_noise_ceiling, alpha=.5)
+		color=color_noise_ceiling, alpha=.3)
 	for d in range(len(dnns)):
 		# Plotting the results
 		axs[s].plot(times, correlation_within[d,s], color=colors[d],
@@ -220,7 +220,7 @@ for d in range(len(dnns)):
 		linewidth=4)
 # Plotting the noise ceiling
 plt.fill_between(times, np.mean(noise_ceiling_low, 0), np.mean(
-	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.5)
+	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.3)
 for d in range(len(dnns)):
 	# Plotting the confidence intervals
 	plt.fill_between(times, ci_upper_between[d], ci_lower_between[d],
@@ -254,7 +254,7 @@ for s in range(args.n_tot_sub):
 			linewidth=3)
 	# Plotting the noise ceiling
 	axs[s].fill_between(times, noise_ceiling_low[s], noise_ceiling_up[s],
-		color=color_noise_ceiling, alpha=.5)
+		color=color_noise_ceiling, alpha=.3)
 	# Plotting chance and stimulus onset dashed lines
 	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
 			linewidth=3)
@@ -281,7 +281,7 @@ plt.figure(figsize=(9,6))
 plt.plot(times, np.mean(correlation_end[0], 0), color=colors[0], linewidth=4)
 # Plotting the noise ceiling
 plt.fill_between(times, np.mean(noise_ceiling_low, 0), np.mean(
-	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.5)
+	noise_ceiling_up, 0), color=color_noise_ceiling, alpha=.3)
 # Plotting the confidence intervals
 plt.fill_between(times, ci_upper_end[0], ci_lower_end[0], color=colors[0],
 	alpha=.2)
@@ -310,7 +310,7 @@ for s in range(args.n_tot_sub):
 	axs[s].plot(times, correlation_end[0,s], color=colors[0], linewidth=3)
 	# Plotting the noise ceiling
 	axs[s].fill_between(times, noise_ceiling_low[s], noise_ceiling_up[s],
-		color=color_noise_ceiling, alpha=.5)
+		color=color_noise_ceiling, alpha=.3)
 	# Plotting chance and stimulus onset dashed lines
 	axs[s].plot([-10, 10], [0, 0], 'k--', [0, 0], [100, -100], 'k--',
 			linewidth=3)
