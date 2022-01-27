@@ -115,15 +115,15 @@ for d in range(len(dnns)):
 		if significance_within[d,t] == False:
 			sig_within[d,t] = -100
 		else:
-			sig_within[d,t] = 0.93 + (abs(d+1-len(dnns)) / 100 * 1.5)
+			sig_within[d,t] = -.085 + (abs(d+1-len(dnns)) / 100 * 1.75)
 		if significance_between[d,t] == False:
 			sig_between[d,t] = -100
 		else:
-			sig_between[d,t] = 0.93 + (abs(d+1-len(dnns)) / 100 * 1.5)
+			sig_between[d,t] = -.085 + (abs(d+1-len(dnns)) / 100 * 1.75)
 		if significance_end[d,t] == False:
 			sig_end[d,t] = -100
 		else:
-			sig_end[d,t] = 0.97
+			sig_end[d,t] = -.03
 		if significance_diff_noise_ceiling[d,t] == False:
 			sig_diff_noise_ceiling[d,t] = -100
 		else:
@@ -174,7 +174,7 @@ plt.xlim(left=min(times), right=max(times))
 plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
-plt.ylim(bottom=-.05, top=1)
+plt.ylim(bottom=-.116, top=1)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
@@ -237,7 +237,7 @@ plt.xlim(left=min(times), right=max(times))
 plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
-plt.ylim(bottom=-.05, top=1)
+plt.ylim(bottom=-.116, top=1)
 leg = ['AlexNet', 'ResNet-50', 'CORnet-S', 'MoCo']
 plt.legend(leg, fontsize=30, ncol=2, frameon=False)
 
@@ -297,7 +297,7 @@ plt.xlim(left=min(times), right=max(times))
 plt.ylabel('Pearson\'s $r$', fontsize=30)
 ylabels = [0, 0.2, 0.4, 0.6, 0.8, 1]
 plt.yticks(ticks=np.arange(0,1.01,0.2), labels=ylabels)
-plt.ylim(bottom=-.05, top=1)
+plt.ylim(bottom=-.06, top=1)
 
 
 # =============================================================================
