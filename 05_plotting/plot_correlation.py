@@ -123,7 +123,7 @@ for d in range(len(dnns)):
 		if significance_end[d,t] == False:
 			sig_end[d,t] = -100
 		else:
-			sig_end[d,t] = 0.97 + (0 / 100 * 1.5)
+			sig_end[d,t] = 0.97
 		if significance_diff_noise_ceiling[d,t] == False:
 			sig_diff_noise_ceiling[d,t] = -100
 		else:
