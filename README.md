@@ -1,5 +1,5 @@
 # Building and evaluating linearizing encoding models of EEG visual responses using DNNs
-Here we provide the code to reproduce the results of the paper:</br>
+Here we provide the code to reproduce the results of our preprint:</br>
 ["Paper title"][paper_link].!!!!!!!!!!!!!!!!!!!!!!!!! Edit</br>
 Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 </br>
@@ -39,7 +39,7 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 
 
 ## Cite
-If you use our code, partly or as it is, please cite the paper:
+If you use our code, partly or as it is, please cite our preprint:
 
 ```
 Paper citation !!!!!!!!!!!!!!!!!!!! Edit
