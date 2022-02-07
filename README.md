@@ -48,5 +48,5 @@ Paper citation !!!!!!!!!!!!!!!!!!!! Edit
 [paper_link]: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 [conda]: https://www.anaconda.com/
 [env_file]: https://github.com/gifale95/eeg_encoding_model/blob/main/environment.yml
-[osf]: https://osf.io/3jk45/s
+[osf]: https://osf.io/3jk45/
 [imagenet]: https://www.image-net.org/download.php
