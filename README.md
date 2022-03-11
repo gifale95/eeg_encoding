@@ -1,6 +1,6 @@
 # Building and evaluating linearizing encoding models of EEG visual responses using DNNs
 Here we provide the code to reproduce the results of our paper preprint:</br>
-["A large and rich EEG dataset for modeling human visual object recognition"][paper_link]</br>
+["A large and rich EEG dataset for modeling human visual object recognition"][paper_link].</br>
 Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 </br>
 
