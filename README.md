@@ -42,7 +42,7 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 If you use our code, partly or as it is, please cite our paper preprint:
 
 ```
-
+Gifford AT, Dwivedi K, Roig G, Cichy RM. 2022. A large and rich EEG dataset for modeling human visual object recognition. bioRxiv. DOI: https://doi.org/10.1101/2022.03.15.484473
 ```
 
 [paper_link]: https://doi.org/10.1101/2022.03.15.484473
