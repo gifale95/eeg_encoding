@@ -101,12 +101,8 @@ fmaps_test = scaler.transform(fmaps_test)
 # Applying PCA
 fmaps_test = pca.transform(fmaps_test)
 
-# Creating the directory if not existing and saving
-save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
-	'pca_feature_maps', args.dnn)
+# Saving
 file_name = 'pca_feature_maps_test'
-if os.path.isdir(save_dir) == False:
-	os.makedirs(save_dir)
 np.save(os.path.join(save_dir, file_name), fmaps_test)
 del fmaps_test
 
@@ -144,12 +140,8 @@ for p in range(0, len(fmaps_list), n_img_part):
 	else:
 		fmaps_ilsvrc2012_val = np.append(fmaps_ilsvrc2012_val, fmaps_part, 0)
 
-# Creating the directory if not existing and saving
-save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
-	'pca_feature_maps', args.dnn)
+# Saving
 file_name = 'pca_feature_maps_ilsvrc2012_val'
-if os.path.isdir(save_dir) == False:
-	os.makedirs(save_dir)
 np.save(os.path.join(save_dir, file_name), fmaps_ilsvrc2012_val)
 del fmaps_ilsvrc2012_val
 
@@ -187,10 +179,6 @@ for p in range(0, len(fmaps_list), n_img_part):
 	else:
 		fmaps_ilsvrc2012_test = np.append(fmaps_ilsvrc2012_test, fmaps_part, 0)
 
-# Creating the directory if not existing and saving
-save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
-	'pca_feature_maps', args.dnn)
+# Saving
 file_name = 'pca_feature_maps_ilsvrc2012_test'
-if os.path.isdir(save_dir) == False:
-	os.makedirs(save_dir)
 np.save(os.path.join(save_dir, file_name), fmaps_ilsvrc2012_test)
