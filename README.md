@@ -33,7 +33,7 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 * **01_eeg_preprocessing:** preprocessing of the raw EEG data.
 * **02_dnn_feature_maps_extraction:** extracting the feature maps of all images using four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo), and downsampling them using principal component analysis (PCA).
 * **03_synthesizing_eeg_data:** synthesizing the EEG responses to images through linearizing and end-to-end encoding models.
-* **04_synthetic_data_analyses:** performing the correlation, pairwise decoding and zero-shot decoding analyses on the synthetic EEG data.
+* **04_synthetic_data_analyses:** performing the correlation, pairwise decoding and zero-shot identification analyses on the synthetic EEG data.
 * **05_plotting:** plotting the analyses results.
 </br>
 
