@@ -183,7 +183,8 @@ def create_dataloader(args, X_train, y_train, X_test, y_test):
 
 
 def get_model(args):
-	"""Loading the DNN model, and changing the last layer to one component.
+	"""Loading the DNN model, and changing the last layer to 17 features, one
+	for each EEG channel.
 
 	Parameters
 	----------

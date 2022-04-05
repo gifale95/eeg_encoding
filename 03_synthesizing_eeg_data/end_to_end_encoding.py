@@ -95,7 +95,7 @@ for t in range(args.tot_eeg_time):
 
 
 # =============================================================================
-# Loading the DNN model and changing the last layer to one component
+# Loading the DNN model and changing the last layer to 17 features
 # =============================================================================
 	model = get_model(args)
 	model.to(device)
