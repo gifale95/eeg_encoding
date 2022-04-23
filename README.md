@@ -38,6 +38,14 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 </br>
 
 
+## Interactive dataset tutorial
+[Here][colab] you will find a Colab interactive tutorial on how to load and visualize the preprocessed EEG data and the corresponding stimuli images.
+
+[colab]: https://colab.research.google.com/drive/1i1IKeP4cK3ViscP4b4kNOVo4kRoL8tf6?usp=sharing
+</br>
+
+
+
 ## Cite
 If you use our code, partly or as it is, please cite our paper preprint:
 
