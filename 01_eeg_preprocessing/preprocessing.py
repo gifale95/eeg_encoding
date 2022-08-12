@@ -21,9 +21,9 @@ project_dir : str
 """
 
 import argparse
-from preprocessing_utils_mvnn import epoching
-from preprocessing_utils_mvnn import mvnn
-from preprocessing_utils_mvnn import save_prepr
+from preprocessing_utils import epoching
+from preprocessing_utils import mvnn
+from preprocessing_utils import save_prepr
 
 
 # =============================================================================
