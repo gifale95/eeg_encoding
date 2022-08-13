@@ -1,8 +1,10 @@
-"""Extracting and saving the AlexNet feature maps of the training and test
-images, and of the ILSVRC-2012 validation and test images.
+"""Extract and save the AlexNet feature maps of the training and test images,
+and of the ILSVRC-2012 validation and test images.
 
 Parameters
 ----------
+pretrained : bool
+	If True use a pretrained network, if false a randomly initialized one.
 project_dir : str
 	Directory of the project folder.
 
@@ -23,17 +25,24 @@ from PIL import Image
 # Input arguments
 # =============================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--pretrained', default=True, type=bool)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
-print('Extracting feature maps AlexNet <<<')
+print('Extract feature maps AlexNet <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
 
+# Set random seed for reproducible results
+seed = 20200220
+torch.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
+torch.use_deterministic_algorithms(True)
+
 
 # =============================================================================
-# Selecting the layers of interest and importing the model
+# Select the layers of interest and import the model
 # =============================================================================
 # Lists of AlexNet convolutional and fully connected layers
 conv_layers = ['conv1', 'ReLU1', 'maxpool1', 'conv2', 'ReLU2', 'maxpool2',
@@ -43,17 +52,17 @@ fully_connected_layers = ['Dropout6', 'fc6', 'ReLU6', 'Dropout7', 'fc7',
 
 class AlexNet(nn.Module):
 	def __init__(self):
-		"""Selecting the desired layers and importing pretrained weights."""
+		"""Select the desired layers and create the model."""
 		super(AlexNet, self).__init__()
 		self.select_cov = ['maxpool1', 'maxpool2', 'ReLU3', 'ReLU4', 'maxpool5']
 		self.select_fully_connected = ['ReLU6' , 'ReLU7', 'fc8']
 		self.feat_list = self.select_cov + self.select_fully_connected
-		self.alex_feats = models.alexnet(pretrained=True).features
-		self.alex_classifier = models.alexnet(pretrained=True).classifier
+		self.alex_feats = models.alexnet(pretrained=args.pretrained).features
+		self.alex_classifier = models.alexnet(pretrained=args.pretrained).classifier
 		self.avgpool = nn.AdaptiveAvgPool2d((6, 6))
 
 	def forward(self, x):
-		"""Extracting the feature maps."""
+		"""Extract the feature maps."""
 		features = []
 		for name, layer in self.alex_feats._modules.items():
 			x = layer(x)
@@ -74,7 +83,7 @@ model.eval()
 
 
 # =============================================================================
-# Defining the image preprocessing
+# Define the image preprocessing
 # =============================================================================
 centre_crop = trn.Compose([
 	trn.Resize((224,224)),
@@ -84,10 +93,11 @@ centre_crop = trn.Compose([
 
 
 # =============================================================================
-# Loading the images and extracting the corresponding feature maps
+# Load the images and extract the corresponding feature maps
 # =============================================================================
-# Extracting the feature maps of (1) training images, (2) test images,
+# Extract the feature maps of (1) training images, (2) test images,
 # (3) ILSVRC-2012 validation images, (4) ILSVRC-2012 test images.
+
 # Image directories
 img_set_dir = os.path.join(args.project_dir, 'image_set')
 img_partitions = os.listdir(img_set_dir)
@@ -99,10 +109,14 @@ for p in img_partitions:
 			if file.endswith(".jpg") or file.endswith(".JPEG"):
 				image_list.append(os.path.join(root,file))
 	image_list.sort()
+	# Create the saving directory if not existing
+	save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
+		'full_feature_maps', 'alexnet', 'pretrained-'+str(args.pretrained), p)
+	if os.path.isdir(save_dir) == False:
+		os.makedirs(save_dir)
 
-	# Extracting and saving the feature maps
-	idx = 1
-	for image in image_list:
+	# Extract and save the feature maps
+	for i, image in enumerate(image_list):
 		img = Image.open(image).convert('RGB')
 		filename=image.split("/")[-1].split(".")[0]
 		input_img = V(centre_crop(img).unsqueeze(0))
@@ -110,14 +124,7 @@ for p in img_partitions:
 			input_img=input_img.cuda()
 		x = model.forward(input_img)
 		feats = {}
-		for i,feat in enumerate(x):
+		for i, feat in enumerate(x):
 			feats[model.feat_list[i]] = feat.data.cpu().numpy()
-
-		# Creating the directory if not existing and saving
-		save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
-			'full_feature_maps', 'alexnet', p)
-		file_name = p + '_' + format(idx, '07')
-		if os.path.isdir(save_dir) == False:
-			os.makedirs(save_dir)
+		file_name = p + '_' + format(i+1, '07')
 		np.save(os.path.join(save_dir, file_name), feats)
-		idx += 1

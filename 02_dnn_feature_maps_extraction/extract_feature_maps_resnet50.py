@@ -1,8 +1,10 @@
-"""Extracting and saving the ResNet-50 feature maps of the training and test
-images, and of the ILSVRC-2012 validation and test images.
+"""Extract and save the ResNet-50 feature maps of the training and test images,
+and of the ILSVRC-2012 validation and test images.
 
 Parameters
 ----------
+pretrained : bool
+	If True use a pretrained network, if false a randomly initialized one.
 project_dir : str
 	Directory of the project folder.
 
@@ -23,17 +25,24 @@ from PIL import Image
 # Input arguments
 # =============================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--pretrained', default=True, type=bool)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
-print('>>> Extracting feature maps ResNet-50 <<<')
+print('>>> Extract feature maps ResNet-50 <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
 
+# Set random seed for reproducible results
+seed = 20200220
+torch.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
+torch.use_deterministic_algorithms(True)
+
 
 # =============================================================================
-# Importing the model
+# Import the model
 # =============================================================================
 def conv3x3(in_planes, out_planes, stride=1):
 	"""3x3 convolution with padding"""
@@ -165,7 +174,7 @@ class ResNet(nn.Module):
 		x5 = self.fc(x)
 		return x1, x2, x3, x4, x5
 
-def resnet50(pretrained=True, **kwargs):
+def resnet50(pretrained=args.pretrained, **kwargs):
 	"""Constructs a ResNet-50 model. """
 	model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
 	if pretrained:
@@ -180,7 +189,7 @@ model.eval()
 
 
 # =============================================================================
-# Defining the image preprocessing
+# Define the image preprocessing
 # =============================================================================
 centre_crop = trn.Compose([
 	trn.Resize((224,224)),
@@ -190,10 +199,11 @@ centre_crop = trn.Compose([
 
 
 # =============================================================================
-# Loading the images and extracting the corresponding feature maps
+# Load the images and extract the corresponding feature maps
 # =============================================================================
-# Extracting the feature maps of (1) training images, (2) test images,
+# Extract the feature maps of (1) training images, (2) test images,
 # (3) ILSVRC-2012 validation images, (4) ILSVRC-2012 test images.
+
 # Image directories
 img_set_dir = os.path.join(args.project_dir, 'image_set')
 img_partitions = os.listdir(img_set_dir)
@@ -205,10 +215,14 @@ for p in img_partitions:
 			if file.endswith(".jpg") or file.endswith(".JPEG"):
 				image_list.append(os.path.join(root,file))
 	image_list.sort()
+	# Create the saving directory if not existing
+	save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
+		'full_feature_maps', 'resnet50', 'pretrained-'+str(args.pretrained), p)
+	if os.path.isdir(save_dir) == False:
+		os.makedirs(save_dir)
 
-	# Extracting and saving the feature maps
-	idx = 1
-	for image in image_list:
+	# Extract and save the feature maps
+	for i, image in enumerate(image_list):
 		img = Image.open(image).convert('RGB')
 		filename=image.split("/")[-1].split(".")[0]
 		input_img = V(centre_crop(img).unsqueeze(0))
@@ -216,14 +230,7 @@ for p in img_partitions:
 			input_img=input_img.cuda()
 		x = model.forward(input_img)
 		feats = {}
-		for i,feat in enumerate(x):
+		for i, feat in enumerate(x):
 			feats[model.feat_list[i]] = feat.data.cpu().numpy()
-
-		# Creating the directory if not existing and saving
-		save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
-			'full_feature_maps', 'resnet50', p)
-		file_name = p + '_' + format(idx, '07')
-		if os.path.isdir(save_dir) == False:
-			os.makedirs(save_dir)
+		file_name = p + '_' + format(i+1, '07')
 		np.save(os.path.join(save_dir, file_name), feats)
-		idx += 1

@@ -1,8 +1,10 @@
-"""Extracting and saving the MoCo feature maps of the training and test
-images, and of the ILSVRC-2012 validation and test images.
+"""Extract and save the MoCo feature maps of the training and test images, and
+of the ILSVRC-2012 validation and test images.
 
 Parameters
 ----------
+pretrained : bool
+	If True use a pretrained network, if false a randomly initialized one.
 project_dir : str
 	Directory of the project folder.
 
@@ -23,17 +25,24 @@ from PIL import Image
 # Input arguments
 # =============================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--pretrained', default=True, type=bool)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
-print('>>> Extracting feature maps MoCo <<<')
+print('>>> Extract feature maps MoCo <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
 
+# Set random seed for reproducible results
+seed = 20200220
+torch.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
+torch.use_deterministic_algorithms(True)
+
 
 # =============================================================================
-# Importing the model
+# Import the model
 # =============================================================================
 def conv3x3(in_planes, out_planes, stride=1):
 	"""3x3 convolution with padding"""
@@ -104,7 +113,7 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-	def __init__(self, block, layers, num_classes=1000, zero_init_residual=False):
+	def __init__(self, block, layers, num_classes=128, zero_init_residual=False):
 		super(ResNet, self).__init__()
 		self.inplanes = 64
 		self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
@@ -165,24 +174,27 @@ class ResNet(nn.Module):
 		x5 = self.fc(x)
 		return x1, x2, x3, x4, x5
 
-def moco(**kwargs):
+def moco(pretrained=args.pretrained, **kwargs):
 	"""
 	Pretrained weights(state_dict) are download from here:
 	https://github.com/facebookresearch/moco
-	Weights file: "moco_v2_800ep_pretrain.pth"
+	Weights file: "moco_v1_200ep_pretrain.pth.tar"
 	"""
-	# Load instance of resnet50 model
+	# Load instance of resnet50 model, and change output units to 128 (so to
+	# match MoCo's output)
 	resnet50 = models.__dict__['resnet50']()
+	resnet50.fc = nn.Linear(in_features=2048, out_features=128)
 	# Load pretrained weights of MoCo "moco_v2.pth.tar" from GitHub
-	weights_dir= '../moco_v2_800ep_pretrain.pth.tar'
+	weights_dir= '../moco_v1_200ep_pretrain.pth.tar'
 	checkpoint = torch.load(weights_dir, map_location="cpu")
 	state_dict = checkpoint['state_dict']
 	state_dict = {k.replace("module.encoder_q.", ""): v for k, v in state_dict.items()}
 	# Load pretrained MoCo keys to Resnet-50 instance
-	resnet50.load_state_dict(state_dict, strict = False)
+	resnet50.load_state_dict(state_dict)
 	encoder = resnet50
 	model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
-	model.load_state_dict(encoder.state_dict())
+	if pretrained == True:
+		model.load_state_dict(encoder.state_dict())
 	return model
 
 model = moco()
@@ -192,7 +204,7 @@ model.eval()
 
 
 # =============================================================================
-# Defining the image preprocessing
+# Define the image preprocessing
 # =============================================================================
 centre_crop = trn.Compose([
 	trn.Resize((224,224)),
@@ -202,10 +214,11 @@ centre_crop = trn.Compose([
 
 
 # =============================================================================
-# Loading the images and extracting the corresponding feature maps
+# Load the images and extract the corresponding feature maps
 # =============================================================================
-# Extracting the feature maps of (1) training images, (2) test images,
+# Extract the feature maps of (1) training images, (2) test images,
 # (3) ILSVRC-2012 validation images, (4) ILSVRC-2012 test images.
+
 # Image directories
 img_set_dir = os.path.join(args.project_dir, 'image_set')
 img_partitions = os.listdir(img_set_dir)
@@ -217,10 +230,14 @@ for p in img_partitions:
 			if file.endswith(".jpg") or file.endswith(".JPEG"):
 				image_list.append(os.path.join(root,file))
 	image_list.sort()
+	# Create the saving directory if not existing
+	save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
+		'full_feature_maps', 'moco', 'pretrained-'+str(args.pretrained), p)
+	if os.path.isdir(save_dir) == False:
+		os.makedirs(save_dir)
 
-	# Extracting and saving the feature maps
-	idx = 1
-	for image in image_list:
+	# Extract and save the feature maps
+	for i, image in enumerate(image_list):
 		img = Image.open(image).convert('RGB')
 		filename=image.split("/")[-1].split(".")[0]
 		input_img = V(centre_crop(img).unsqueeze(0))
@@ -228,14 +245,7 @@ for p in img_partitions:
 			input_img=input_img.cuda()
 		x = model.forward(input_img)
 		feats = {}
-		for i,feat in enumerate(x):
+		for i, feat in enumerate(x):
 			feats[model.feat_list[i]] = feat.data.cpu().numpy()
-
-		# Creating the directory if not existing and saving
-		save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
-			'full_feature_maps', 'moco', p)
-		file_name = p + '_' + format(idx, '07')
-		if os.path.isdir(save_dir) == False:
-			os.makedirs(save_dir)
+		file_name = p + '_' + format(i+1, '07')
 		np.save(os.path.join(save_dir, file_name), feats)
-		idx += 1
