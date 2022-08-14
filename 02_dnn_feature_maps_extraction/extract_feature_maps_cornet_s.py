@@ -8,7 +8,7 @@ Parameters
 layer : str
 	Used CORnet-S layer from ['V1', 'V2', 'V4', 'IT', 'decoder'].
 pretrained : bool
-	If True use a pretrained network, if false a randomly initialized one.
+	If True use a pretrained network, if False a randomly initialized one.
 project_dir : str
 	Directory of the project folder.
 

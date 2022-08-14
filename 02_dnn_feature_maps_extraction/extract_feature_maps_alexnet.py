@@ -4,7 +4,7 @@ and of the ILSVRC-2012 validation and test images.
 Parameters
 ----------
 pretrained : bool
-	If True use a pretrained network, if false a randomly initialized one.
+	If True use a pretrained network, if False a randomly initialized one.
 project_dir : str
 	Directory of the project folder.
 
@@ -124,7 +124,7 @@ for p in img_partitions:
 			input_img=input_img.cuda()
 		x = model.forward(input_img)
 		feats = {}
-		for i, feat in enumerate(x):
-			feats[model.feat_list[i]] = feat.data.cpu().numpy()
+		for f, feat in enumerate(x):
+			feats[model.feat_list[f]] = feat.data.cpu().numpy()
 		file_name = p + '_' + format(i+1, '07')
 		np.save(os.path.join(save_dir, file_name), feats)
