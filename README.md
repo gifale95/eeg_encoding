@@ -19,7 +19,7 @@ conda activate eeg_encoding
 
 
 ## Data availability
-The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. The ILSVRC-2012 validation and test images can be found on [ImageNet][imagenet]. Tu run the code, the data must be downloaded and placed into the following directories:
+The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. The ILSVRC-2012 validation and test images can be found on [ImageNet][imagenet]. To run the code, the data must be downloaded and placed into the following directories:
 
 * **Raw EEG data:** `~/project_dir/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `~/project_dir/eeg_dataset/preprocessed_data/`.
