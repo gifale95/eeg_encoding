@@ -1,6 +1,8 @@
 """PCA is performed on the DNN feature maps to reduce their dimensionality.
 PCA is applied on either the feature maps of single DNN layers, or on the
 appended feature maps of all layers.
+Before applying PCA on the CORnet-S feature maps, run
+'sort_feature_maps_cornet_s.py'.
 
 Parameters
 ----------
