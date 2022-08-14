@@ -214,7 +214,8 @@ for p in range(0, len(fmaps_list), n_img_part):
 				if l == 0:
 					feats = np.reshape(fmaps_data[dnn_layer], -1)
 				else:
-					feats = np.append(feats, np.reshape(fmaps_data[dnn_layer], -1))
+					feats = np.append(feats, np.reshape(fmaps_data[dnn_layer],
+						-1))
 			elif args.layers == 'single':
 				if f == 0:
 					feats.append([[np.reshape(fmaps_data[dnn_layer], -1)]])
@@ -288,7 +289,8 @@ for p in range(0, len(fmaps_list), n_img_part):
 				if l == 0:
 					feats = np.reshape(fmaps_data[dnn_layer], -1)
 				else:
-					feats = np.append(feats, np.reshape(fmaps_data[dnn_layer], -1))
+					feats = np.append(feats, np.reshape(fmaps_data[dnn_layer],
+						-1))
 			elif args.layers == 'single':
 				if f == 0:
 					feats.append([[np.reshape(fmaps_data[dnn_layer], -1)]])
