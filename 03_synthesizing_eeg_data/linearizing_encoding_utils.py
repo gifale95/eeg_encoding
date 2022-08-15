@@ -199,11 +199,11 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 		y_train_within, y_train_between
 
 	### Put the data into dictionaries and save ###
-	print('\n>>> Saving the data <<<')
 	# Create the saving directories
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
 		format(args.sub,'02'), 'synthetic_eeg_data', 'linearizing_encoding',
-		'dnn-'+args.dnn)
+		'dnn-'+args.dnn, 'pretrained-'+str(args.pretrained), 'layers-'+
+		args.layers, 'n_components-'+format(args.n_components,'05'))
 	if not os.path.exists(save_dir):
 		os.makedirs(save_dir)
 	# Training data
