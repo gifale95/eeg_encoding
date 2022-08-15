@@ -48,7 +48,7 @@ parser.add_argument('--n_components', default=1000, type=int)
 parser.add_argument('--project_dir', default='/project/directory', type=str)
 args = parser.parse_args()
 
-print('>>> Train linearizing encoding model <<<')
+print('>>> Linearizing encoding model <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
