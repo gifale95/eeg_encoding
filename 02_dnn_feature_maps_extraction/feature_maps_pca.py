@@ -69,7 +69,7 @@ for f, fmaps in enumerate(fmaps_list):
 	if f == 0 and args.layers == 'single':
 		layer_names = fmaps_data.keys()
 	elif f == 0 and args.layers == 'all':
-		layer_names  =['all_layers']
+		layer_names = ['all_layers']
 	for l, dnn_layer in enumerate(layer_names):
 		if args.layers == 'all':
 			if l == 0:
