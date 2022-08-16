@@ -9,6 +9,11 @@ Parameters
 ----------
 sub : int
 	Used subject.
+subjects : str
+	If 'within', the linearizing encoding model is fit using the training data
+	of the subject of interest. If 'between', the linearizing encoding model is
+	fit using the training data of N-1 subjects, and then tested on the subject
+	of interest.
 n_tot_sub : int
 	Total number of subjects.
 dnn : str
@@ -40,15 +45,16 @@ from linearizing_encoding_utils import perform_regression
 # =============================================================================
 parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
+parser.add_argument('--subjects', default='within', type=str)
 parser.add_argument('--n_tot_sub', default=10, type=int)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
-print('>>> Linearizing encoding model <<<')
+print('>>> Training linearizing encoding model <<<')
 print('\nInput arguments:')
 for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
@@ -63,12 +69,11 @@ X_train, X_test, X_ilsvrc2012_val, X_ilsvrc2012_test = load_dnn_data(args)
 # =============================================================================
 # Loading the EEG data
 # =============================================================================
-y_train_within, y_train_between, ch_names, times = load_eeg_data(args)
+y_train, ch_names, times = load_eeg_data(args)
 
 
 # =============================================================================
 # Training the linear regression and saving the predicted data
 # =============================================================================
 perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
-	X_ilsvrc2012_test, y_train_within, y_train_between)
-
+	X_ilsvrc2012_test, y_train)

@@ -78,7 +78,7 @@ def load_dnn_data(args):
 
 def load_eeg_data(args):
 	"""Load the EEG within subjects (the training data of the subject of
-	interest) and between subjects (the averaged training data of the all other
+	interest) or between subjects (the averaged training data of the all other
 	subjects except the subject of interest) data.
 
 	Parameters
@@ -88,10 +88,8 @@ def load_eeg_data(args):
 
 	Returns
 	-------
-	y_train_within : float
-		Within subjects training EEG data.
-	y_train_between : float
-		Between subjects training EEG data.
+	y_train : float
+		Training EEG data.
 	ch_names : list of str
 		EEG channel names.
 	times : float
@@ -102,7 +100,7 @@ def load_eeg_data(args):
 	import os
 	import numpy as np
 
-	### Load the EEG data ###
+	### Load the within subjects EEG training data ###
 	y_train_within = []
 	y_train_between = []
 	for s in range(args.n_tot_sub):
@@ -118,16 +116,17 @@ def load_eeg_data(args):
 		ch_names = data['ch_names']
 		times = data['times']
 		del data
-	# Average the between subjects data across subjects
-	y_train_within = np.asarray(y_train_within[0])
-	y_train_between = np.mean(np.asarray(y_train_between), 0)
+	if args.subjects == 'within':
+		y_train = np.asarray(y_train_within[0])
+	elif args.subjects == 'between':
+		y_train = np.mean(np.asarray(y_train_between), 0)
 
 	### Output ###
-	return y_train_within, y_train_between, ch_names, times
+	return y_train, ch_names, times
 
 
 def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
-	X_ilsvrc2012_test, y_train_within, y_train_between):
+	X_ilsvrc2012_test, y_train):
 	"""Train a linear regression on the training images DNN feature maps (X)
 	and training EEG data (Y), and use the trained weights to synthesize the EEG
 	responses to the training and test images (within and between subjects), and
@@ -149,10 +148,8 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 		ILSVRC-2012 validation images feature maps.
 	X_ilsvrc2012_test : float
 		ILSVRC-2012 test images feature maps.
-	y_train_within : float
-		Within subjects training EEG data.
-	y_train_between : float
-		Between subjects training EEG data.
+	y_train : float
+		Training EEG data.
 
 	"""
 
@@ -161,55 +158,39 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	import os
 
 	### Fit the regression at each time-point and channel ###
-	eeg_shape = y_train_within.shape
-	y_train_within = np.reshape(y_train_within, (y_train_within.shape[0],-1))
-	y_train_between = np.reshape(y_train_between, (y_train_between.shape[0],-1))
+	eeg_shape = y_train.shape
+	y_train = np.reshape(y_train, (y_train.shape[0],-1))
 	# Within subjects
-	synt_train_within = {}
-	synt_test_within = {}
-	synt_ilsvrc2012_val_within = {}
-	synt_ilsvrc2012_test_within = {}
+	synt_train = {}
+	synt_test = {}
+	synt_ilsvrc2012_val = {}
+	synt_ilsvrc2012_test = {}
 	for layer in X_train.keys():
-		reg_within = OLS_pytorch(use_gpu=False)
-		reg_within.fit(X_train[layer], y_train_within.T)
-		synt_train_within[layer] = np.reshape(reg_within.predict(
-			X_train[layer]), (X_train[layer].shape[0],eeg_shape[1],
-			eeg_shape[2]))
-		synt_test_within[layer] = np.reshape(reg_within.predict(X_test[layer]),
+		reg = OLS_pytorch(use_gpu=False)
+		reg.fit(X_train[layer], y_train.T)
+		synt_train[layer] = np.reshape(reg.predict(X_train[layer]),
+			(X_train[layer].shape[0],eeg_shape[1],eeg_shape[2]))
+		synt_test[layer] = np.reshape(reg.predict(X_test[layer]),
 			(X_test[layer].shape[0],eeg_shape[1],eeg_shape[2]))
-		synt_ilsvrc2012_val_within[layer] = np.reshape(reg_within.predict(
+		synt_ilsvrc2012_val[layer] = np.reshape(reg.predict(
 			X_ilsvrc2012_val[layer]), (X_ilsvrc2012_val[layer].shape[0],
 			eeg_shape[1],eeg_shape[2]))
-		synt_ilsvrc2012_test_within[layer] = np.reshape(reg_within.predict(
+		synt_ilsvrc2012_test[layer] = np.reshape(reg.predict(
 			X_ilsvrc2012_test[layer]), (X_ilsvrc2012_test[layer].shape[0],
 			eeg_shape[1],eeg_shape[2]))
-	del reg_within
-	# Between subjects
-	synt_train_between = {}
-	synt_test_between = {}
-	for layer in X_train.keys():
-		reg_between = OLS_pytorch(use_gpu=False)
-		reg_between.fit(X_train[layer], y_train_between.T)
-		synt_train_between[layer] = np.reshape(reg_between.predict(
-			X_train[layer]), (X_train[layer].shape[0],eeg_shape[1],
-			eeg_shape[2]))
-		synt_test_between[layer] = np.reshape(reg_between.predict(
-			X_test[layer]), (X_test[layer].shape[0],eeg_shape[1],eeg_shape[2]))
-	del reg_between, X_train, X_test, X_ilsvrc2012_val, X_ilsvrc2012_test,\
-		y_train_within, y_train_between
 
 	### Put the data into dictionaries and save ###
 	# Create the saving directories
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
 		format(args.sub,'02'), 'synthetic_eeg_data', 'linearizing_encoding',
-		'dnn-'+args.dnn, 'pretrained-'+str(args.pretrained), 'layers-'+
-		args.layers, 'n_components-'+format(args.n_components,'05'))
+		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
+		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
+		format(args.n_components,'05'))
 	if not os.path.exists(save_dir):
 		os.makedirs(save_dir)
 	# Training data
 	data_dict = {
-		'synthetic_data_within': synt_train_within,
-		'synthetic_data_between': synt_train_between,
+		'synthetic_data': synt_train,
 		'ch_names': ch_names,
 		'times': times
 		}
@@ -217,8 +198,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	np.save(os.path.join(save_dir, file_name), data_dict)
 	# Test data
 	data_dict = {
-		'synthetic_data_within': synt_test_within,
-		'synthetic_data_between': synt_test_between,
+		'synthetic_data': synt_test,
 		'ch_names': ch_names,
 		'times': times
 		}
@@ -226,7 +206,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	np.save(os.path.join(save_dir, file_name), data_dict)
 	# ILSVRC-2012 validation data
 	data_dict = {
-		'synthetic_data_within': synt_ilsvrc2012_val_within,
+		'synthetic_data': synt_ilsvrc2012_val,
 		'ch_names': ch_names,
 		'times': times
 		}
@@ -234,7 +214,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	np.save(os.path.join(save_dir, file_name), data_dict)
 	# ILSVRC-2012 test data
 	data_dict = {
-		'synthetic_data_within': synt_ilsvrc2012_test_within,
+		'synthetic_data': synt_ilsvrc2012_test,
 		'ch_names': ch_names,
 		'times': times
 		}
