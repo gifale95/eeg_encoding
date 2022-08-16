@@ -225,9 +225,11 @@ for m in range(num_models):
 # Synthesize the EEG data using the best model
 # =============================================================================
 	best_model.to(device)
+	best_model.eval()
 	with torch.no_grad():
 		for X, y in test_dl:
-			best_model.eval()
+			X = X.to(device, non_blocking=False)
+			y = y.to(device, non_blocking=False)
 			if args.modeled_time_points == 'single':
 				synthetic_data[:,:,m] = best_model(X).detach().cpu().numpy()
 			elif args.modeled_time_points == 'all':
