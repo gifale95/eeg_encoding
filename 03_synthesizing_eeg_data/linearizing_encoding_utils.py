@@ -169,7 +169,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	synt_test_within = {}
 	synt_ilsvrc2012_val_within = {}
 	synt_ilsvrc2012_test_within = {}
-	for l, layer in enumerate(X_train.keys()):
+	for layer in X_train.keys():
 		reg_within = OLS_pytorch(use_gpu=False)
 		reg_within.fit(X_train[layer], y_train_within.T)
 		synt_train_within[layer] = np.reshape(reg_within.predict(
@@ -187,7 +187,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	# Between subjects
 	synt_train_between = {}
 	synt_test_between = {}
-	for l, layer in enumerate(X_train.keys()):
+	for layer in X_train.keys():
 		reg_between = OLS_pytorch(use_gpu=False)
 		reg_between.fit(X_train[layer], y_train_between.T)
 		synt_train_between[layer] = np.reshape(reg_between.predict(
