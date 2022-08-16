@@ -1,9 +1,9 @@
-"""Fitting a linear regression to predict EEG data using the DNN feature maps as
+"""Fit a linear regression to predict EEG data using the DNN feature maps as
 predictors. The linear regression is trained using varying amounts (25%, 50%,
-75%, 100%) of image conditions and EEG repetitions of the the training images
-EEG data (Y) and feature maps (X). The learned weights are used to synthesize
-the EEG data of the test images. The synthetic EEG test data is then correlated
-with the biological EEG test data.
+75%, 100%) of image conditions and EEG repetitions of the training images EEG
+data (Y) and feature maps (X). The learned weights are used to synthesize the
+EEG data of the test images. The synthetic EEG test data is then correlated with
+the biological EEG test data.
 
 Parameters
 ----------
@@ -11,6 +11,17 @@ sub : int
 	Used subject.
 dnn : str
 	Used DNN network.
+pretrained : bool
+	If True use the pretrained network feature maps, if False use the randomly
+	initialized network feature maps.
+layers : str
+	If 'all', the EEG data will be predicted using the feature maps downsampled
+	through PCA applied across all DNN layers. If 'single', the EEG data will be
+	independently predicted using the PCA-downsampled feature maps of each DNN
+	layer independently. If 'appended', the EEG data will be predicted using the
+	PCA-downsampled feature maps of each DNN layer appended onto each other.
+n_components : int
+	Number of feature maps PCA components retained.
 n_img_cond : int
 	Number of used image conditions.
 n_eeg_rep : int
@@ -44,10 +55,13 @@ from training_data_amount_utils import save_data
 parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--dnn', default='alexnet', type=str)
+parser.add_argument('--pretrained', default=True, type=bool)
+parser.add_argument('--layers', default='all', type=str)
+parser.add_argument('--n_components', default=1000, type=int)
 parser.add_argument('--n_img_cond', default=4135, type=int)
 parser.add_argument('--n_eeg_rep', default=1, type=int)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Training data amount <<<')
@@ -56,7 +70,8 @@ for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
 
 # Set random seed for reproducible results
-np.random.seed(seed=20200220)
+seed = 20200220
+np.random.seed(seed)
 
 
 # =============================================================================
@@ -65,47 +80,58 @@ np.random.seed(seed=20200220)
 tot_img_conditions = 16540
 tot_eeg_repetitions = 4
 
-# Correlation results matrix of shape: Iterations
-correlation_results = np.zeros((args.n_iter))
+# Loop across iterations
 for i in tqdm(range(args.n_iter)):
-	# Randomly selecting image conditions and repetitions
+	# Randomly select the image conditions and repetitions
 	cond_idx = np.sort(resample(np.arange(0, tot_img_conditions),
-		replace=False)[:args.n_img_cond])
+		replace=False, n_samples=args.n_img_cond))
 	rep_idx = np.sort(resample(np.arange(0, tot_eeg_repetitions),
-		replace=False)[:args.n_eeg_rep])
+		replace=False, n_samples=args.n_eeg_rep))
 
 
 # =============================================================================
-# Loading the DNN feature maps
+# Load the DNN feature maps
 # =============================================================================
 	X_train, X_test = load_dnn_data(args, cond_idx)
 
 
 # =============================================================================
-# Loading the EEG data
+# Load the EEG data
 # =============================================================================
 	y_train, y_test = load_eeg_data(args, cond_idx, rep_idx)
 
 
 # =============================================================================
-# Training a linear regression and predicting the EEG test data
+# Train a linear regression to predict the EEG data
 # =============================================================================
 	y_test_pred = perform_regression(X_train, X_test, y_train)
-	del X_train, X_test, y_train
 
 
 # =============================================================================
-# Performing the correlation
+# Test the encoding prediction accuracy through a correlation
 # =============================================================================
-	correlation_results[i], noise_ceiling[i] = correlation_analysis(args,
-		y_test_pred, y_test)
+	corr_res, noise_ceil = correlation_analysis(args, y_test_pred, y_test)
 
-# Averaging the results across iterations
-correlation_results = np.mean(correlation_results, 0)
-noise_ceiling = np.mean(noise_ceiling, 0)
+	# Results matrices of shape: Iterations
+	if i == 0:
+		correlation_results = {}
+		noise_ceiling = {}
+		for layer in y_test_pred.keys():
+			correlation_results[layer] = np.zeros(args.n_iter)
+			noise_ceiling[layer] = np.zeros(args.n_iter)
+
+	# Store the results
+	for layer in correlation_results.keys():
+		correlation_results[layer] = corr_res[layer]
+		noise_ceiling[layer] = noise_ceil[layer]
+
+# Average the results across iterations
+for layer in correlation_results.keys():
+	correlation_results[layer] = np.mean(correlation_results[layer])
+	noise_ceiling[layer] = np.mean(noise_ceiling[layer])
 
 
 # =============================================================================
-# Saving the predicted test data
+# Save the correlation results
 # =============================================================================
 save_data(args, correlation_results, noise_ceiling)
