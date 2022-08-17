@@ -51,7 +51,7 @@ parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
-parser.add_argument('--project_dir', default='../project/directory', type=str)
+parser.add_argument('--project_dir', default='../project_directory', type=str)
 args = parser.parse_args()
 
 print('>>> Training linearizing encoding model <<<')

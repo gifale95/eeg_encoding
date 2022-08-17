@@ -49,7 +49,7 @@ parser.add_argument('--lr', type=float, default=1e-7)
 parser.add_argument('--weight_decay', type=float, default=0.)
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--save_trained_models', type=bool, default=False)
-parser.add_argument('--project_dir', default='../project/directory', type=str)
+parser.add_argument('--project_dir', default='../project_directory', type=str)
 args = parser.parse_args()
 
 print('>>> End-to-end encoding <<<')

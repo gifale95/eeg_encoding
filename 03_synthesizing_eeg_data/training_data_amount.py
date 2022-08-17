@@ -61,7 +61,7 @@ parser.add_argument('--n_components', default=1000, type=int)
 parser.add_argument('--n_img_cond', default=4135, type=int)
 parser.add_argument('--n_eeg_rep', default=1, type=int)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='../project/directory', type=str)
+parser.add_argument('--project_dir', default='../project_directory', type=str)
 args = parser.parse_args()
 
 print('>>> Training data amount <<<')
