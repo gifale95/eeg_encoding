@@ -30,7 +30,7 @@ import numpy as np
 parser = argparse.ArgumentParser()
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layer', default='V1', type=str)
-parser.add_argument('--project_dir', default='../project/directory', type=str)
+parser.add_argument('--project_dir', default='../project_directory', type=str)
 args = parser.parse_args()
 
 print('>>> Extract feature maps CORnet-S <<<')
