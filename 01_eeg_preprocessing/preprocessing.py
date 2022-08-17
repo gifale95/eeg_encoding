@@ -34,7 +34,7 @@ parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--n_ses', default=4, type=int)
 parser.add_argument('--sfreq', default=100, type=int)
 parser.add_argument('--mvnn_dim', default='time', type=str)
-parser.add_argument('--project_dir', default='../project/directory', type=str)
+parser.add_argument('--project_dir', default='../project_directory', type=str)
 args = parser.parse_args()
 
 print('>>> EEG data preprocessing <<<')
