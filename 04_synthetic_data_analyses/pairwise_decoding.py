@@ -3,15 +3,41 @@ calculation. For each EEG time point, a SVM classifier is trained to decode
 between each combination of two biological data image conditions (using the EEG
 channels data), and is then tested on the corresponding combinations of two
 synthetic data image conditions.
-The analysis is performed on both the within and between subjects synthesized
-data.
 
 Parameters
 ----------
 sub : int
 	Used subject.
+encoding_type : str
+	Whether to analyze the 'linearizing' or 'end-to-end' encoding synthetic
+	data.
 dnn : str
 	Used DNN network.
+pretrained : bool
+	If True, analyze the data synthesized through pretrained (linearizing or
+	end-to-end) models. If False, analyze the data synthesized through randomly
+	initialized (linearizing or end-to-end) models.
+subjects : str
+	If 'linearizing' encoding_type is chosen, whether to analyze the 'within' or
+	'between' subjects linearizing encoding synthetic data.
+layers : str
+	If 'linearizing' encoding_type is chosen, whether to analyse the data
+	synthesized using 'all', 'single' or 'appended' DNN layers feature maps.
+n_components : int
+	If 'linearizing' encoding_type is chosen, number of feature maps PCA
+	components retained for synthesizing the EEG data.
+modeled_time_points : str
+	If 'end_to_end' encoding_type is chosen, whether to analyze the synthetic
+	data of end-to-end models trained to predict 'single' or 'all' time points.
+lr : float
+	If 'end_to_end' encoding_type is chosen, learning rate used to train the
+	end-to-end encoding models.
+weight_decay : float
+	If 'end_to_end' encoding_type is chosen, weight decay coefficint used to
+	train the end-to-end encoding models.
+batch_size : int
+	If 'end_to_end' encoding_type is chosen, batch size used to train the
+	end-to-end encoding models.
 n_iter : int
 	Number of analysis iterations.
 project_dir : str
@@ -32,9 +58,18 @@ from sklearn.svm import SVC
 # =============================================================================
 parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
+parser.add_argument('--encoding_type', default='linearizing', type=str)
 parser.add_argument('--dnn', default='alexnet', type=str)
+parser.add_argument('--pretrained', default=True, type=bool)
+parser.add_argument('--subjects', default='within', type=str)
+parser.add_argument('--layers', default='all', type=str)
+parser.add_argument('--n_components', default=1000, type=int)
+parser.add_argument('--modeled_time_points', type=str, default='single')
+parser.add_argument('--lr', type=float, default=1e-7)
+parser.add_argument('--weight_decay', type=float, default=0.)
+parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Pairwise decoding <<<')
@@ -43,11 +78,12 @@ for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
 
 # Set random seed for reproducible results
-np.random.seed(seed=20200220)
+seed = 20200220
+np.random.seed(seed)
 
 
 # =============================================================================
-# Loading the biological EEG test data
+# Load the biological EEG test data
 # =============================================================================
 data_dir = os.path.join('eeg_dataset', 'preprocessed_data', 'sub-'+
 	format(args.sub,'02'), 'preprocessed_eeg_test.npy')
@@ -60,65 +96,59 @@ del bio_data
 
 
 # =============================================================================
-# Loading the synthetic EEG test data
+# Load the synthetic EEG test data
 # =============================================================================
-# Linearizing encoding synthetic data
-data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-	'synthetic_eeg_data', 'linearizing_encoding', 'dnn-' + args.dnn,
-	'synthetic_eeg_test.npy')
-synt_data = np.load(os.path.join(args.project_dir, data_dir),
+if args.encoding_type == 'linearizing':
+	data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
+		format(args.sub,'02'), 'synthetic_eeg_data', 'linearizing_encoding',
+		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
+		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
+		format(args.n_components,'05'), 'synthetic_eeg_test.npy')
+elif args.encoding_type == 'end-to-end':
+	data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
+		format(args.sub,'02'), 'synthetic_eeg_data', 'end_to_end_encoding',
+		'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_points,
+		'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
+		'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
+		format(args.batch_size,'03'), 'synthetic_eeg_test.npy')
+
+synt_test = np.load(os.path.join(args.project_dir, data_dir),
 	allow_pickle=True).item()
-synt_test_within = synt_data['synthetic_within_data']
-synt_test_between = synt_data['synthetic_between_data']
-
-# End-to-end encoding synthetic data
-if args.dnn == 'alexnet':
-	data_dir = os.path.join('results', 'sub-'+format(args.sub,'02'),
-		'synthetic_eeg_data', 'end_to_end_encoding', 'dnn-' + args.dnn,
-		'synthetic_eeg_test.npy')
-	synt_data = np.load(os.path.join(args.project_dir, data_dir),
-		allow_pickle=True).item()
-	synt_test_end = synt_data['synthetic_data']
-else:
-	synt_test_end = np.zeros(synt_test_within.shape)
-del synt_data
+synt_test = synt_test['synthetic_data']
 
 
 # =============================================================================
-# Computing the pairwise decoding and noise ceilings
+# Compute the pairwise decoding and noise ceiling
 # =============================================================================
 # Results and noise ceiling matrices of shape:
 # (Iterations × Image conditions × Image conditions × EEG time points)
-pair_dec_within = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
+pair_dec = np.zeros((args.n_iter,bio_test.shape[0],bio_test.shape[0],
 	bio_test.shape[3]))
-pair_dec_between = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
+noise_ceiling_low = np.zeros((args.n_iter,bio_test.shape[0],bio_test.shape[0],
 	bio_test.shape[3]))
-pair_dec_end = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
-	bio_test.shape[3]))
-noise_ceiling_low = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
-	bio_test.shape[3]))
-noise_ceiling_up = np.zeros((args.n_iter, bio_test.shape[0],bio_test.shape[0],
+noise_ceiling_up = np.zeros((args.n_iter,bio_test.shape[0],bio_test.shape[0],
 	bio_test.shape[3]))
 
-# Averaging across all the biological data repetitions for the noise ceiling
+# Average across all the biological data repetitions for the noise ceiling
 # upper bound calculation
 bio_data_avg_all = np.mean(bio_test, 1)
 
 # Loop over iterations
 for i in tqdm(range(args.n_iter)):
 	# Random data repetitions index
-	shuffle_idx = resample(np.arange(0, bio_test.shape[1]), replace=False)\
-		[:int(bio_test.shape[1]/2)]
-	# Selecting one half of the biological data repetitions for training the
-	# classifier, and averaging them into 10 pseudo-trials of 4 repetitions
+	shuffle_idx = resample(np.arange(0, bio_test.shape[1]), replace=False,
+		n_samples=int(bio_test.shape[1]/2))
+	# Select one half of the biological data repetitions for training the
+	# classifier, and average them into 10 pseudo-trials of 4 repetitions
 	bio_data_avg_half_1 = np.zeros((bio_test.shape[0],10,bio_test.shape[2],
 			bio_test.shape[3]))
 	bio_data_provv = np.delete(bio_test, shuffle_idx, 1)
+	ptrial_rep = 4
 	for r in range(bio_data_avg_half_1.shape[1]):
-		bio_data_avg_half_1[:,r,:,:] = np.mean(bio_data_provv[:,r*4:r*4+4,:,:],
-		1)
+		bio_data_avg_half_1[:,r,:,:] = np.mean(
+			bio_data_provv[:,r*ptrial_rep:r*ptrial_rep+ptrial_rep,:,:], 1)
 	del bio_data_provv
-	# Averaging across the other half of the biological data repetitions for the
+	# Average across the other half of the biological data repetitions for the
 	# noise ceiling lower bound calculation
 	bio_data_avg_half_2 = np.mean(bio_test[:,shuffle_idx,:,:], 1)
 
@@ -132,18 +162,11 @@ for i in tqdm(range(args.n_iter)):
 		for i2 in range(bio_test.shape[0]):
 			if i1 < i2:
 				for t in range(bio_test.shape[3]):
-					# Defining the training/test partitions
+					# Define the training/test partitions
 					X_train = np.append(bio_data_avg_half_1[i1,:,:,t], \
 						bio_data_avg_half_1[i2,:,:,t], 0)
-					X_test_synt_data_within = np.append(np.expand_dims(
-						synt_test_within[i1,:,t], 0), np.expand_dims(
-						synt_test_within[i2,:,t], 0), 0)
-					X_test_synt_data_between = np.append(np.expand_dims(
-						synt_test_between[i1,:,t], 0), np.expand_dims(
-						synt_test_between[i2,:,t], 0), 0)
-					X_test_synt_data_end = np.append(np.expand_dims(
-						synt_test_end[i1,:,t], 0), np.expand_dims(
-						synt_test_end[i2,:,t], 0), 0)
+					X_test_synt = np.append(np.expand_dims(synt_test[i1,:,t],
+						0), np.expand_dims(synt_test[i2,:,t], 0), 0)
 					X_test_avg_half = np.append(np.expand_dims(
 						bio_data_avg_half_2[i1,:,t], 0), np.expand_dims(
 						bio_data_avg_half_2[i2,:,t], 0), 0)
@@ -154,18 +177,11 @@ for i in tqdm(range(args.n_iter)):
 					dec_svm = SVC(kernel="linear")
 					dec_svm.fit(X_train, y_train)
 					# Testing the classifier
-					y_pred_within = dec_svm.predict(X_test_synt_data_within)
-					y_pred_between = dec_svm.predict(X_test_synt_data_between)
-					y_pred_end = dec_svm.predict(X_test_synt_data_end)
+					y_pred = dec_svm.predict(X_test_synt)
 					y_pred_noise_ceiling_low = dec_svm.predict(X_test_avg_half)
 					y_pred_noise_ceiling_up = dec_svm.predict(X_test_avg_all)
 					# Storing the accuracy
-					pair_dec_within[i,i2,i1,t] = sum(
-						y_pred_within == y_test) / len(y_test)
-					pair_dec_between[i,i2,i1,t] = sum(
-						y_pred_between == y_test) / len(y_test)
-					pair_dec_end[i,i2,i1,t] = sum(
-						y_pred_end == y_test) / len(y_test)
+					pair_dec[i,i2,i1,t] = sum(y_pred == y_test) / len(y_test)
 					noise_ceiling_low[i,i2,i1,t] = sum(
 						y_pred_noise_ceiling_low == y_test) / len(y_test)
 					noise_ceiling_up[i,i2,i1,t] = sum(
@@ -173,37 +189,26 @@ for i in tqdm(range(args.n_iter)):
 
 
 # =============================================================================
-# Averaging the results across iterations and pairwise comparisons
+# Average the results across iterations and pairwise comparisons
 # =============================================================================
-# Averaging across iterations
-pair_dec_within = np.mean(pair_dec_within, 0)
-pair_dec_between = np.mean(pair_dec_between, 0)
-pair_dec_end = np.mean(pair_dec_end, 0)
+# Average across iterations
+pair_dec = np.mean(pair_dec, 0)
 noise_ceiling_low = np.mean(noise_ceiling_low, 0)
 noise_ceiling_up = np.mean(noise_ceiling_up, 0)
 
-# Averaging across pairwise comparisons
-idx = np.tril_indices(pair_dec_within.shape[0], -1)
-pair_dec_within = pair_dec_within[idx]
-pair_dec_between = pair_dec_between[idx]
-pair_dec_end = pair_dec_end[idx]
-noise_ceiling_low = noise_ceiling_low[idx]
-noise_ceiling_up = noise_ceiling_up[idx]
-pair_dec_within = np.mean(pair_dec_within, axis=0)
-pair_dec_between = np.mean(pair_dec_between, axis=0)
-pair_dec_end = np.mean(pair_dec_end, axis=0)
-noise_ceiling_low = np.mean(noise_ceiling_low, axis=0)
-noise_ceiling_up = np.mean(noise_ceiling_up, axis=0)
+# Average across pairwise comparisons
+idx = np.tril_indices(pair_dec.shape[0], -1)
+pair_dec = np.mean(pair_dec[idx], 0)
+noise_ceiling_low = np.mean(noise_ceiling_low[idx], 0)
+noise_ceiling_up = np.mean(noise_ceiling_up[idx], 0)
 
 
 # =============================================================================
-# Saving the results
+# Save the results
 # =============================================================================
-# Storing the results into a dictionary
+# Store the results into a dictionary
 results_dict = {
-	'pairwise_decoding_within': pair_dec_within,
-	'pairwise_decoding_between': pair_dec_between,
-	'pairwise_decoding_end': pair_dec_end,
+	'pairwise_decoding': pair_dec,
 	'noise_ceiling_low': noise_ceiling_low,
 	'noise_ceiling_up': noise_ceiling_up,
 	'times': times,
@@ -211,11 +216,22 @@ results_dict = {
 }
 
 # Saving directory
-save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-	format(args.sub,'02'), 'pairwise_decoding', 'dnn-'+args.dnn)
+if args.encoding_type == 'linearizing':
+	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
+		format(args.sub,'02'), 'pairwise_decoding', 'linearizing_encoding',
+		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
+		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
+		format(args.n_components,'05'))
+elif args.encoding_type == 'end-to-end':
+	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
+		format(args.sub,'02'), 'pairwise_decoding', 'end_to_end_encoding',
+		'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_points,
+		'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
+		'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
+		format(args.batch_size,'03'))
 file_name = 'pairwise_decoding.npy'
 
-# Creating the directory if not existing and saving
+# Create the directory if not existing and save
 if os.path.isdir(save_dir) == False:
 	os.makedirs(save_dir)
 np.save(os.path.join(save_dir, file_name), results_dict)
