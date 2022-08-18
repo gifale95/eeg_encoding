@@ -141,7 +141,7 @@ for m in range(num_models):
 # =============================================================================
 	# TensorBoard
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'synthetic_eeg_data', 'end_to_end_encoding',
+		format(args.sub,'02'), 'synthetic_eeg_data', 'encoding-end_to_end',
 		'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_points,
 		'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
 		'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+

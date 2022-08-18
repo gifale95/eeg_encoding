@@ -182,7 +182,7 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	### Put the data into dictionaries and save ###
 	# Create the saving directories
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'synthetic_eeg_data', 'linearizing_encoding',
+		format(args.sub,'02'), 'synthetic_eeg_data', 'encoding-linearizing',
 		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
 		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
 		format(args.n_components,'05'))
