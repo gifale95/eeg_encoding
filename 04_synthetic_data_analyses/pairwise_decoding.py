@@ -24,7 +24,7 @@ layers : str
 	If 'linearizing' encoding_type is chosen, whether to analyse the data
 	synthesized using 'all', 'single' or 'appended' DNN layers feature maps.
 n_components : int
-	If 'linearizing' encoding_type is chosen, number of feature maps PCA
+	If 'linearizing' encoding_type is chosen, number of DNN feature maps PCA
 	components retained for synthesizing the EEG data.
 modeled_time_points : str
 	If 'end_to_end' encoding_type is chosen, whether to analyze the synthetic
