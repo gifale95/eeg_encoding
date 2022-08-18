@@ -100,13 +100,13 @@ del bio_data
 # =============================================================================
 if args.encoding_type == 'linearizing':
 	data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'synthetic_eeg_data', 'linearizing_encoding',
+		format(args.sub,'02'), 'synthetic_eeg_data', 'encoding-linearizing',
 		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
 		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
 		format(args.n_components,'05'), 'synthetic_eeg_test.npy')
 elif args.encoding_type == 'end-to-end':
 	data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'synthetic_eeg_data', 'end_to_end_encoding',
+		format(args.sub,'02'), 'synthetic_eeg_data', 'encoding-end_to_end',
 		'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_points,
 		'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
 		'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
