@@ -171,13 +171,13 @@ results_dict = {
 # Saving directory
 if args.encoding_type == 'linearizing':
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'correlation', 'linearizing_encoding',
+		format(args.sub,'02'), 'correlation', 'encoding-linearizing',
 		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
 		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
 		format(args.n_components,'05'))
 elif args.encoding_type == 'end-to-end':
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-		format(args.sub,'02'), 'correlation', 'end_to_end_encoding',
+		format(args.sub,'02'), 'correlation', 'encoding-end_to_end',
 		'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_points,
 		'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
 		'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
