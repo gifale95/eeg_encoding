@@ -1,6 +1,6 @@
 # Building and evaluating linearizing encoding models of EEG visual responses using DNNs
-**### DISCLAIMER ###
-The code contained in this repository is currently being developed to a newer version, resulting in temporary incompatibility issues between the different analyses/modeling steps and their inputs/outputs. The code will be fully compatible again before mid September 2022. In the meanwhile, if you wish to run the analyses, please use the repository version commited on Apr 2, 2022.**
+## (!) DISCLAIMER (!)
+**The code contained in this repository is currently being developed to a newer version, resulting in temporary incompatibility issues between the different analyses/modeling steps and their inputs/outputs. The code will be fully compatible again before mid September 2022. In the meanwhile, if you wish to run the analyses, please use the repository version commited on Apr 2, 2022.**
 
 
 Here we provide the code to reproduce the results of our paper preprint:</br>
