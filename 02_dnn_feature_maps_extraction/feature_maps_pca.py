@@ -14,7 +14,7 @@ pretrained : bool
 layers : str
 	Whether to use 'all' or 'single' layers.
 n_components : int
-	Number of PCA components retained.
+	Number of DNN feature maps PCA components retained.
 project_dir : str
 	Directory of the project folder.
 
