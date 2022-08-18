@@ -69,7 +69,7 @@ parser.add_argument('--lr', type=float, default=1e-7)
 parser.add_argument('--weight_decay', type=float, default=0.)
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='../project_directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Pairwise decoding <<<')
@@ -122,8 +122,10 @@ synt_test = synt_test['synthetic_data']
 # =============================================================================
 # Results and noise ceiling matrices of shape:
 # (Iterations × Image conditions × Image conditions × EEG time points)
-pair_dec = np.zeros((args.n_iter,bio_test.shape[0],bio_test.shape[0],
-	bio_test.shape[3]))
+pair_dec = {}
+for layer in synt_test.keys():
+	pair_dec[layer] = np.zeros((args.n_iter,bio_test.shape[0],bio_test.shape[0],
+		bio_test.shape[3]))
 noise_ceiling_low = np.zeros((args.n_iter,bio_test.shape[0],bio_test.shape[0],
 	bio_test.shape[3]))
 noise_ceiling_up = np.zeros((args.n_iter,bio_test.shape[0],bio_test.shape[0],
@@ -162,26 +164,27 @@ for i in tqdm(range(args.n_iter)):
 		for i2 in range(bio_test.shape[0]):
 			if i1 < i2:
 				for t in range(bio_test.shape[3]):
-					# Define the training/test partitions
-					X_train = np.append(bio_data_avg_half_1[i1,:,:,t], \
+					# Train the classifier
+					X_train = np.append(bio_data_avg_half_1[i1,:,:,t],
 						bio_data_avg_half_1[i2,:,:,t], 0)
-					X_test_synt = np.append(np.expand_dims(synt_test[i1,:,t],
-						0), np.expand_dims(synt_test[i2,:,t], 0), 0)
+					dec_svm = SVC(kernel="linear")
+					dec_svm.fit(X_train, y_train)
+					# Test the classifier on the synthetic data
+					for layer in synt_test.keys():
+						X_test_synt = np.append(np.expand_dims(
+							synt_test[layer][i1,:,t], 0), np.expand_dims(
+							synt_test[layer][i2,:,t], 0), 0)
+						y_pred = dec_svm.predict(X_test_synt)
+						pair_dec[layer][i,i2,i1,t] = sum(y_pred == y_test) / len(y_test)
+					# Compute the noise ceiling
 					X_test_avg_half = np.append(np.expand_dims(
 						bio_data_avg_half_2[i1,:,t], 0), np.expand_dims(
 						bio_data_avg_half_2[i2,:,t], 0), 0)
 					X_test_avg_all = np.append(np.expand_dims(
 						bio_data_avg_all[i1,:,t], 0), np.expand_dims(
 						bio_data_avg_all[i2,:,t], 0), 0)
-					# Training the classifier
-					dec_svm = SVC(kernel="linear")
-					dec_svm.fit(X_train, y_train)
-					# Testing the classifier
-					y_pred = dec_svm.predict(X_test_synt)
 					y_pred_noise_ceiling_low = dec_svm.predict(X_test_avg_half)
 					y_pred_noise_ceiling_up = dec_svm.predict(X_test_avg_all)
-					# Storing the accuracy
-					pair_dec[i,i2,i1,t] = sum(y_pred == y_test) / len(y_test)
 					noise_ceiling_low[i,i2,i1,t] = sum(
 						y_pred_noise_ceiling_low == y_test) / len(y_test)
 					noise_ceiling_up[i,i2,i1,t] = sum(
@@ -192,13 +195,15 @@ for i in tqdm(range(args.n_iter)):
 # Average the results across iterations and pairwise comparisons
 # =============================================================================
 # Average across iterations
-pair_dec = np.mean(pair_dec, 0)
+for layer in synt_test.keys():
+	pair_dec[layer] = np.mean(pair_dec[layer], 0)
 noise_ceiling_low = np.mean(noise_ceiling_low, 0)
 noise_ceiling_up = np.mean(noise_ceiling_up, 0)
 
 # Average across pairwise comparisons
-idx = np.tril_indices(pair_dec.shape[0], -1)
-pair_dec = np.mean(pair_dec[idx], 0)
+idx = np.tril_indices(pair_dec[layer].shape[0], -1)
+for layer in synt_test.keys():
+	pair_dec[layer] = np.mean(pair_dec[layer][idx], 0)
 noise_ceiling_low = np.mean(noise_ceiling_low[idx], 0)
 noise_ceiling_up = np.mean(noise_ceiling_up[idx], 0)
 

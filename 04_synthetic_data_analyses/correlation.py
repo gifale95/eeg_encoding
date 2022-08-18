@@ -67,7 +67,7 @@ parser.add_argument('--lr', type=float, default=1e-7)
 parser.add_argument('--weight_decay', type=float, default=0.)
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='../project_directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Correlation <<<')
@@ -120,7 +120,10 @@ synt_test = synt_test['synthetic_data']
 # =============================================================================
 # Results and noise ceiling matrices of shape:
 # (Iterations × EEG channels × EEG time points)
-correlation = np.zeros((args.n_iter,bio_test.shape[2],bio_test.shape[3]))
+correlation = {}
+for layer in synt_test.keys():
+	correlation[layer] = np.zeros((args.n_iter,bio_test.shape[2],
+		bio_test.shape[3]))
 noise_ceiling_low = np.zeros((args.n_iter,bio_test.shape[2],bio_test.shape[3]))
 noise_ceiling_up = np.zeros((args.n_iter,bio_test.shape[2],bio_test.shape[3]))
 
@@ -143,8 +146,9 @@ for i in tqdm(range(args.n_iter)):
 	for t in range(bio_test.shape[3]):
 		for c in range(bio_test.shape[2]):
 			# Compute the correlation and noise ceiling
-			correlation[i,c,t] = corr(synt_test[:,c,t],
-				bio_data_avg_half_1[:,c,t])[0]
+			for layer in synt_test.keys():
+				correlation[layer][i,c,t] = corr(synt_test[layer][:,c,t],
+					bio_data_avg_half_1[:,c,t])[0]
 			noise_ceiling_low[i,c,t] = corr(bio_data_avg_half_2[:,c,t],
 				bio_data_avg_half_1[:,c,t])[0]
 			noise_ceiling_up[i,c,t] = corr(bio_data_avg_all[:,c,t],
@@ -188,3 +192,4 @@ file_name = 'correlation.npy'
 if os.path.isdir(save_dir) == False:
 	os.makedirs(save_dir)
 np.save(os.path.join(save_dir, file_name), results_dict)
+
