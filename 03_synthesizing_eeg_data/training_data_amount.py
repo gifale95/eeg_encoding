@@ -21,7 +21,7 @@ layers : str
 	layer independently. If 'appended', the EEG data will be predicted using the
 	PCA-downsampled feature maps of each DNN layer appended onto each other.
 n_components : int
-	Number of feature maps PCA components retained.
+	Number of DNN feature maps PCA components retained.
 n_img_cond : int
 	Number of used image conditions.
 n_eeg_rep : int

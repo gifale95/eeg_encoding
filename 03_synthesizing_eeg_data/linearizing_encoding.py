@@ -28,7 +28,7 @@ layers : str
 	layer independently. If 'appended', the EEG data will be predicted using the
 	PCA-downsampled feature maps of each DNN layer appended onto each other.
 n_components : int
-	Number of feature maps PCA components retained.
+	Number of DNN feature maps PCA components retained.
 project_dir : str
 	Directory of the project folder.
 
