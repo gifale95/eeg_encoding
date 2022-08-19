@@ -61,19 +61,19 @@ for key, val in vars(args).items():
 
 
 # =============================================================================
-# Loading the DNN feature maps
+# Load the DNN feature maps
 # =============================================================================
 X_train, X_test, X_ilsvrc2012_val, X_ilsvrc2012_test = load_dnn_data(args)
 
 
 # =============================================================================
-# Loading the EEG data
+# Load the EEG data
 # =============================================================================
 y_train, ch_names, times = load_eeg_data(args)
 
 
 # =============================================================================
-# Training the linear regression and saving the predicted data
+# Train the linear regression and save the predicted data
 # =============================================================================
 perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	X_ilsvrc2012_test, y_train)
