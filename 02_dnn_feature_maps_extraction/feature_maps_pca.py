@@ -35,7 +35,7 @@ parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layers', default='single', type=str)
 parser.add_argument('--n_components', default=10000, type=int)
-parser.add_argument('--project_dir', default='../project_directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Apply PCA on the feature maps <<<')
@@ -66,11 +66,12 @@ fmaps_list.sort()
 for f, fmaps in enumerate(fmaps_list):
 	fmaps_data = np.load(os.path.join(fmaps_dir, fmaps),
 		allow_pickle=True).item()
-	if f == 0 and args.layers == 'single':
-		layer_names = fmaps_data.keys()
-	elif f == 0 and args.layers == 'all':
+	all_layers = fmaps_data.keys()
+	if args.layers == 'all':
 		layer_names = ['all_layers']
-	for l, dnn_layer in enumerate(layer_names):
+	elif args.layers == 'single':
+		layer_names = all_layers
+	for l, dnn_layer in enumerate(all_layers):
 		if args.layers == 'all':
 			if l == 0:
 				feats = np.reshape(fmaps_data[dnn_layer], -1)
@@ -84,25 +85,25 @@ for f, fmaps in enumerate(fmaps_list):
 	if args.layers == 'all':
 		feats_all.append(feats)
 if args.layers == 'all':
-	fmaps_train['all_layers'] = np.asarray(feats_all)
+	fmaps_train[layer_names[0]] = np.asarray(feats_all)
 elif args.layers == 'single':
 	for l, dnn_layer in enumerate(layer_names):
 		fmaps_train[dnn_layer] = np.squeeze(np.asarray(feats[l]))
 
 # Standardize the data
 scaler = []
-for l, layer in enumerate(layer_names):
+for l, dnn_layer in enumerate(layer_names):
 	scaler.append(StandardScaler())
-	scaler[l].fit(fmaps_train[layer])
-	fmaps_train[layer] = scaler[l].transform(fmaps_train[layer])
+	scaler[l].fit(fmaps_train[dnn_layer])
+	fmaps_train[dnn_layer] = scaler[l].transform(fmaps_train[dnn_layer])
 
 # Apply PCA
 pca = []
-for l, layer in enumerate(layer_names):
+for l, dnn_layer in enumerate(layer_names):
 	pca.append(KernelPCA(n_components=args.n_components, kernel='poly',
 		degree=4, random_state=seed))
-	pca[l].fit(fmaps_train[layer])
-	fmaps_train[layer] = pca[l].transform(fmaps_train[layer])
+	pca[l].fit(fmaps_train[dnn_layer])
+	fmaps_train[dnn_layer] = pca[l].transform(fmaps_train[dnn_layer])
 
 # Save the downsampled feature maps
 save_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
@@ -130,9 +131,7 @@ fmaps_list.sort()
 for f, fmaps in enumerate(fmaps_list):
 	fmaps_data = np.load(os.path.join(fmaps_dir, fmaps),
 		allow_pickle=True).item()
-	if f == 0:
-		layer_names = fmaps_data.keys()
-	for l, dnn_layer in enumerate(layer_names):
+	for l, dnn_layer in enumerate(all_layers):
 		if args.layers == 'all':
 			if l == 0:
 				feats = np.reshape(fmaps_data[dnn_layer], -1)
@@ -146,18 +145,18 @@ for f, fmaps in enumerate(fmaps_list):
 	if args.layers == 'all':
 		feats_all.append(feats)
 if args.layers == 'all':
-	fmaps_test['all_layers'] = np.asarray(feats_all)
+	fmaps_test[layer_names[0]] = np.asarray(feats_all)
 elif args.layers == 'single':
 	for l, dnn_layer in enumerate(layer_names):
 		fmaps_test[dnn_layer] = np.squeeze(np.asarray(feats[l]))
 
 # Standardize the data
-for l, layer in enumerate(layer_names):
-	fmaps_test[layer] = scaler[l].transform(fmaps_test[layer])
+for l, dnn_layer in enumerate(layer_names):
+	fmaps_test[dnn_layer] = scaler[l].transform(fmaps_test[dnn_layer])
 
 # Apply PCA
-for l, layer in enumerate(layer_names):
-	fmaps_test[layer] = pca[l].transform(fmaps_test[layer])
+for l, dnn_layer in enumerate(layer_names):
+	fmaps_test[dnn_layer] = pca[l].transform(fmaps_test[dnn_layer])
 
 # Save the downsampled feature maps
 file_name = 'pca_feature_maps_test'
@@ -177,8 +176,7 @@ fmaps_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
 	'ILSVRC2012_img_val')
 fmaps_list = os.listdir(fmaps_dir)
 fmaps_list.sort()
-if args.layers == 'single':
-	fmaps_ilsvrc2012_val = {}
+fmaps_ilsvrc2012_val = {}
 for p in range(0, len(fmaps_list), n_img_part):
 	feats = []
 	feats_all = []
@@ -186,9 +184,7 @@ for p in range(0, len(fmaps_list), n_img_part):
 	for f, fmaps in enumerate(fmaps_list[p:p+n_img_part]):
 		fmaps_data = np.load(os.path.join(fmaps_dir, fmaps),
 			allow_pickle=True).item()
-		if f == 0:
-			layer_names = fmaps_data.keys()
-		for l, dnn_layer in enumerate(layer_names):
+		for l, dnn_layer in enumerate(all_layers):
 			if args.layers == 'all':
 				if l == 0:
 					feats = np.reshape(fmaps_data[dnn_layer], -1)
@@ -203,24 +199,24 @@ for p in range(0, len(fmaps_list), n_img_part):
 		if args.layers == 'all':
 			feats_all.append(feats)
 	if args.layers == 'all':
-		fmaps_part = np.asarray(feats_all)
+		fmaps_part[layer_names[0]] = np.asarray(feats_all)
 	elif args.layers == 'single':
 		for l, dnn_layer in enumerate(layer_names):
 			fmaps_part[dnn_layer] = np.squeeze(np.asarray(feats[l]))
 
 	# Standardize the data
-	for l, layer in enumerate(layer_names):
-		fmaps_part[layer] = scaler[l].transform(fmaps_part[layer])
+	for l, dnn_layer in enumerate(layer_names):
+		fmaps_part[dnn_layer] = scaler[l].transform(fmaps_part[dnn_layer])
 
 	# Apply PCA
-	for l, layer in enumerate(layer_names):
+	for l, dnn_layer in enumerate(layer_names):
 		if p == 0:
-			fmaps_ilsvrc2012_val[layer] = pca[l].transform(
-				fmaps_part[layer])
+			fmaps_ilsvrc2012_val[dnn_layer] = pca[l].transform(
+				fmaps_part[dnn_layer])
 		else:
-			fmaps_ilsvrc2012_val[layer] = np.append(
-				fmaps_ilsvrc2012_val[layer], pca[l].transform(
-				fmaps_part[layer]))
+			fmaps_ilsvrc2012_val[dnn_layer] = np.append(
+				fmaps_ilsvrc2012_val[dnn_layer], pca[l].transform(
+				fmaps_part[dnn_layer]), 0)
 
 # Save the downsampled feature maps
 file_name = 'pca_feature_maps_ilsvrc2012_val'
@@ -239,8 +235,7 @@ fmaps_dir = os.path.join(args.project_dir, 'dnn_feature_maps',
 	'ILSVRC2012_img_test_v10102019')
 fmaps_list = os.listdir(fmaps_dir)
 fmaps_list.sort()
-if args.layers == 'single':
-	fmaps_ilsvrc2012_test = {}
+fmaps_ilsvrc2012_test = {}
 for p in range(0, len(fmaps_list), n_img_part):
 	feats = []
 	feats_all = []
@@ -248,9 +243,7 @@ for p in range(0, len(fmaps_list), n_img_part):
 	for f, fmaps in enumerate(fmaps_list[p:p+n_img_part]):
 		fmaps_data = np.load(os.path.join(fmaps_dir, fmaps),
 			allow_pickle=True).item()
-		if f == 0:
-			layer_names = fmaps_data.keys()
-		for l, dnn_layer in enumerate(layer_names):
+		for l, dnn_layer in enumerate(all_layers):
 			if args.layers == 'all':
 				if l == 0:
 					feats = np.reshape(fmaps_data[dnn_layer], -1)
@@ -265,24 +258,24 @@ for p in range(0, len(fmaps_list), n_img_part):
 		if args.layers == 'all':
 			feats_all.append(feats)
 	if args.layers == 'all':
-		fmaps_part = np.asarray(feats_all)
+		fmaps_part[layer_names[0]] = np.asarray(feats_all)
 	elif args.layers == 'single':
 		for l, dnn_layer in enumerate(layer_names):
 			fmaps_part[dnn_layer] = np.squeeze(np.asarray(feats[l]))
-	
+
 	# Standardize the data
-	for l, layer in enumerate(layer_names):
-		fmaps_part[layer] = scaler[l].transform(fmaps_part[layer])
+	for l, dnn_layer in enumerate(layer_names):
+		fmaps_part[dnn_layer] = scaler[l].transform(fmaps_part[dnn_layer])
 
 	# Apply PCA
-	for l, layer in enumerate(layer_names):
+	for l, dnn_layer in enumerate(layer_names):
 		if p == 0:
-			fmaps_ilsvrc2012_test[layer] = pca[l].transform(
-				fmaps_part[layer])
+			fmaps_ilsvrc2012_test[dnn_layer] = pca[l].transform(
+				fmaps_part[dnn_layer])
 		else:
-			fmaps_ilsvrc2012_test[layer] = np.append(
-				fmaps_ilsvrc2012_test[layer], pca[l].transform(
-				fmaps_part[layer]))
+			fmaps_ilsvrc2012_test[dnn_layer] = np.append(
+				fmaps_ilsvrc2012_test[dnn_layer], pca[l].transform(
+				fmaps_part[dnn_layer]), 0)
 
 # Save the downsampled feature maps
 file_name = 'pca_feature_maps_ilsvrc2012_test'
