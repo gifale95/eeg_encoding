@@ -154,7 +154,7 @@ for i in tqdm(range(args.n_iter)):
 			noise_ceiling_up[i,c,t] = corr(bio_data_avg_all[:,c,t],
 				bio_data_avg_half_1[:,c,t])[0]
 
-# Averaging the results across iterations
+# Average the results across iterations
 for layer in synt_test.keys():
 	correlation[layer] = np.mean(correlation[layer], 0)
 noise_ceiling_low = np.mean(noise_ceiling_low, 0)
