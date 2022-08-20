@@ -214,7 +214,7 @@ for i in tqdm(range(args.n_iter)):
 # =============================================================================
 # Store the results into a dictionary
 results_dict = {
-	'best_features_masks' :best_features_masks,
+	'best_features_masks': best_features_masks,
 	'zero_shot_identification': zero_shot_identification,
 	'steps': steps
 }

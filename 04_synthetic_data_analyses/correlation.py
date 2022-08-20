@@ -155,7 +155,8 @@ for i in tqdm(range(args.n_iter)):
 				bio_data_avg_half_1[:,c,t])[0]
 
 # Averaging the results across iterations
-correlation = np.mean(correlation, 0)
+for layer in synt_test.keys():
+	correlation[layer] = np.mean(correlation[layer], 0)
 noise_ceiling_low = np.mean(noise_ceiling_low, 0)
 noise_ceiling_up = np.mean(noise_ceiling_up, 0)
 
