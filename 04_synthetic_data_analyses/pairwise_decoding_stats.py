@@ -1,14 +1,43 @@
-"""Confidence intervals and significance of the pairwise decoding analysis
-results, and of the differences between the results and the noise ceiling.
+"""Calculate the confidence intervals (through bootstrap tests) and significance
+(through sign permutation tests) of the pairwise decoding analysis results, and
+of the differences between the results and the noise ceiling.
 
 Parameters
 ----------
-n_tot_sub : int
-	Number of total subjects used.
+used_subs : list
+	List of subjects used for the stats.
+encoding_type : str
+	Whether to analyze the 'linearizing' or 'end-to-end' encoding synthetic
+	data.
 dnn : str
 	Used DNN network.
-n_boot_iter : int
-	Number of bootstrap iterations for the confidence intervals.
+pretrained : bool
+	If True, analyze the data synthesized through pretrained (linearizing or
+	end-to-end) models. If False, analyze the data synthesized through randomly
+	initialized (linearizing or end-to-end) models.
+subjects : str
+	If 'linearizing' encoding_type is chosen, whether to analyze the 'within' or
+	'between' subjects linearizing encoding synthetic data.
+layers : str
+	If 'linearizing' encoding_type is chosen, whether to analyse the data
+	synthesized using 'all', 'single' or 'appended' DNN layers feature maps.
+n_components : int
+	If 'linearizing' encoding_type is chosen, number of DNN feature maps PCA
+	components retained for synthesizing the EEG data.
+modeled_time_points : str
+	If 'end_to_end' encoding_type is chosen, whether to analyze the synthetic
+	data of end-to-end models trained to predict 'single' or 'all' time points.
+lr : float
+	If 'end_to_end' encoding_type is chosen, learning rate used to train the
+	end-to-end encoding models.
+weight_decay : float
+	If 'end_to_end' encoding_type is chosen, weight decay coefficint used to
+	train the end-to-end encoding models.
+batch_size : int
+	If 'end_to_end' encoding_type is chosen, batch size used to train the
+	end-to-end encoding models.
+n_iter : int
+	Number of iterations for the bootstrap test.
 project_dir : str
 	Directory of the project folder.
 
@@ -19,7 +48,7 @@ import os
 import numpy as np
 from tqdm import tqdm
 from sklearn.utils import resample
-from scipy.stats import ttest_1samp
+import itertools
 from statsmodels.stats.multitest import multipletests
 
 
@@ -27,10 +56,20 @@ from statsmodels.stats.multitest import multipletests
 # Input arguments
 # =============================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument('--n_tot_sub', default=10, type=int)
+parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+	type=int)
+parser.add_argument('--encoding_type', default='linearizing', type=str)
 parser.add_argument('--dnn', default='alexnet', type=str)
-parser.add_argument('--n_boot_iter', default=10000, type=int)
-parser.add_argument('--project_dir', default='/project/directory', type=str)
+parser.add_argument('--pretrained', default=True, type=bool)
+parser.add_argument('--subjects', default='within', type=str)
+parser.add_argument('--layers', default='all', type=str)
+parser.add_argument('--n_components', default=1000, type=int)
+parser.add_argument('--modeled_time_points', type=str, default='single')
+parser.add_argument('--lr', type=float, default=1e-7)
+parser.add_argument('--weight_decay', type=float, default=0.)
+parser.add_argument('--batch_size', type=int, default=64)
+parser.add_argument('--n_iter', default=100, type=int)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Pairwise decoding stats <<<')
@@ -39,140 +78,161 @@ for key, val in vars(args).items():
 	print('{:16} {}'.format(key, val))
 
 # Set random seed for reproducible results
-np.random.seed(seed=20200220)
+seed = 20200220
+np.random.seed(seed)
 
 
 # =============================================================================
-# Loading the correlation results
+# Load the pairwise_decoding results
 # =============================================================================
-pairwise_decoding_within = []
-pairwise_decoding_between = []
-pairwise_decoding_end = []
+decoding = {}
 noise_ceiling_low = []
 noise_ceiling_up = []
-for s in range(args.n_tot_sub):
-	data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
-		'pairwise_decoding', 'dnn-'+args.dnn, 'pairwise_decoding.npy')
+for s in range(len(args.used_subs)):
+	if args.encoding_type == 'linearizing':
+		data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
+			format(args.sub,'02'), 'pairwise_decoding', 'encoding-linearizing',
+			'subjects-'+s+1, 'dnn-'+args.dnn, 'pretrained-'+
+			str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
+			format(args.n_components,'05'), 'pairwise_decoding.npy')
+	elif args.encoding_type == 'end-to-end':
+		data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
+			format(s+1,'02'), 'pairwise_decoding', 'encoding-end_to_end', 'dnn-'+
+			args.dnn, 'modeled_time_points-'+args.modeled_time_points,
+			'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
+			'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
+			format(args.batch_size,'03'), 'pairwise_decoding.npy')
 	results_dict = np.load(os.path.join(args.project_dir, data_dir),
 		allow_pickle=True).item()
-	pairwise_decoding_within.append(results_dict['pairwise_decoding_within'])
-	pairwise_decoding_between.append(results_dict['pairwise_decoding_between'])
-	pairwise_decoding_end.append(results_dict['pairwise_decoding_end'])
+	for layer in results_dict['pairwise_decoding'].keys():
+		if s == 0:
+			decoding[layer] = np.expand_dims(
+				results_dict['pairwise_decoding'][layer], 0)
+		else:
+			decoding[layer] = np.append(decoding[layer], np.expand_dims(
+				results_dict['pairwise_decoding'][layer], 0), 0)
 	noise_ceiling_low.append(results_dict['noise_ceiling_low'])
 	noise_ceiling_up.append(results_dict['noise_ceiling_up'])
 	times = results_dict['times']
 	ch_names = results_dict['ch_names']
 del results_dict
-pairwise_decoding_within = np.asarray(pairwise_decoding_within)
-pairwise_decoding_between = np.asarray(pairwise_decoding_between)
-pairwise_decoding_end = np.asarray(pairwise_decoding_end)
-noise_ceiling_low = np.asarray(noise_ceiling_low)
-noise_ceiling_up = np.asarray(noise_ceiling_up)
 
 # Difference between noise ceiling and predicted data results
-diff_noise_ceiling = noise_ceiling_low - pairwise_decoding_within
+noise_ceiling_low = np.asarray(noise_ceiling_low)
+noise_ceiling_up = np.asarray(noise_ceiling_up)
+diff_noise_ceiling = {}
+for layer in decoding.keys():
+	diff_noise_ceiling[layer] = noise_ceiling_low - decoding[layer]
 
 
 # =============================================================================
-# Bootstrapping the confidence intervals (CIs)
+# Bootstrap the confidence intervals (CIs)
 # =============================================================================
-# CI matrices of shape: Time
-ci_lower_within = np.zeros((pairwise_decoding_within.shape[1]))
-ci_upper_within = np.zeros((pairwise_decoding_within.shape[1]))
-ci_lower_between = np.zeros((pairwise_decoding_between.shape[1]))
-ci_upper_between = np.zeros((pairwise_decoding_between.shape[1]))
-ci_lower_end = np.zeros((pairwise_decoding_end.shape[1]))
-ci_upper_end = np.zeros((pairwise_decoding_end.shape[1]))
-ci_lower_diff_noise_ceiling = np.zeros((diff_noise_ceiling.shape[1]))
-ci_upper_diff_noise_ceiling = np.zeros((diff_noise_ceiling.shape[1]))
-
-# Calculating the CIs independently at each time point
-for t in tqdm(range(pairwise_decoding_within.shape[1])):
-	sample_dist_within = np.zeros(args.n_boot_iter)
-	sample_dist_between = np.zeros(args.n_boot_iter)
-	sample_dist_end = np.zeros(args.n_boot_iter)
-	sample_dist_diff = np.zeros(args.n_boot_iter)
-	for i in range(args.n_boot_iter):
-		# Calculating the sample distribution
-		sample_dist_within[i] = np.mean(resample(pairwise_decoding_within[:,t]))
-		sample_dist_between[i] = np.mean(resample(
-			pairwise_decoding_between[:,t]))
-		sample_dist_end[i] = np.mean(resample(pairwise_decoding_end[:,t]))
-		sample_dist_diff[i] = np.mean(resample(diff_noise_ceiling[:,t]))
-	# Calculating the confidence intervals
-	ci_lower_within[t] = np.percentile(sample_dist_within, 2.5)
-	ci_upper_within[t] = np.percentile(sample_dist_within, 97.5)
-	ci_lower_between[t] = np.percentile(sample_dist_between, 2.5)
-	ci_upper_between[t] = np.percentile(sample_dist_between, 97.5)
-	ci_lower_end[t] = np.percentile(sample_dist_end, 2.5)
-	ci_upper_end[t] = np.percentile(sample_dist_end, 97.5)
-	ci_lower_diff_noise_ceiling[t] = np.percentile(sample_dist_diff, 2.5)
-	ci_upper_diff_noise_ceiling[t] = np.percentile(sample_dist_diff, 97.5)
+ci_lower = {}
+ci_upper = {}
+ci_lower_diff_noise_ceiling = {}
+ci_upper_diff_noise_ceiling = {}
+# Calculate the CIs independently at each time point
+for layer in decoding.keys():
+	# CI matrices of shape: (Time)
+	ci_lower[layer] = np.zeros((decoding[layer].shape[1]))
+	ci_upper[layer] = np.zeros((decoding[layer].shape[1]))
+	ci_lower_diff_noise_ceiling[layer] = np.zeros((
+		diff_noise_ceiling[layer].shape[1]))
+	ci_upper_diff_noise_ceiling[layer] = np.zeros((
+		diff_noise_ceiling[layer].shape[1]))
+	for t in tqdm(range(decoding[layer].shape[1])):
+		sample_dist = np.zeros(args.n_boot_iter)
+		sample_dist_diff = np.zeros(args.n_boot_iter)
+		for i in range(args.n_boot_iter):
+			# Calculate the sample distribution of the pairwise deocoding values
+			sample_dist[i] = np.mean(resample(decoding[layer][:,:,t]))
+			sample_dist_diff[i] = np.mean(resample(
+				diff_noise_ceiling[layer][:,:,t]))
+		# Calculate the 95% confidence intervals
+		ci_lower[layer][t] = np.percentile(sample_dist, 2.5)
+		ci_upper[layer][t] = np.percentile(sample_dist, 97.5)
+		ci_lower_diff_noise_ceiling[layer][t] = np.percentile(
+			sample_dist_diff, 2.5)
+		ci_upper_diff_noise_ceiling[layer][t] = np.percentile(
+			sample_dist_diff, 97.5)
 
 
 # =============================================================================
-# Performing the t-tests & multiple comparisons correction
+# Sign permutation test for significance & multiple comparisons correction
 # =============================================================================
-# p-values matrices of shape: Time
-p_values_within = np.ones((pairwise_decoding_within.shape[1]))
-p_values_between = np.ones((pairwise_decoding_between.shape[1]))
-p_values_end = np.ones((pairwise_decoding_end.shape[1]))
-p_values_difference_noise_ceiling = np.ones((diff_noise_ceiling.shape[1]))
-for t in range(pairwise_decoding_within.shape[1]):
-	_, p_values_within[t] = ttest_1samp(pairwise_decoding_within[:,t], 0.5,
-		alternative='greater')
-	_, p_values_between[t] = ttest_1samp(pairwise_decoding_between[:,t], 0.5,
-		alternative='greater')
-	_, p_values_end[t] = ttest_1samp(pairwise_decoding_end[:,t], 0.5,
-		alternative='greater')
-	_, p_values_difference_noise_ceiling[t] = ttest_1samp(
-		diff_noise_ceiling[:,t], 0, alternative='greater')
+# Sign permutation test
+sign_permutations = list(itertools.product([-1, 1], repeat=10))
+sign_permutations = np.asarray(sign_permutations)
+p_values = {}
+p_values_diff_noise_ceiling = {}
+for layer in decoding.keys():
+	# p-values matrices of shape: (Time)
+	p_values[layer] = np.ones((decoding[layer].shape[1]))
+	p_values_diff_noise_ceiling[layer] = np.ones((
+		diff_noise_ceiling[layer].shape[1]))
+	for t in tqdm(range(decoding[layer].shape[1])):
+		# Create the sign permutation distributions
+		permutation_dist = np.zeros(len(sign_permutations))
+		permutation_dist_diff = np.zeros(len(sign_permutations))
+		for p in range(len(sign_permutations)):
+			permutation_dist[p] = np.mean(
+				decoding[layer][:,t] * sign_permutations[p])
+			permutation_dist_diff[p] = np.mean(
+				diff_noise_ceiling[layer][:,t] * sign_permutations[p])
+		# Calculate the p-values
+		p_values[layer][t] = (sum(permutation_dist >= np.mean(
+			decoding[layer][:,t])) + 1) / (len(permutation_dist) + 1)
+		p_values_diff_noise_ceiling[layer][t] = (sum(permutation_dist_diff >= \
+			np.mean(diff_noise_ceiling[layer][:,t])) + 1) / (len(
+			permutation_dist) + 1)
 
-# Correcting for multiple comparisons
-results_within = multipletests(p_values_within, 0.05, 'bonferroni')
-significance_within = results_within[0]
-results_between = multipletests(p_values_between, 0.05, 'bonferroni')
-significance_between = results_between[0]
-results_end = multipletests(p_values_end, 0.05, 'bonferroni')
-significance_end = results_end[0]
-results_diff_noise_ceiling = multipletests(p_values_difference_noise_ceiling,
-	0.05, 'bonferroni')
-significance_diff_noise_ceiling = results_diff_noise_ceiling[0]
+# Correct for multiple comparisons
+significance = {}
+significance_diff_noise_ceiling = {}
+for layer in p_values.keys():
+	significance[layer] = multipletests(p_values[layer], 0.05, 'fdr_bh')[0]
+	significance_diff_noise_ceiling[layer] = multipletests(
+		p_values_diff_noise_ceiling[layer], 0.05, 'fdr_bh')[0]
 
 
 # =============================================================================
-# Saving the results
+# Save the results
 # =============================================================================
-# Storing the results into a dictionary
+# Store the results into a dictionary
 stats_dict = {
-	'pairwise_decoding_within': pairwise_decoding_within,
-	'ci_lower_within': ci_lower_within,
-	'ci_upper_within': ci_upper_within,
-	'significance_within': significance_within,
-	'pairwise_decoding_between': pairwise_decoding_between,
-	'ci_lower_between': ci_lower_between,
-	'ci_upper_between': ci_upper_between,
-	'significance_between': significance_between,
-	'pairwise_decoding_end': pairwise_decoding_end,
-	'ci_lower_end': ci_lower_end,
-	'ci_upper_end': ci_upper_end,
-	'significance_end': significance_end,
+	'decoding': decoding,
+	'ci_lower': ci_lower,
+	'ci_upper': ci_upper,
+	'p_values': p_values,
+	'significance': significance,
 	'noise_ceiling_low': noise_ceiling_low,
 	'noise_ceiling_up': noise_ceiling_up,
 	'diff_noise_ceiling': diff_noise_ceiling,
 	'ci_lower_diff_noise_ceiling': ci_lower_diff_noise_ceiling,
 	'ci_upper_diff_noise_ceiling': ci_upper_diff_noise_ceiling,
+	'p_values_diff_noise_ceiling': p_values_diff_noise_ceiling,
 	'significance_diff_noise_ceiling': significance_diff_noise_ceiling,
 	'times': times,
 	'ch_names': ch_names
 }
 
 # Saving directory
-save_dir = os.path.join(args.project_dir, 'results', 'stats',
-	'pairwise_decoding', 'dnn-'+args.dnn)
+if args.encoding_type == 'linearizing':
+	save_dir = os.path.join(args.project_dir, 'results', 'stats',
+		'pairwise_decoding', 'encoding-linearizing', 'subjects-'+args.subjects,
+		'dnn-'+args.dnn, 'pretrained-'+str(args.pretrained), 'layers-'+
+		args.layers, 'n_components-'+format(args.n_components,'05'))
+elif args.encoding_type == 'end-to-end':
+	save_dir = os.path.join(args.project_dir, 'results', 'stats',
+		'pairwise_decoding', 'encoding-end_to_end', 'dnn-'+args.dnn,
+		'modeled_time_points-'+args.modeled_time_points, 'pretrained-'+
+		str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
+		'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
+		format(args.batch_size,'03'))
 file_name = 'pairwise_decoding_stats.npy'
 
-# Creating the directory if not existing and saving
+# Create the directory if not existing and save
 if os.path.isdir(save_dir) == False:
 	os.makedirs(save_dir)
 np.save(os.path.join(save_dir, file_name), stats_dict)
