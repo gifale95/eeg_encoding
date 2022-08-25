@@ -97,8 +97,8 @@ for s in args.used_subs:
 			format(args.n_components,'05'), 'pairwise_decoding.npy')
 	elif args.encoding_type == 'end-to-end':
 		data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-			format(s+1,'02'), 'pairwise_decoding', 'encoding-end_to_end', 'dnn-'+
-			args.dnn, 'modeled_time_points-'+args.modeled_time_points,
+			format(s+1,'02'), 'pairwise_decoding', 'encoding-end_to_end',
+			'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_point,
 			'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
 			'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
 			format(args.batch_size,'03'), 'pairwise_decoding.npy')
@@ -165,10 +165,10 @@ p_values = {}
 p_values_diff_noise_ceiling = {}
 for layer in decoding.keys():
 	# p-values matrices of shape: (Time)
-	p_values[layer] = np.ones((decoding[layer].shape[2]))
+	p_values[layer] = np.ones((decoding[layer].shape[1]))
 	p_values_diff_noise_ceiling[layer] = np.ones((
-		diff_noise_ceiling[layer].shape[2]))
-	for t in tqdm(range(decoding[layer].shape[2])):
+		diff_noise_ceiling[layer].shape[1]))
+	for t in tqdm(range(decoding[layer].shape[1])):
 		# Fisher transform the pairwise decoding values and perform the t-tests
 		fisher_vaules = np.arctanh(np.mean(decoding[layer][:,t], 1))
 		fisher_vaules_diff_nc = np.arctanh(np.mean(
