@@ -2,8 +2,8 @@
 predictors. The linear regression is trained using varying amounts (25%, 50%,
 75%, 100%) of image conditions and EEG repetitions of the training images EEG
 data (Y) and feature maps (X). The learned weights are used to synthesize the
-EEG data of the test images. The synthetic EEG test data is then correlated with
-the biological EEG test data.
+EEG data of the test images. The synthetic EEG test data is then correlated
+with the biological EEG test data.
 
 Parameters
 ----------
@@ -61,7 +61,7 @@ parser.add_argument('--n_components', default=1000, type=int)
 parser.add_argument('--n_img_cond', default=4135, type=int)
 parser.add_argument('--n_eeg_rep', default=1, type=int)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='../project_directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Training data amount <<<')
@@ -112,23 +112,22 @@ for i in tqdm(range(args.n_iter)):
 # =============================================================================
 	corr_res, noise_ceil = correlation_analysis(args, y_test_pred, y_test)
 
-	# Results matrices of shape: Iterations
+	# Results matrices of shape: (Iterations)
 	if i == 0:
 		correlation_results = {}
-		noise_ceiling = {}
 		for layer in y_test_pred.keys():
 			correlation_results[layer] = np.zeros(args.n_iter)
-			noise_ceiling[layer] = np.zeros(args.n_iter)
+		noise_ceiling = np.zeros(args.n_iter)
 
 	# Store the results
 	for layer in correlation_results.keys():
-		correlation_results[layer] = corr_res[layer]
-		noise_ceiling[layer] = noise_ceil[layer]
+		correlation_results[layer][i] = corr_res[layer]
+	noise_ceiling[i] = noise_ceil
 
 # Average the results across iterations
 for layer in correlation_results.keys():
 	correlation_results[layer] = np.mean(correlation_results[layer])
-	noise_ceiling[layer] = np.mean(noise_ceiling[layer])
+noise_ceiling = np.mean(noise_ceiling)
 
 
 # =============================================================================

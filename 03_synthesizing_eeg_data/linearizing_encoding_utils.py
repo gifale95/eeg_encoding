@@ -9,13 +9,13 @@ def load_dnn_data(args):
 
 	Returns
 	-------
-	X_train : float
+	X_train : dict of float
 		Training images feature maps.
-	X_test : float
+	X_test : dict of float
 		Test images feature maps.
-	X_ilsvrc2012_val : float
+	X_ilsvrc2012_val : dict of float
 		ILSVRC-2012 validation images feature maps.
-	X_ilsvrc2012_test : float
+	X_ilsvrc2012_test : dict of float
 		ILSVRC-2012 test images feature maps.
 
 	"""
@@ -140,13 +140,13 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 		EEG channel names.
 	times : float
 		EEG time points.
-	X_train : float
+	X_train : dict of float
 		Training images feature maps.
-	X_test : float
+	X_test : dict of float
 		Test images feature maps.
-	X_ilsvrc2012_val : float
+	X_ilsvrc2012_val : dict of float
 		ILSVRC-2012 validation images feature maps.
-	X_ilsvrc2012_test : float
+	X_ilsvrc2012_test : dict of float
 		ILSVRC-2012 test images feature maps.
 	y_train : float
 		Training EEG data.

@@ -10,9 +10,9 @@ def load_dnn_data(args, cond_idx):
 
 	Returns
 	-------
-	X_train : float
+	X_train : dict of float
 		Training images feature maps.
-	X_test : float
+	X_test : dict of float
 		Test images feature maps.
 	"""
 
@@ -117,16 +117,16 @@ def perform_regression(X_train, X_test, y_train):
 
 	Parameters
 	----------
-	X_train : float
+	X_train : dict of float
 		Training images feature maps.
-	X_test : float
+	X_test : dict of float
 		Test images feature maps.
 	y_train : float
 		Training EEG data.
 
 	Returns
 	-------
-	y_test_pred : float
+	y_test_pred : dict of float
 		Predicted test EEG data.
 
 	"""
@@ -155,14 +155,14 @@ def correlation_analysis(args, y_test_pred, y_test):
 	----------
 	args : Namespace
 		Input arguments.
-	y_test_pred : float
+	y_test_pred : dict of float
 		Predicted test EEG data.
 	y_test : float
 		Test EEG data.
 
 	Returns
 	-------
-	correlation : float
+	correlation : dict of float
 		Correlation results.
 	noise_ceiling : float
 		Noise ceiling results.
@@ -178,12 +178,10 @@ def correlation_analysis(args, y_test_pred, y_test):
 	# Results matrices of shape:
 	# (Iterations ×  EEG channels × EEG time points)
 	correlation = {}
-	noise_ceiling = {}
 	for layer in y_test_pred.keys():
 		correlation[layer] = np.zeros((args.n_iter,y_test.shape[2],
 			y_test.shape[3]))
-		noise_ceiling[layer] = np.zeros((args.n_iter,y_test.shape[2],
-			y_test.shape[3]))
+	noise_ceiling = np.zeros((args.n_iter,y_test.shape[2],y_test.shape[3]))
 	for i in tqdm(range(args.n_iter)):
 		# Random data repetitions index
 		shuffle_idx = resample(np.arange(0, y_test.shape[1]), replace=False,
@@ -197,15 +195,14 @@ def correlation_analysis(args, y_test_pred, y_test):
 		for t in range(y_test.shape[3]):
 			for c in range(y_test.shape[2]):
 				for layer in y_test_pred.keys():
-					correlation[layer][i,c,t] = corr(y_test_pred[:,c,t],
+					correlation[layer][i,c,t] = corr(y_test_pred[layer][:,c,t],
 						bio_data_avg_half_1[:,c,t])[0]
-					noise_ceiling[layer][i,c,t] = corr(
-						bio_data_avg_half_2[:,c,t],
-						bio_data_avg_half_1[:,c,t])[0]
+				noise_ceiling[i,c,t] = corr(bio_data_avg_half_2[:,c,t],
+					bio_data_avg_half_1[:,c,t])[0]
 	# Average the results across iterations, EEG channels and time points
 	for layer in y_test_pred.keys():
 		correlation[layer] = np.mean(correlation[layer])
-		noise_ceiling[layer] = np.mean(noise_ceiling[layer])
+	noise_ceiling = np.mean(noise_ceiling)
 
 	### Output ###
 	return correlation, noise_ceiling
@@ -218,7 +215,7 @@ def save_data(args, correlation_results, noise_ceiling):
 	----------
 	args : Namespace
 		Input arguments.
-	correlation_results : float
+	correlation_results : dict of float
 		Correlation results.
 	noise_ceiling : float
 		Noise ceiling results.
@@ -230,8 +227,8 @@ def save_data(args, correlation_results, noise_ceiling):
 
 	### Store the results into a dictionary ###
 	results_dict = {
-		'correlation_results' : correlation_results,
-		'noise_ceiling' : noise_ceiling
+		'correlation_results': correlation_results,
+		'noise_ceiling': noise_ceiling
 	}
 
 	### Save the results ###
