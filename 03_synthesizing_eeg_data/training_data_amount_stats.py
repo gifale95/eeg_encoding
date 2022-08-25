@@ -191,7 +191,6 @@ stats_dict = {
 	'anova_summary': anova_summary,
 	'corr_res_all_img_cond': corr_res_all_img_cond,
 	'corr_res_all_eeg_rep': corr_res_all_eeg_rep,
-	'p_values': p_values,
 	'significance': significance
 }
 
