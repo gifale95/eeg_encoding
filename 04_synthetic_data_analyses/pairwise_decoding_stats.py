@@ -91,8 +91,8 @@ noise_ceiling_up = []
 for s in args.used_subs:
 	if args.encoding_type == 'linearizing':
 		data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-			format(args.sub,'02'), 'pairwise_decoding', 'encoding-linearizing',
-			'subjects-'+s+1, 'dnn-'+args.dnn, 'pretrained-'+
+			format(s,'02'), 'pairwise_decoding', 'encoding-linearizing',
+			'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
 			str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
 			format(args.n_components,'05'), 'pairwise_decoding.npy')
 	elif args.encoding_type == 'end-to-end':
