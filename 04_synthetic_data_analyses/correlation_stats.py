@@ -68,7 +68,7 @@ parser.add_argument('--modeled_time_points', type=str, default='single')
 parser.add_argument('--lr', type=float, default=1e-7)
 parser.add_argument('--weight_decay', type=float, default=0.)
 parser.add_argument('--batch_size', type=int, default=64)
-parser.add_argument('--n_iter', default=100, type=int)
+parser.add_argument('--n_iter', default=10000, type=int)
 parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
