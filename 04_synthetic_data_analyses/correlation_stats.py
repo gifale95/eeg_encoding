@@ -88,7 +88,7 @@ np.random.seed(seed)
 correlation = {}
 noise_ceiling_low = []
 noise_ceiling_up = []
-for s in range(len(args.used_subs)):
+for s in args.used_subs:
 	if args.encoding_type == 'linearizing':
 		data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
 			format(args.sub,'02'), 'correlation', 'encoding-linearizing',
