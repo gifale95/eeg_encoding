@@ -114,23 +114,23 @@ for i in tqdm(range(args.n_iter)):
 
 	# Results matrices of shape: (Iterations)
 	if i == 0:
-		correlation_results = {}
+		correlation = {}
 		for layer in y_test_pred.keys():
-			correlation_results[layer] = np.zeros(args.n_iter)
+			correlation[layer] = np.zeros(args.n_iter)
 		noise_ceiling = np.zeros(args.n_iter)
 
 	# Store the results
-	for layer in correlation_results.keys():
-		correlation_results[layer][i] = corr_res[layer]
+	for layer in correlation.keys():
+		correlation[layer][i] = corr_res[layer]
 	noise_ceiling[i] = noise_ceil
 
 # Average the results across iterations
-for layer in correlation_results.keys():
-	correlation_results[layer] = np.mean(correlation_results[layer])
+for layer in correlation.keys():
+	correlation[layer] = np.mean(correlation[layer])
 noise_ceiling = np.mean(noise_ceiling)
 
 
 # =============================================================================
 # Save the correlation results
 # =============================================================================
-save_data(args, correlation_results, noise_ceiling)
+save_data(args, correlation, noise_ceiling)

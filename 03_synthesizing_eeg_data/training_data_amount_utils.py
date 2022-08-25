@@ -208,14 +208,14 @@ def correlation_analysis(args, y_test_pred, y_test):
 	return correlation, noise_ceiling
 
 
-def save_data(args, correlation_results, noise_ceiling):
+def save_data(args, correlation, noise_ceiling):
 	"""Save the results.
 
 	Parameters
 	----------
 	args : Namespace
 		Input arguments.
-	correlation_results : dict of float
+	correlation : dict of float
 		Correlation results.
 	noise_ceiling : float
 		Noise ceiling results.
@@ -227,7 +227,7 @@ def save_data(args, correlation_results, noise_ceiling):
 
 	### Store the results into a dictionary ###
 	results_dict = {
-		'correlation_results': correlation_results,
+		'correlation': correlation,
 		'noise_ceiling': noise_ceiling
 	}
 
