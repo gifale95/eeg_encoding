@@ -1,5 +1,5 @@
 """Calculate the confidence intervals (through bootstrap tests) and significance
-(through sign permutation tests) of the correlation analysis results, and of the
+(through one-sample t-tests) of the correlation analysis results, and of the
 differences between the results and the noise ceiling.
 
 Parameters
@@ -48,7 +48,7 @@ import os
 import numpy as np
 from tqdm import tqdm
 from sklearn.utils import resample
-import itertools
+from scipy.stats import ttest_1samp
 from statsmodels.stats.multitest import multipletests
 
 
@@ -161,11 +161,8 @@ for layer in correlation.keys():
 
 
 # =============================================================================
-# Sign permutation test for significance & multiple comparisons correction
+# One-sample t-tests for significance & multiple comparisons correction
 # =============================================================================
-# Sign permutation test
-sign_permutations = list(itertools.product([-1, 1], repeat=10))
-sign_permutations = np.asarray(sign_permutations)
 p_values = {}
 p_values_diff_noise_ceiling = {}
 for layer in correlation.keys():
@@ -174,28 +171,22 @@ for layer in correlation.keys():
 	p_values_diff_noise_ceiling[layer] = np.ones((
 		diff_noise_ceiling[layer].shape[2]))
 	for t in tqdm(range(correlation[layer].shape[2])):
-		# Create the sign permutation distributions
-		permutation_dist = np.zeros(len(sign_permutations))
-		permutation_dist_diff = np.zeros(len(sign_permutations))
-		for p in range(len(sign_permutations)):
-			permutation_dist[p] = np.mean(np.mean(
-				correlation[layer][:,:,t], 1) * sign_permutations[p])
-			permutation_dist_diff[p] = np.mean(np.mean(
-				diff_noise_ceiling[layer][:,:,t], 1) * sign_permutations[p])
-		# Calculate the p-values
-		p_values[layer][t] = (sum(permutation_dist >= np.mean(
-			correlation[layer][:,:,t])) + 1) / (len(permutation_dist) + 1)
-		p_values_diff_noise_ceiling[layer][t] = (sum(permutation_dist_diff >= \
-			np.mean(diff_noise_ceiling[layer][:,:,t])) + 1) / (len(
-			permutation_dist) + 1)
+		# Fisher transform the correlation values and perform the t-tests
+		fisher_vaules = np.arctanh(np.mean(correlation[layer][:,t], 1))
+		fisher_vaules_diff_nc = np.arctanh(np.mean(
+			diff_noise_ceiling[layer][:,t], 1))
+		p_values[layer][t] = ttest_1samp(fisher_vaules, 0,
+			alternative='greater')[1]
+		p_values_diff_noise_ceiling[layer][t] = ttest_1samp(
+			fisher_vaules_diff_nc, 0, alternative='greater')[1]
 
 # Correct for multiple comparisons
 significance = {}
 significance_diff_noise_ceiling = {}
 for layer in p_values.keys():
-	significance[layer] = multipletests(p_values[layer], 0.05, 'fdr_bh')[0]
+	significance[layer] = multipletests(p_values[layer], 0.05, 'bonferroni')[0]
 	significance_diff_noise_ceiling[layer] = multipletests(
-		p_values_diff_noise_ceiling[layer], 0.05, 'fdr_bh')[0]
+		p_values_diff_noise_ceiling[layer], 0.05, 'bonferroni')[0]
 
 
 # =============================================================================
