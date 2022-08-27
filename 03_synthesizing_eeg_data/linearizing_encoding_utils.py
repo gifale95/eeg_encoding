@@ -9,13 +9,13 @@ def load_dnn_data(args):
 
 	Returns
 	-------
-	X_train : dict of float
+	X_train : float
 		Training images feature maps.
-	X_test : dict of float
+	X_test : float
 		Test images feature maps.
-	X_ilsvrc2012_val : dict of float
+	X_ilsvrc2012_val : float
 		ILSVRC-2012 validation images feature maps.
-	X_ilsvrc2012_test : dict of float
+	X_ilsvrc2012_test : float
 		ILSVRC-2012 test images feature maps.
 
 	"""
@@ -140,13 +140,13 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 		EEG channel names.
 	times : float
 		EEG time points.
-	X_train : dict of float
+	X_train : float
 		Training images feature maps.
-	X_test : dict of float
+	X_test : float
 		Test images feature maps.
-	X_ilsvrc2012_val : dict of float
+	X_ilsvrc2012_val : float
 		ILSVRC-2012 validation images feature maps.
-	X_ilsvrc2012_test : dict of float
+	X_ilsvrc2012_test : float
 		ILSVRC-2012 test images feature maps.
 	y_train : float
 		Training EEG data.
@@ -167,7 +167,10 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	synt_ilsvrc2012_test = {}
 	for layer in X_train.keys():
 		reg = OLS_pytorch(use_gpu=False)
-		reg.fit(X_train[layer], y_train.T)
+		betas = reg.fit(X_train[layer], y_train.T)
+		# The first betas predictor dimension corresponds to the bias
+		betas = np.reshape(np.squeeze(np.asarray(betas)), (eeg_shape[1],
+			eeg_shape[2],-1))
 		synt_train[layer] = np.reshape(reg.predict(X_train[layer]),
 			(X_train[layer].shape[0],eeg_shape[1],eeg_shape[2]))
 		synt_test[layer] = np.reshape(reg.predict(X_test[layer]),
@@ -192,7 +195,8 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	data_dict = {
 		'synthetic_data': synt_train,
 		'ch_names': ch_names,
-		'times': times
+		'times': times,
+		'betas': betas
 		}
 	file_name = 'synthetic_eeg_training.npy'
 	np.save(os.path.join(save_dir, file_name), data_dict)
@@ -200,7 +204,8 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	data_dict = {
 		'synthetic_data': synt_test,
 		'ch_names': ch_names,
-		'times': times
+		'times': times,
+		'betas': betas
 		}
 	file_name = 'synthetic_eeg_test.npy'
 	np.save(os.path.join(save_dir, file_name), data_dict)
@@ -208,7 +213,8 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	data_dict = {
 		'synthetic_data': synt_ilsvrc2012_val,
 		'ch_names': ch_names,
-		'times': times
+		'times': times,
+		'betas': betas
 		}
 	file_name = 'synthetic_eeg_ilsvrc2012_val.npy'
 	np.save(os.path.join(save_dir, file_name), data_dict)
@@ -216,7 +222,8 @@ def perform_regression(args, ch_names, times, X_train, X_test, X_ilsvrc2012_val,
 	data_dict = {
 		'synthetic_data': synt_ilsvrc2012_test,
 		'ch_names': ch_names,
-		'times': times
+		'times': times,
+		'betas': betas
 		}
 	file_name = 'synthetic_eeg_ilsvrc2012_test.npy'
 	np.save(os.path.join(save_dir, file_name), data_dict)
