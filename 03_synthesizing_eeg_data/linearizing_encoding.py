@@ -14,8 +14,8 @@ subjects : str
 	of the subject of interest. If 'between', the linearizing encoding model is
 	fit using the training data of N-1 subjects, and then tested on the subject
 	of interest.
-n_tot_sub : int
-	Total number of subjects.
+all_sub : int
+	List of all subjects.
 dnn : str
 	Used DNN network.
 pretrained : bool
@@ -46,7 +46,8 @@ from linearizing_encoding_utils import perform_regression
 parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--subjects', default='within', type=str)
-parser.add_argument('--n_tot_sub', default=10, type=int)
+parser.add_argument('--all_sub', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	type=list)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layers', default='all', type=str)

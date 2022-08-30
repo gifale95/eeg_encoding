@@ -103,13 +103,13 @@ def load_eeg_data(args):
 	### Load the within subjects EEG training data ###
 	y_train_within = []
 	y_train_between = []
-	for s in range(args.n_tot_sub):
+	for s in args.all_sub:
 		data_dir = os.path.join('eeg_dataset', 'preprocessed_data', 'sub-'+
-			format(s+1,'02'), 'preprocessed_eeg_training.npy')
+			format(s,'02'), 'preprocessed_eeg_training.npy')
 		data = np.load(os.path.join(args.project_dir, data_dir),
 			allow_pickle=True).item()
 		# Extract the data while averaging across repetitions
-		if s+1 == args.sub:
+		if s == args.sub:
 			y_train_within.append(np.mean(data['preprocessed_eeg_data'], 1))
 		else:
 			y_train_between.append(np.mean(data['preprocessed_eeg_data'], 1))
