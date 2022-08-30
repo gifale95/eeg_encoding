@@ -37,7 +37,8 @@ from statsmodels.stats.multitest import multipletests
 # Input arguments
 # =============================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument('--used_subs', default=10, type=int)
+parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	type=list)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
@@ -66,13 +67,13 @@ correlation = {}
 noise_ceiling = []
 
 # Load the correlation results
-for s in range(args.n_tot_sub):
+for s, sub in enumerate(args.used_subs):
 	corr = {}
 	noise_ceil = []
 	for c, img_cond in enumerate(used_img_cond):
 		for r, eeg_rep in enumerate(used_eeg_rep):
 			for d, dnn in dnns:
-				data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
+				data_dir = os.path.join('results', 'sub-'+format(sub,'02'),
 					'training_data_amount_analysis', 'dnn-'+dnn,
 					'pretrained-'+str(args.pretrained), 'layers-'+args.layers,
 					'n_components-'+format(args.n_components,'05'),

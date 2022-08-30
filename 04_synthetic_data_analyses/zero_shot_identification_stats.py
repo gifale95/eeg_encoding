@@ -63,7 +63,7 @@ from scipy.optimize import curve_fit
 # =============================================================================
 parser = argparse.ArgumentParser()
 parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-	type=int)
+	type=list)
 parser.add_argument('--rank_correct', default=1, type=int)
 parser.add_argument('--encoding_type', default='linearizing', type=str)
 parser.add_argument('--dnn', default='alexnet', type=str)
@@ -94,8 +94,8 @@ np.random.seed(seed)
 # =============================================================================
 zero_shot_identification = {}
 best_features_masks = []
-for s in args.used_subs:
-	data_dir = os.path.join('results', 'sub-'+format(s+1,'02'),
+for s, sub in enumerate(args.used_subs):
+	data_dir = os.path.join('results', 'sub-'+format(sub,'02'),
 		'zero_shot_identification', 'encoding-linearizing','subjects-'+
 		args.subjects, 'dnn-'+args.dnn, 'pretrained-'+str(args.pretrained),
 		'layers-'+args.layers, 'n_components-'+format(args.n_components,'05'),

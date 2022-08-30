@@ -57,7 +57,7 @@ from statsmodels.stats.multitest import multipletests
 # =============================================================================
 parser = argparse.ArgumentParser()
 parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-	type=int)
+	type=list)
 parser.add_argument('--encoding_type', default='linearizing', type=str)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
@@ -88,16 +88,16 @@ np.random.seed(seed)
 decoding = {}
 noise_ceiling_low = []
 noise_ceiling_up = []
-for s in args.used_subs:
+for s, sub in enumerate(args.used_subs):
 	if args.encoding_type == 'linearizing':
 		data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-			format(s,'02'), 'pairwise_decoding', 'encoding-linearizing',
+			format(sub,'02'), 'pairwise_decoding', 'encoding-linearizing',
 			'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
 			str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
 			format(args.n_components,'05'), 'pairwise_decoding.npy')
 	elif args.encoding_type == 'end-to-end':
 		data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
-			format(s+1,'02'), 'pairwise_decoding', 'encoding-end_to_end',
+			format(sub,'02'), 'pairwise_decoding', 'encoding-end_to_end',
 			'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_point,
 			'pretrained-'+str(args.pretrained), 'lr-{:.0e}'.format(args.lr)+
 			'__wd-{:.0e}'.format(args.weight_decay)+'__bs-'+
