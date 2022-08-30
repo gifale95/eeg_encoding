@@ -14,6 +14,7 @@ def load_dnn_data(args, cond_idx):
 		Training images feature maps.
 	X_test : dict of float
 		Test images feature maps.
+
 	"""
 
 	import numpy as np
