@@ -14,7 +14,6 @@ def load_dnn_data(args, cond_idx):
 		Training images feature maps.
 	X_test : dict of float
 		Test images feature maps.
-
 	"""
 
 	import numpy as np
@@ -51,7 +50,7 @@ def load_dnn_data(args, cond_idx):
 	### Retain only the selected image conditions and PCA components ###
 	for layer in X_train.keys():
 		X_train[layer] = X_train[layer][cond_idx,:args.n_components]
-		X_test[layer] = X_test[layer][cond_idx,:args.n_components]
+		X_test[layer] = X_test[layer][:,:args.n_components]
 
 	### Output ###
 	return X_train, X_test
@@ -142,7 +141,8 @@ def perform_regression(X_train, X_test, y_train):
 	for l, layer in enumerate(X_train.keys()):
 		reg = OLS_pytorch(use_gpu=False)
 		reg.fit(X_train[layer], y_train.T)
-		y_test_pred[layer] = np.reshape(reg.predict(X_test[layer]), eeg_shape)
+		y_test_pred[layer] = np.reshape(reg.predict(X_test[layer]),
+			(-1,eeg_shape[1],eeg_shape[2]))
 
 	### Output ###
 	return y_test_pred
