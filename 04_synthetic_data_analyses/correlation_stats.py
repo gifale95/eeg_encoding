@@ -142,9 +142,9 @@ for layer in correlation.keys():
 	ci_upper_diff_noise_ceiling[layer] = np.zeros((
 		diff_noise_ceiling[layer].shape[2]))
 	for t in tqdm(range(correlation[layer].shape[2])):
-		sample_dist = np.zeros(args.n_boot_iter)
-		sample_dist_diff = np.zeros(args.n_boot_iter)
-		for i in range(args.n_boot_iter):
+		sample_dist = np.zeros(args.n_iter)
+		sample_dist_diff = np.zeros(args.n_iter)
+		for i in range(args.n_iter):
 			# Calculate the sample distribution of the correlation values
 			# averaged across channels
 			sample_dist[i] = np.mean(resample(np.mean(

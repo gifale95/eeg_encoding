@@ -151,8 +151,8 @@ for layer in identification_accuracy.keys():
 	ci_lower[layer] = np.zeros((identification_accuracy[layer].shape[1]))
 	ci_upper[layer] = np.zeros((identification_accuracy[layer].shape[1]))
 	for s in tqdm(range(identification_accuracy[layer].shape[1])):
-		sample_dist = np.zeros(args.n_boot_iter)
-		for i in range(args.n_boot_iter):
+		sample_dist = np.zeros(args.n_iter)
+		for i in range(args.n_iter):
 			# Calculate the sample distribution of the identification results
 			sample_dist[i] = np.mean(resample(
 				identification_accuracy[layer][:,s]))

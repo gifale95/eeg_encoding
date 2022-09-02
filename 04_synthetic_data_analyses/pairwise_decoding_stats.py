@@ -142,9 +142,9 @@ for layer in decoding.keys():
 	ci_upper_diff_noise_ceiling[layer] = np.zeros((
 		diff_noise_ceiling[layer].shape[1]))
 	for t in tqdm(range(decoding[layer].shape[1])):
-		sample_dist = np.zeros(args.n_boot_iter)
-		sample_dist_diff = np.zeros(args.n_boot_iter)
-		for i in range(args.n_boot_iter):
+		sample_dist = np.zeros(args.n_iter)
+		sample_dist_diff = np.zeros(args.n_iter)
+		for i in range(args.n_iter):
 			# Calculate the sample distribution of the pairwise deocoding values
 			sample_dist[i] = np.mean(resample(decoding[layer][:,:,t]))
 			sample_dist_diff[i] = np.mean(resample(
