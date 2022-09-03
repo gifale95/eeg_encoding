@@ -177,7 +177,7 @@ class ResNet(nn.Module):
 def resnet50(pretrained=args.pretrained, **kwargs):
 	"""Constructs a ResNet-50 model. """
 	model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
-	if pretrained:
+	if pretrained == True:
 		model_url = 'https://download.pytorch.org/models/resnet50-19c8e357.pth'
 		model.load_state_dict(model_zoo.load_url(model_url))
 	return model
