@@ -170,11 +170,11 @@ for layer in correlation.keys():
 	p_values[layer] = np.ones((correlation[layer].shape[2]))
 	p_values_diff_noise_ceiling[layer] = np.ones((
 		diff_noise_ceiling[layer].shape[2]))
-	for t in tqdm(range(correlation[layer].shape[2])):
+	for t in range(correlation[layer].shape[2]):
 		# Fisher transform the correlation values and perform the t-tests
-		fisher_vaules = np.arctanh(np.mean(correlation[layer][:,t], 1))
+		fisher_vaules = np.arctanh(np.mean(correlation[layer][:,:,t], 1))
 		fisher_vaules_diff_nc = np.arctanh(np.mean(
-			diff_noise_ceiling[layer][:,t], 1))
+			diff_noise_ceiling[layer][:,:,t], 1))
 		p_values[layer][t] = ttest_1samp(fisher_vaules, 0,
 			alternative='greater')[1]
 		p_values_diff_noise_ceiling[layer][t] = ttest_1samp(

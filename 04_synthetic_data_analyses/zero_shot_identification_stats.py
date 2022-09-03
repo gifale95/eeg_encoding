@@ -1,7 +1,6 @@
 """Calculate the confidence intervals (through bootstrap tests) and significance
 (through sign permutation tests) of the zero-shot identification analysis
-results, and of the differences between the results and the noise ceiling.
-Furthermore, fit a power-law function to the identification results to
+results. Furthermore, fit a power-law function to the identification results to
 extrapolate the image set sizes needed for the identification accuracy to fall
 below certain thresholds.
 
@@ -148,17 +147,17 @@ ci_upper = {}
 # Calculate the CIs independently at each step
 for layer in identification_accuracy.keys():
 	# CI matrices of shape: (Steps)
-	ci_lower[layer] = np.zeros((identification_accuracy[layer].shape[1]))
-	ci_upper[layer] = np.zeros((identification_accuracy[layer].shape[1]))
-	for s in tqdm(range(identification_accuracy[layer].shape[1])):
+	ci_lower[layer] = np.zeros((identification_accuracy[layer].shape[2]))
+	ci_upper[layer] = np.zeros((identification_accuracy[layer].shape[2]))
+	for st in tqdm(range(identification_accuracy[layer].shape[2])):
 		sample_dist = np.zeros(args.n_iter)
 		for i in range(args.n_iter):
 			# Calculate the sample distribution of the identification results
 			sample_dist[i] = np.mean(resample(
-				identification_accuracy[layer][:,s]))
+				identification_accuracy[layer][:,:,st]), 1)
 		# Calculate the 95% confidence intervals
-		ci_lower[layer][s] = np.percentile(sample_dist, 2.5)
-		ci_upper[layer][s] = np.percentile(sample_dist, 97.5)
+		ci_lower[layer][st] = np.percentile(sample_dist, 2.5)
+		ci_upper[layer][st] = np.percentile(sample_dist, 97.5)
 
 
 # =============================================================================
@@ -168,11 +167,12 @@ p_values = {}
 for layer in identification_accuracy.keys():
 	# p-values matrices of shape: (Steps)
 	p_values[layer] = np.ones((identification_accuracy[layer].shape[1]))
-	for t in tqdm(range(identification_accuracy[layer].shape[1])):
-		# Fisher transform the pairwise decoding values and perform the t-tests
+	for st in range(identification_accuracy[layer].shape[2]):
+		# Fisher transform the zero-shot identification results and perform the
+		# t-tests
 		fisher_vaules = np.arctanh(np.mean(
-			identification_accuracy[layer][:,s], 1))
-		p_values[layer][t] = ttest_1samp(fisher_vaules, 0,
+			identification_accuracy[layer][:,:,st], 1))
+		p_values[layer][st] = ttest_1samp(fisher_vaules, 0,
 			alternative='greater')[1]
 
 # Correct for multiple comparisons

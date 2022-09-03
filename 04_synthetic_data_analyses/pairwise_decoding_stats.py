@@ -145,10 +145,11 @@ for layer in decoding.keys():
 		sample_dist = np.zeros(args.n_iter)
 		sample_dist_diff = np.zeros(args.n_iter)
 		for i in range(args.n_iter):
-			# Calculate the sample distribution of the pairwise deocoding values
-			sample_dist[i] = np.mean(resample(decoding[layer][:,:,t]))
+			# Calculate the sample distribution of the pairwise deocoding
+			# results
+			sample_dist[i] = np.mean(resample(decoding[layer][:,t]))
 			sample_dist_diff[i] = np.mean(resample(
-				diff_noise_ceiling[layer][:,:,t]))
+				diff_noise_ceiling[layer][:,t]))
 		# Calculate the 95% confidence intervals
 		ci_lower[layer][t] = np.percentile(sample_dist, 2.5)
 		ci_upper[layer][t] = np.percentile(sample_dist, 97.5)
@@ -168,7 +169,7 @@ for layer in decoding.keys():
 	p_values[layer] = np.ones((decoding[layer].shape[1]))
 	p_values_diff_noise_ceiling[layer] = np.ones((
 		diff_noise_ceiling[layer].shape[1]))
-	for t in tqdm(range(decoding[layer].shape[1])):
+	for t in range(decoding[layer].shape[1]):
 		# Fisher transform the pairwise decoding values and perform the t-tests
 		fisher_vaules = np.arctanh(np.mean(decoding[layer][:,t], 1))
 		fisher_vaules_diff_nc = np.arctanh(np.mean(
