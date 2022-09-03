@@ -72,7 +72,7 @@ for s, sub in enumerate(args.used_subs):
 	noise_ceil = []
 	for c, img_cond in enumerate(used_img_cond):
 		for r, eeg_rep in enumerate(used_eeg_rep):
-			for d, dnn in dnns:
+			for d, dnn in enumerate(dnns):
 				data_dir = os.path.join('results', 'sub-'+format(sub,'02'),
 					'training_data_amount_analysis', 'dnn-'+dnn,
 					'pretrained-'+str(args.pretrained), 'layers-'+args.layers,
