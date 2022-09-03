@@ -154,7 +154,7 @@ for layer in identification_accuracy.keys():
 		for i in range(args.n_iter):
 			# Calculate the sample distribution of the identification results
 			sample_dist[i] = np.mean(resample(
-				identification_accuracy[layer][:,:,st]), 1)
+				identification_accuracy[layer][:,:,st]))
 		# Calculate the 95% confidence intervals
 		ci_lower[layer][st] = np.percentile(sample_dist, 2.5)
 		ci_upper[layer][st] = np.percentile(sample_dist, 97.5)
