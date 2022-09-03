@@ -49,7 +49,7 @@ parser.add_argument('--subjects', default='within', type=str)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
 parser.add_argument('--n_iter', default=100, type=int)
-parser.add_argument('--project_dir', default='../project_directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 print('>>> Zero-shot identification <<<')
@@ -163,7 +163,7 @@ del bio_test_provv
 # Correlate the biological test data with the candidate synthetic data
 # conditions
 # =============================================================================
-tot_images = synt_test.shape[0] + synt_ilsvrc2012.shape[0]
+tot_images = synt_test[layer].shape[0] + synt_ilsvrc2012[layer].shape[0]
 # Correlation matrix of shape: (Test images × Tot Images)
 correlation = {}
 for layer in synt_test.keys():
@@ -202,7 +202,7 @@ for i in tqdm(range(args.n_iter)):
 		for layer in correlation.keys():
 			corr = np.append(correlation[layer][:,:n_test_img],
 				correlation[layer][:,idx_ilsvrc2012], 1)
-			for b in range(n_test_img.shape[0]):
+			for b in range(n_test_img):
 				# Sort the correlation values
 				idx = np.argsort(corr[b,:])[::-1]
 				# Sort the results
