@@ -1,6 +1,7 @@
 """Calculate the confidence intervals (through bootstrap tests) and significance
 (through sign permutation tests) of the zero-shot identification analysis
-results. Furthermore, fit a power-law function to the identification results to
+results, and of the differences between the results and the noise ceiling.
+Furthermore, fit a power-law function to the identification results to
 extrapolate the image set sizes needed for the identification accuracy to fall
 below certain thresholds.
 
@@ -92,7 +93,7 @@ np.random.seed(seed)
 # Load the zero-shot decoding results
 # =============================================================================
 zero_shot_identification = {}
-best_features_masks = []
+best_features_masks = {}
 for s, sub in enumerate(args.used_subs):
 	data_dir = os.path.join('results', 'sub-'+format(sub,'02'),
 		'zero_shot_identification', 'encoding-linearizing','subjects-'+
@@ -105,13 +106,16 @@ for s, sub in enumerate(args.used_subs):
 		if s == 0:
 			zero_shot_identification[layer] = np.expand_dims(
 				results_dict['zero_shot_identification'][layer], 0)
+			best_features_masks[layer] = np.expand_dims(
+				results_dict['best_features_masks'][layer], 0)
 		else:
 			zero_shot_identification[layer] = np.append(
 				zero_shot_identification[layer], np.expand_dims(
 				results_dict['zero_shot_identification'][layer], 0), 0)
+			best_features_masks[layer] = np.append(
+				best_features_masks[layer], np.expand_dims(
+				results_dict['best_features_masks'][layer], 0), 0)
 	steps = results_dict['steps']
-	best_features_masks.append(results_dict['best_features_masks'])
-best_features_masks = np.asarray(best_features_masks)
 del results_dict
 
 
@@ -127,11 +131,11 @@ for layer in zero_shot_identification.keys():
 		zero_shot_identification[layer].shape[3]))
 	for s in range(identification_accuracy[layer].shape[0]):
 		for i in range(identification_accuracy[layer].shape[1]):
-			for st in range(identification_accuracy[layer].shape[3]):
+			for st in range(identification_accuracy[layer].shape[2]):
 				identification_accuracy[layer][s,i,st] = len(np.where(
 					zero_shot_identification[layer][s,i,:,st] <= \
 					args.rank_correct-1)[0]) / \
-					zero_shot_identification[layer].shape[2] * 100
+					zero_shot_identification[layer].shape[2]
 del zero_shot_identification
 
 # Average the accuracy across iterations
@@ -147,14 +151,14 @@ ci_upper = {}
 # Calculate the CIs independently at each step
 for layer in identification_accuracy.keys():
 	# CI matrices of shape: (Steps)
-	ci_lower[layer] = np.zeros((identification_accuracy[layer].shape[2]))
-	ci_upper[layer] = np.zeros((identification_accuracy[layer].shape[2]))
-	for st in tqdm(range(identification_accuracy[layer].shape[2])):
+	ci_lower[layer] = np.zeros((identification_accuracy[layer].shape[1]))
+	ci_upper[layer] = np.zeros((identification_accuracy[layer].shape[1]))
+	for st in tqdm(range(identification_accuracy[layer].shape[1])):
 		sample_dist = np.zeros(args.n_iter)
 		for i in range(args.n_iter):
 			# Calculate the sample distribution of the identification results
 			sample_dist[i] = np.mean(resample(
-				identification_accuracy[layer][:,:,st]))
+				identification_accuracy[layer][:,st]))
 		# Calculate the 95% confidence intervals
 		ci_lower[layer][st] = np.percentile(sample_dist, 2.5)
 		ci_upper[layer][st] = np.percentile(sample_dist, 97.5)
@@ -167,11 +171,9 @@ p_values = {}
 for layer in identification_accuracy.keys():
 	# p-values matrices of shape: (Steps)
 	p_values[layer] = np.ones((identification_accuracy[layer].shape[1]))
-	for st in range(identification_accuracy[layer].shape[2]):
-		# Fisher transform the zero-shot identification results and perform the
-		# t-tests
-		fisher_vaules = np.arctanh(np.mean(
-			identification_accuracy[layer][:,:,st], 1))
+	for st in range(identification_accuracy[layer].shape[1]):
+		# Fisher transform the pairwise decoding values and perform the t-tests
+		fisher_vaules = np.arctanh(identification_accuracy[layer][:,st])
 		p_values[layer][st] = ttest_1samp(fisher_vaules, 0,
 			alternative='greater')[1]
 
@@ -202,16 +204,15 @@ for layer in identification_accuracy.keys():
 extr_10_percent = {}
 extr_0point5_percent = {}
 for layer in popt_pow.keys():
-	for s in range(len(popt_pow[layer].shape[0])):
+	for s in range(len(popt_pow[layer])):
 		if s == 0:
-			extr_10_percent[layer] = np.zeros(len(popt_pow[layer].shape[0]))
-			extr_0point5_percent[layer] = np.zeros(len(
-				popt_pow[layer].shape[0]))
+			extr_10_percent[layer] = np.zeros(len(popt_pow[layer]))
+			extr_0point5_percent[layer] = np.zeros(len(popt_pow[layer]))
 		# Invert the fit power law function to isolate the image conditions
 		a = popt_pow[layer][s][0]
 		b = popt_pow[layer][s][1]
-		extr_10_percent[layer][s] = (10 / a) ** (1.0 / b)
-		extr_0point5_percent[layer][s] = (0.5 / a) ** (1.0 / b)
+		extr_10_percent[layer][s] = (.1 / a) ** (1.0 / b)
+		extr_0point5_percent[layer][s] = (.005 / a) ** (1.0 / b)
 
 
 # =============================================================================
