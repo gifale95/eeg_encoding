@@ -65,7 +65,7 @@ parser.add_argument('--subjects', default='within', type=str)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
 parser.add_argument('--modeled_time_points', type=str, default='single')
-parser.add_argument('--lr', type=float, default=1e-7)
+parser.add_argument('--lr', type=float, default=1e-5)
 parser.add_argument('--weight_decay', type=float, default=0.)
 parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--n_iter', default=100, type=int)
@@ -104,7 +104,7 @@ if args.encoding_type == 'linearizing':
 		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
 		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
 		format(args.n_components,'05'), 'synthetic_eeg_test.npy')
-elif args.encoding_type == 'end-to-end':
+elif args.encoding_type == 'end_to_end':
 	data_dir = os.path.join(args.project_dir, 'results', 'sub-'+
 		format(args.sub,'02'), 'synthetic_eeg_data', 'encoding-end_to_end',
 		'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_points,
