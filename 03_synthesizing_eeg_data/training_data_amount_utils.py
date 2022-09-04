@@ -171,7 +171,6 @@ def correlation_analysis(args, y_test_pred, y_test):
 	"""
 
 	import numpy as np
-	from tqdm import tqdm
 	from sklearn.utils import resample
 	from scipy.stats import pearsonr as corr
 
@@ -183,7 +182,7 @@ def correlation_analysis(args, y_test_pred, y_test):
 		correlation[layer] = np.zeros((args.n_iter,y_test.shape[2],
 			y_test.shape[3]))
 	noise_ceiling = np.zeros((args.n_iter,y_test.shape[2],y_test.shape[3]))
-	for i in tqdm(range(args.n_iter)):
+	for i in range(args.n_iter):
 		# Random data repetitions index
 		shuffle_idx = resample(np.arange(0, y_test.shape[1]), replace=False,
 			n_samples=int(y_test.shape[1]/2))
