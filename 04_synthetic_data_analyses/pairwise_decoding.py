@@ -142,17 +142,18 @@ for i in tqdm(range(args.n_iter)):
 		n_samples=int(bio_test.shape[1]/2))
 	# Select one half of the biological data repetitions for training the
 	# classifier, and average them into 10 pseudo-trials of 4 repetitions
-	bio_data_avg_half_1 = np.zeros((bio_test.shape[0],10,bio_test.shape[2],
-			bio_test.shape[3]))
-	bio_data_provv = np.delete(bio_test, shuffle_idx, 1)
 	ptrial_rep = 4
+	ptrail_num = int((bio_test.shape[1]/2) / ptrial_rep)
+	bio_data_avg_half_1 = np.zeros((bio_test.shape[0],ptrail_num,
+		bio_test.shape[2],bio_test.shape[3]))
+	bio_data_provv = np.delete(bio_test, shuffle_idx, 1)
 	for r in range(bio_data_avg_half_1.shape[1]):
-		bio_data_avg_half_1[:,r,:,:] = np.mean(
-			bio_data_provv[:,r*ptrial_rep:r*ptrial_rep+ptrial_rep,:,:], 1)
+		bio_data_avg_half_1[:,r] = np.mean(
+			bio_data_provv[:,r*ptrial_rep:r*ptrial_rep+ptrial_rep], 1)
 	del bio_data_provv
 	# Average across the other half of the biological data repetitions for the
 	# noise ceiling lower bound calculation
-	bio_data_avg_half_2 = np.mean(bio_test[:,shuffle_idx,:,:], 1)
+	bio_data_avg_half_2 = np.mean(bio_test[:,shuffle_idx], 1)
 
 	# Classifier target vectors
 	y_train = np.zeros((bio_data_avg_half_1.shape[1])*2)
