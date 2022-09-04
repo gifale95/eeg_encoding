@@ -228,7 +228,7 @@ if args.encoding_type == 'linearizing':
 		'subjects-'+args.subjects, 'dnn-'+args.dnn, 'pretrained-'+
 		str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
 		format(args.n_components,'05'))
-elif args.encoding_type == 'end-to-end':
+elif args.encoding_type == 'end_to_end':
 	save_dir = os.path.join(args.project_dir, 'results', 'sub-'+
 		format(args.sub,'02'), 'pairwise_decoding', 'encoding-end_to_end',
 		'dnn-'+args.dnn, 'modeled_time_points-'+args.modeled_time_points,
