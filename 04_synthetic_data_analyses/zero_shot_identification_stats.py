@@ -232,7 +232,7 @@ stats_dict = {
 
 # Saving directory
 save_dir = os.path.join(args.project_dir, 'results', 'stats',
-	'encoding-linearizing', 'zero_shot_identification', 'subjects-'+
+	'zero_shot_identification', 'encoding-linearizing', 'subjects-'+
 	args.subjects, 'dnn-'+args.dnn, 'pretrained-'+str(args.pretrained),
 	'layers-'+args.layers, 'n_components-'+format(args.n_components,'05'),
 	'rank_correct-'+format(args.rank_correct,'02'))
