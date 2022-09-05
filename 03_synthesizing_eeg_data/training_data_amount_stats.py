@@ -89,9 +89,9 @@ for s, sub in enumerate(args.used_subs):
 							len(used_eeg_rep),len(dnns)))
 					corr[layer][c,r,d] = results_dict['correlation'][layer]
 				noise_ceil.append(results_dict['noise_ceiling'])
-			# Average the correlation results across DNNs
-			for layer in corr.keys():
-				corr[layer] = np.mean(corr[layer], 2)
+	# Average the correlation results across DNNs
+	for layer in corr.keys():
+		corr[layer] = np.mean(corr[layer], 2)
 	# Average the noise ceiling across conditions, repetitions and DNNs
 	noise_ceil = np.mean(np.asarray(noise_ceil))
 	# Append the data across subjects
@@ -167,7 +167,7 @@ p_values = {}
 for layer in corr_res_all_img_cond.keys():
 	# p-values matrices of shape: (Training data amounts)
 	p_values[layer] = np.ones((corr_res_all_img_cond[layer].shape[1]))
-	for a in range(corr_res_all_img_cond.shape[1]):
+	for a in range(corr_res_all_img_cond[layer].shape[1]):
 		# Fisher transform the correlation values and perform the t-tests
 		fisher_all_img_cond = np.arctanh(corr_res_all_img_cond[layer])
 		fisher_all_eeg_rep = np.arctanh(corr_res_all_eeg_rep[layer])
@@ -197,9 +197,8 @@ stats_dict = {
 
 # Saving directory
 save_dir = os.path.join(args.project_dir, 'results', 'stats',
-	'training_data_amount_analysis', 'dnn-'+args.dnn, 'pretrained-'+
-	str(args.pretrained), 'layers-'+args.layers, 'n_components-'+
-	format(args.n_components,'05'))
+	'training_data_amount_analysis', 'pretrained-'+str(args.pretrained),
+	'layers-'+args.layers, 'n_components-'+format(args.n_components,'05'))
 file_name = 'training_data_amount_analysis_stats.npy'
 
 # Create the directory if not existing and save
