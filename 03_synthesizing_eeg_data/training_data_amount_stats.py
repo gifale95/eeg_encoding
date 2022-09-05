@@ -42,7 +42,7 @@ parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
-parser.add_argument('--n_boot_iter', default=10000, type=int)
+parser.add_argument('--n_iter', default=10000, type=int)
 parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
@@ -119,8 +119,8 @@ for layer in correlation.keys():
 	# Calculate the CIs
 	for c in range(len(used_img_cond)):
 		for r in range(len(used_eeg_rep)):
-			sample_dist = np.zeros(args.n_boot_iter)
-			for i in range(args.n_boot_iter):
+			sample_dist = np.zeros(args.n_iter)
+			for i in range(args.n_iter):
 				# Calculate the sample distribution of the correlation results
 				sample_dist[i] = np.mean(resample(correlation[layer][:,c,r]))
 			# Calculate the 95% confidence intervals
