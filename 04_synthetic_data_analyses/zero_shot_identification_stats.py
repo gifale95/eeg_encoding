@@ -11,9 +11,6 @@ used_subs : list
 	List of subjects used for the stats.
 rank_correct : int
 	Accepted correlation rank of the correct synthetic data image condition.
-encoding_type : str
-	Whether to analyze the 'linearizing' or 'end-to-end' encoding synthetic
-	data.
 dnn : str
 	Used DNN network.
 pretrained : bool
@@ -21,26 +18,14 @@ pretrained : bool
 	end-to-end) models. If False, analyze the data synthesized through randomly
 	initialized (linearizing or end-to-end) models.
 subjects : str
-	If 'linearizing' encoding_type is chosen, whether to analyze the 'within' or
-	'between' subjects linearizing encoding synthetic data.
+	Whether to analyze the 'within' or 'between' subjects linearizing encoding
+	synthetic data.
 layers : str
-	If 'linearizing' encoding_type is chosen, whether to analyse the data
-	synthesized using 'all', 'single' or 'appended' DNN layers feature maps.
+	Whether to analyse the data synthesized using 'all', 'single' or 'appended'
+	DNN layers feature maps.
 n_components : int
-	If 'linearizing' encoding_type is chosen, number of DNN feature maps PCA
-	components retained for synthesizing the EEG data.
-modeled_time_points : str
-	If 'end_to_end' encoding_type is chosen, whether to analyze the synthetic
-	data of end-to-end models trained to predict 'single' or 'all' time points.
-lr : float
-	If 'end_to_end' encoding_type is chosen, learning rate used to train the
-	end-to-end encoding models.
-weight_decay : float
-	If 'end_to_end' encoding_type is chosen, weight decay coefficint used to
-	train the end-to-end encoding models.
-batch_size : int
-	If 'end_to_end' encoding_type is chosen, batch size used to train the
-	end-to-end encoding models.
+	Number of DNN feature maps PCA components retained for synthesizing the EEG
+	data.
 n_iter : int
 	Number of iterations for the bootstrap test.
 project_dir : str
@@ -65,16 +50,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 	type=list)
 parser.add_argument('--rank_correct', default=1, type=int)
-parser.add_argument('--encoding_type', default='linearizing', type=str)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--subjects', default='within', type=str)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
-parser.add_argument('--modeled_time_points', type=str, default='single')
-parser.add_argument('--lr', type=float, default=1e-7)
-parser.add_argument('--weight_decay', type=float, default=0.)
-parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--n_iter', default=100, type=int)
 parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()

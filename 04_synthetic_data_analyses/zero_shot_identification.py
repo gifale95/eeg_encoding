@@ -10,9 +10,9 @@ n_used_features : int
 dnn : str
 	Used DNN network.
 pretrained : bool
-	If True, analyze the data synthesized through pretrained (linearizing or
-	end-to-end) models. If False, analyze the data synthesized through randomly
-	initialized (linearizing or end-to-end) models.
+	If True, analyze the data synthesized through the feature maps ofpretrained
+	DNNs. If False, analyze the data synthesized through the feature maps of
+	randomly initialized DNNs.
 subjects : str
 	Whether to analyze the 'within' or 'between' subjects linearizing encoding
 	synthetic data.
