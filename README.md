@@ -7,7 +7,7 @@ Here we provide the code to reproduce the results of our paper preprint:</br>
 "[A large and rich EEG dataset for modeling human visual object recognition][paper_link]".</br>
 Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 
-
+If you experience problems with the code, please create a pull request or report the bug directly to Ale via email (alessandro.gifford@gmail.com).
 ## Environment setup
 To run the code first install [Anaconda][conda], then create and activate a dedicated Conda environment by typing the following into your terminal:
 ```shell
