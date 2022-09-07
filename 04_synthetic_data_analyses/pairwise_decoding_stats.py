@@ -173,7 +173,7 @@ for layer in decoding.keys():
 		# Fisher transform the pairwise decoding values and perform the t-tests
 		fisher_vaules = np.arctanh(decoding[layer][:,t])
 		fisher_vaules_diff_nc = np.arctanh(diff_noise_ceiling[layer][:,t])
-		p_values[layer][t] = ttest_1samp(fisher_vaules, 0,
+		p_values[layer][t] = ttest_1samp(fisher_vaules, .5,
 			alternative='greater')[1]
 		p_values_diff_noise_ceiling[layer][t] = ttest_1samp(
 			fisher_vaules_diff_nc, 0, alternative='greater')[1]
