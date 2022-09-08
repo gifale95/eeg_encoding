@@ -152,10 +152,9 @@ for layer in identification_accuracy.keys():
 	# p-values matrices of shape: (Steps)
 	p_values[layer] = np.ones((identification_accuracy[layer].shape[1]))
 	for st in range(identification_accuracy[layer].shape[1]):
-		# Fisher transform the pairwise decoding values and perform the t-tests
-		fisher_vaules = np.arctanh(identification_accuracy[layer][:,st])
-		p_values[layer][st] = ttest_1samp(fisher_vaules, 0,
-			alternative='greater')[1]
+		# Perform the t-tests
+		p_values[layer][st] = ttest_1samp(identification_accuracy[layer][:,st],
+			0, alternative='greater')[1]
 
 # Correct for multiple comparisons
 significance = {}

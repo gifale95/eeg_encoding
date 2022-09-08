@@ -170,13 +170,11 @@ for layer in decoding.keys():
 	p_values_diff_noise_ceiling[layer] = np.ones((
 		diff_noise_ceiling[layer].shape[1]))
 	for t in range(decoding[layer].shape[1]):
-		# Fisher transform the pairwise decoding values and perform the t-tests
-		fisher_vaules = np.arctanh(decoding[layer][:,t])
-		fisher_vaules_diff_nc = np.arctanh(diff_noise_ceiling[layer][:,t])
-		p_values[layer][t] = ttest_1samp(fisher_vaules, .5,
+		# Perform the t-tests
+		p_values[layer][t] = ttest_1samp(decoding[layer][:,t], .5,
 			alternative='greater')[1]
 		p_values_diff_noise_ceiling[layer][t] = ttest_1samp(
-			fisher_vaules_diff_nc, 0, alternative='greater')[1]
+			diff_noise_ceiling[layer][:,t], 0, alternative='greater')[1]
 
 # Correct for multiple comparisons
 significance = {}
