@@ -171,7 +171,7 @@ for layer in corr_res_all_img_cond.keys():
 		# Fisher transform the correlation values and perform the t-tests
 		fisher_all_img_cond = np.arctanh(corr_res_all_img_cond[layer])
 		fisher_all_eeg_rep = np.arctanh(corr_res_all_eeg_rep[layer])
-		p_values[layer] = ttest_rel(fisher_all_img_cond[:,a],
+		p_values[layer][a] = ttest_rel(fisher_all_img_cond[:,a],
 			fisher_all_eeg_rep[:,a], alternative='two-sided')[1]
 
 # Correct for multiple comparisons
