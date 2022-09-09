@@ -11,6 +11,9 @@ used_subs : list
 	List of subjects used for the stats.
 rank_correct : int
 	Accepted correlation rank of the correct synthetic data image condition.
+encoding_type : str
+	Whether to analyze the 'linearizing' or 'end-to-end' encoding synthetic
+	data.
 dnn : str
 	Used DNN network.
 pretrained : bool
@@ -18,14 +21,26 @@ pretrained : bool
 	end-to-end) models. If False, analyze the data synthesized through randomly
 	initialized (linearizing or end-to-end) models.
 subjects : str
-	Whether to analyze the 'within' or 'between' subjects linearizing encoding
-	synthetic data.
+	If 'linearizing' encoding_type is chosen, whether to analyze the 'within' or
+	'between' subjects linearizing encoding synthetic data.
 layers : str
-	Whether to analyse the data synthesized using 'all', 'single' or 'appended'
-	DNN layers feature maps.
+	If 'linearizing' encoding_type is chosen, whether to analyse the data
+	synthesized using 'all', 'single' or 'appended' DNN layers feature maps.
 n_components : int
-	Number of DNN feature maps PCA components retained for synthesizing the EEG
-	data.
+	If 'linearizing' encoding_type is chosen, number of DNN feature maps PCA
+	components retained for synthesizing the EEG data.
+modeled_time_points : str
+	If 'end_to_end' encoding_type is chosen, whether to analyze the synthetic
+	data of end-to-end models trained to predict 'single' or 'all' time points.
+lr : float
+	If 'end_to_end' encoding_type is chosen, learning rate used to train the
+	end-to-end encoding models.
+weight_decay : float
+	If 'end_to_end' encoding_type is chosen, weight decay coefficint used to
+	train the end-to-end encoding models.
+batch_size : int
+	If 'end_to_end' encoding_type is chosen, batch size used to train the
+	end-to-end encoding models.
 n_iter : int
 	Number of iterations for the bootstrap test.
 project_dir : str
@@ -50,11 +65,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 	type=list)
 parser.add_argument('--rank_correct', default=1, type=int)
+parser.add_argument('--encoding_type', default='linearizing', type=str)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--subjects', default='within', type=str)
 parser.add_argument('--layers', default='all', type=str)
 parser.add_argument('--n_components', default=1000, type=int)
+parser.add_argument('--modeled_time_points', type=str, default='single')
+parser.add_argument('--lr', type=float, default=1e-5)
+parser.add_argument('--weight_decay', type=float, default=0.)
+parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--n_iter', default=100, type=int)
 parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
@@ -82,7 +102,6 @@ for s, sub in enumerate(args.used_subs):
 		'zero_shot_identification.npy')
 	results_dict = np.load(os.path.join(args.project_dir, data_dir),
 		allow_pickle=True).item()
-	ch_names = results_dict['ch_names']
 	for layer in results_dict['zero_shot_identification'].keys():
 		if s == 0:
 			zero_shot_identification[layer] = np.expand_dims(
@@ -196,6 +215,29 @@ for layer in popt_pow.keys():
 
 
 # =============================================================================
+# Bootstrap the confidence intervals of the extrapolation results
+# =============================================================================
+ci_lower_extr_10 = {}
+ci_upper_extr_10 = {}
+ci_lower_extr_0point5 = {}
+ci_upper_extr_0point5 = {}
+# Calculate the CIs
+for layer in identification_accuracy.keys():
+	sample_dist_extr_10 = np.zeros(args.n_iter)
+	sample_dist_extr_0point5 = np.zeros(args.n_iter)
+	for i in range(args.n_iter):
+		# Calculate the sample distribution of the identification results
+		sample_dist_extr_10[i] = np.mean(resample(extr_10_percent[layer]))
+		sample_dist_extr_0point5[i] = np.mean(resample(
+			extr_0point5_percent[layer]))
+	# Calculate the 95% confidence intervals
+	ci_lower_extr_10[layer] = np.percentile(sample_dist_extr_10, 2.5)
+	ci_upper_extr_10[layer] = np.percentile(sample_dist_extr_10, 97.5)
+	ci_lower_extr_0point5[layer] = np.percentile(sample_dist_extr_0point5, 2.5)
+	ci_upper_extr_0point5[layer] = np.percentile(sample_dist_extr_0point5, 97.5)
+
+
+# =============================================================================
 # Saving the results
 # =============================================================================
 # Storing the results into a dictionary
@@ -205,10 +247,13 @@ stats_dict = {
 	'ci_upper': ci_upper,
 	'significance': significance,
 	'extr_10_percent': extr_10_percent,
+	'ci_lower_extr_10': ci_lower_extr_10,
+	'ci_upper_extr_10': ci_upper_extr_10,
 	'extr_0point5_percent': extr_0point5_percent,
+	'ci_lower_extr_0point5': ci_lower_extr_0point5,
+	'ci_upper_extr_0point5': ci_upper_extr_0point5,
 	'best_features_masks': best_features_masks,
-	'steps': steps,
-	'ch_names': ch_names
+	'steps': steps
 }
 
 # Saving directory
