@@ -82,6 +82,7 @@ for s, sub in enumerate(args.used_subs):
 		'zero_shot_identification.npy')
 	results_dict = np.load(os.path.join(args.project_dir, data_dir),
 		allow_pickle=True).item()
+	ch_names = results_dict['ch_names']
 	for layer in results_dict['zero_shot_identification'].keys():
 		if s == 0:
 			zero_shot_identification[layer] = np.expand_dims(
@@ -206,7 +207,8 @@ stats_dict = {
 	'extr_10_percent': extr_10_percent,
 	'extr_0point5_percent': extr_0point5_percent,
 	'best_features_masks': best_features_masks,
-	'steps': steps
+	'steps': steps,
+	'ch_names': ch_names
 }
 
 # Saving directory

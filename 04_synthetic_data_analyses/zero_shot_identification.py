@@ -75,6 +75,7 @@ bio_train = np.load(os.path.join(args.project_dir, train_dir),
 	allow_pickle=True).item()['preprocessed_eeg_data']
 n_eeg_chan = bio_train.shape[2]
 n_eeg_time = bio_train.shape[3]
+ch_names = bio_train['ch_names']
 bio_train = np.reshape(np.mean(bio_train, 1), (bio_train.shape[0],-1))
 
 # Test data
@@ -216,7 +217,8 @@ for i in tqdm(range(args.n_iter)):
 results_dict = {
 	'best_features_masks': best_features_masks,
 	'zero_shot_identification': zero_shot_identification,
-	'steps': steps
+	'steps': steps,
+	'ch_names': ch_names
 }
 
 # Saving directory
