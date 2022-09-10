@@ -22,9 +22,7 @@ from matplotlib import pyplot as plt
 parser = argparse.ArgumentParser()
 parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 	type=list)
-parser.add_argument('--project_dir', default='/home/ale/aaa_stuff/PhD/'
-	'projects/eeg_encoding/paradigm_3', type=str)
-#parser.add_argument('--project_dir', default='../project/directory', type=str)
+parser.add_argument('--project_dir', default='../project/directory', type=str)
 args = parser.parse_args()
 
 
