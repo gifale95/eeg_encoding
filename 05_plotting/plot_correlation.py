@@ -416,6 +416,25 @@ for s in range(len(results[0]['correlation']['all_time_points'])):
 axs[10].set_xlabel('Time (s)', fontsize=30)
 axs[11].set_xlabel('Time (s)', fontsize=30)
 
+# Plot the single-channel correlation results, averaged across subjects
+fig, axs = plt.subplots(1, 2, 'all', 'all')
+axs = np.reshape(axs, (-1))
+for m, model in enumerate(modeled_time_points):
+	img = axs[m].imshow(np.mean(
+		results[m]['correlation'][model+'_time_points'], 0), aspect='auto')
+	# Plot parameters
+	if m in [1]:
+		axs[m].set_xlabel('Time (s)', fontsize=30)
+		xticks = [0, 20, 40, 60, 80, 99]
+		xlabels = [-0.2, 0, 0.2, 0.4, 0.6, 0.8]
+		plt.xticks(ticks=xticks, labels=xlabels)
+	if m in [0]:
+		axs[m].set_ylabel('Channels', fontsize=30)
+		yticks = np.arange(0, len(ch_names))
+		plt.yticks(ticks=yticks, labels=ch_names)
+	axs[m].set_title(leg[m], fontsize=30)
+plt.colorbar(img, label='Pearson\'s $r$', fraction=0.2, ax=axs[m])
+
 
 # =============================================================================
 # Plot the linearizing encoding correlation results of single and appended DNN
