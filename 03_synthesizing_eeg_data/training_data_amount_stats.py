@@ -37,7 +37,7 @@ from statsmodels.stats.multitest import multipletests
 # Input arguments
 # =============================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+parser.add_argument('--used_subs', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 	type=list)
 parser.add_argument('--pretrained', default=True, type=bool)
 parser.add_argument('--layers', default='all', type=str)
