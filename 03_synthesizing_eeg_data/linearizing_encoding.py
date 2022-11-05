@@ -46,7 +46,7 @@ from linearizing_encoding_utils import perform_regression
 parser = argparse.ArgumentParser()
 parser.add_argument('--sub', default=1, type=int)
 parser.add_argument('--subjects', default='within', type=str)
-parser.add_argument('--all_sub', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+parser.add_argument('--all_sub', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 	type=list)
 parser.add_argument('--dnn', default='alexnet', type=str)
 parser.add_argument('--pretrained', default=True, type=bool)
