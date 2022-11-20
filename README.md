@@ -1,6 +1,6 @@
 # Building and evaluating encoding models of EEG visual responses using DNNs
 
-Here we provide the code to reproduce the results of our paper preprint:</br>
+Here we provide the code to reproduce the results of our data resource paper:</br>
 "[A large and rich EEG dataset for modeling human visual object recognition][paper_link]".</br>
 Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 
@@ -43,19 +43,12 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 
 
 ## Cite
-If you use our code, partly or as it is, please cite our paper preprint:
+If you use any of our data or code, partly or as it is, please cite our paper:
 
-```
-@article {Gifford2022.03.15.484473,
-	author = {Gifford, Alessandro Thomas and Dwivedi, Kshitij and Roig, Gemma and Cichy, Radoslaw Martin},
-	title = {A large and rich EEG dataset for modeling human visual object recognition},
-	year = {2022},
-	doi = {10.1101/2022.03.15.484473},
-	journal = {bioRxiv}
-}
-```
+Gifford AT, Dwivedi K, Roig G, Cichy RM. 2022. A large and rich EEG dataset for modeling human visual object recognition. _NeuroImage_, 119754. DOI: [https://doi.org/10.1016/j.neuroimage.2022.119754][paper_link]
 
-[paper_link]: https://doi.org/10.1101/2022.03.15.484473
+
+[paper_link]: https://doi.org/10.1016/j.neuroimage.2022.119754
 [conda]: https://www.anaconda.com/
 [env_file]: https://github.com/gifale95/eeg_encoding_model/blob/main/environment.yml
 [osf]: https://osf.io/3jk45/
