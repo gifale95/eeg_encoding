@@ -5,6 +5,11 @@ Here we provide the code to reproduce the results of our data resource paper:</b
 Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 
 If you experience problems with the code, please create a pull request or report the bug directly to Ale via email (alessandro.gifford@gmail.com).
+
+[This][rsvp] video shows you the rapid serial visual presentation (RSVP) paradigm used to collect the EEG dataset.
+
+
+
 ## Environment setup
 To run the code first install [Anaconda][conda], then create and activate a dedicated Conda environment by typing the following into your terminal:
 ```shell
@@ -28,6 +33,7 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 * **DNN feature maps:** `../project_directory/dnn_feature_maps/pca_feature_maps`.
 
 
+
 ## Code description
 * **01_eeg_preprocessing:** preprocess the raw EEG data.
 * **02_dnn_feature_maps_extraction:** extract the feature maps of all images using four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo), and downsample them using principal component analysis (PCA).
@@ -36,10 +42,12 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 * **05_plotting:** plot the analyses results.
 
 
+
 ## Interactive dataset tutorial
 [Here][colab] you will find a Colab interactive tutorial on how to load and visualize the preprocessed EEG data and the corresponding stimuli images.
 
 [colab]: https://colab.research.google.com/drive/1i1IKeP4cK3ViscP4b4kNOVo4kRoL8tf6?usp=sharing
+
 
 
 ## Cite
@@ -48,6 +56,7 @@ If you use any of our data or code, partly or as it is, please cite our paper:
 Gifford AT, Dwivedi K, Roig G, Cichy RM. 2022. A large and rich EEG dataset for modeling human visual object recognition. _NeuroImage_, 264:119754. DOI: [https://doi.org/10.1016/j.neuroimage.2022.119754][paper_link]
 
 
+[rsvp]: https://youtu.be/JhpvpHlfPlE
 [paper_link]: https://doi.org/10.1016/j.neuroimage.2022.119754
 [conda]: https://www.anaconda.com/
 [env_file]: https://github.com/gifale95/eeg_encoding_model/blob/main/environment.yml
