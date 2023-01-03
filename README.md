@@ -6,7 +6,7 @@ Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 
 If you experience problems with the code, please create a pull request or report the bug directly to Ale via email (alessandro.gifford@gmail.com).
 
-[This][rsvp] video shows you the rapid serial visual presentation (RSVP) paradigm used to collect the EEG dataset.
+[This video][rsvp] shows you the rapid serial visual presentation (RSVP) paradigm used to collect the EEG dataset.
 
 
 
