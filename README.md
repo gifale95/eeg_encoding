@@ -56,7 +56,7 @@ If you use any of our data or code, partly or as it is, please cite our paper:
 Gifford AT, Dwivedi K, Roig G, Cichy RM. 2022. A large and rich EEG dataset for modeling human visual object recognition. _NeuroImage_, 264:119754. DOI: [https://doi.org/10.1016/j.neuroimage.2022.119754][paper_link]
 
 
-[rsvp]: https://youtu.be/JhpvpHlfPlE
+[rsvp]: [https://youtu.be/JhpvpHlfPlE](https://youtu.be/JhpvpHlfPlE?si=br80ckdxiHuDsgpE)
 [paper_link]: https://doi.org/10.1016/j.neuroimage.2022.119754
 [conda]: https://www.anaconda.com/
 [env_file]: https://github.com/gifale95/eeg_encoding_model/blob/main/environment.yml
