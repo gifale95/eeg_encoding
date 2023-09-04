@@ -59,7 +59,7 @@ Gifford AT, Dwivedi K, Roig G, Cichy RM. 2022. A large and rich EEG dataset for 
 
 
 [dataset_page]: https://www.alegifford.com/publications/eeg_dataset/
-[videos]: [https://youtu.be/JhpvpHlfPlE?si=br80ckdxiHuDsgpE](https://www.youtube.com/playlist?list=PLAkLSNuCebPPv_S3gTjYIFvQ82hyezIld)
+[videos]: https://www.youtube.com/playlist?list=PLAkLSNuCebPPv_S3gTjYIFvQ82hyezIld
 [paper_link]: https://doi.org/10.1016/j.neuroimage.2022.119754
 [conda]: https://www.anaconda.com/
 [env_file]: https://github.com/gifale95/eeg_encoding_model/blob/main/environment.yml
