@@ -27,8 +27,9 @@ conda activate eeg_encoding
 
 
 ## Data availability
-The raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. The ILSVRC-2012 validation and test images can be found on [ImageNet][imagenet]. To run the code, the data must be downloaded and placed into the following directories:
+The source, raw and preprocessed EEG dataset, the training and test images and the DNN feature maps are available on [OSF][osf]. The ILSVRC-2012 validation and test images can be found on [ImageNet][imagenet]. To run the code, the data must be downloaded and placed into the following directories:
 
+* **Source EEG data:** `../project_directory/eeg_dataset/source_data/`.
 * **Raw EEG data:** `../project_directory/eeg_dataset/raw_data/`.
 * **Preprocessed EEG data:** `../project_directory/eeg_dataset/preprocessed_data/`.
 * **Training and test images; ILSVRC-2012 validation and test images:** `../project_directory/image_set/`.
@@ -37,7 +38,7 @@ The raw and preprocessed EEG dataset, the training and test images and the DNN f
 
 
 ## Code description
-* **01_eeg_preprocessing:** preprocess the raw EEG data.
+* **01_eeg_preprocessing:** convert the source EEG data into raw EEG data, and preprocess the raw EEG data.
 * **02_dnn_feature_maps_extraction:** extract the feature maps of all images using four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo), and downsample them using principal component analysis (PCA).
 * **03_synthesizing_eeg_data:** synthesize the EEG responses to images through linearizing and end-to-end encoding models.
 * **04_synthetic_data_analyses:** perform the correlation, pairwise decoding and zero-shot identification analyses on the synthetic EEG data.
