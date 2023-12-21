@@ -38,7 +38,8 @@ The source, raw and preprocessed EEG dataset, the training and test images and t
 
 
 ## Code description
-* **01_eeg_preprocessing:** convert the source EEG data into raw EEG data, and preprocess the raw EEG data.
+* **00_data_preparation:** convert the source EEG data into raw EEG data, reformat the resting state data, and extract behavioral results.
+* **01_eeg_preprocessing:** preprocess the raw EEG data.
 * **02_dnn_feature_maps_extraction:** extract the feature maps of all images using four DNN architectures (AlexNet, ResNet-50, CORnet-S, MoCo), and downsample them using principal component analysis (PCA).
 * **03_synthesizing_eeg_data:** synthesize the EEG responses to images through linearizing and end-to-end encoding models.
 * **04_synthetic_data_analyses:** perform the correlation, pairwise decoding and zero-shot identification analyses on the synthetic EEG data.
