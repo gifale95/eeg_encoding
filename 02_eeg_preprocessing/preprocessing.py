@@ -70,7 +70,7 @@ del epoched_test, epoched_train
 # Merge and save the preprocessed data
 # =============================================================================
 # In this step the data of all sessions is merged into the shape:
-# Image conditions × EGG repetitions × EEG channels × EEG time points
+# Image conditions × EEG repetitions × EEG channels × EEG time points
 # Then, the preprocessed data of the test and training data partitions is saved.
 save_prepr(args, whitened_test, whitened_train, img_conditions_train, ch_names,
 	times, seed)
