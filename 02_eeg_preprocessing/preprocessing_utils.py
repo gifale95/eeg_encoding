@@ -184,7 +184,7 @@ def save_prepr(args, whitened_test, whitened_train, img_conditions_train,
 	ch_names, times, seed):
 	"""Merge the EEG data of all sessions together, shuffle the EEG repetitions
 	across sessions and reshaping the data to the format:
-	Image conditions × EGG repetitions × EEG channels × EEG time points.
+	Image conditions × EEG repetitions × EEG channels × EEG time points.
 	Then, the data of both test and training EEG partitions is saved.
 
 	Parameters
@@ -248,7 +248,7 @@ def save_prepr(args, whitened_test, whitened_train, img_conditions_train,
 			img_cond = np.append(img_cond, img_conditions_train[s], 0)
 	del whitened_train, img_conditions_train
 	# Data matrix of shape:
-	# Image conditions × EGG repetitions × EEG channels × EEG time points
+	# Image conditions × EEG repetitions × EEG channels × EEG time points
 	merged_train = np.zeros((len(np.unique(img_cond)), white_data.shape[1]*2,
 		white_data.shape[2],white_data.shape[3]))
 	for i in range(len(np.unique(img_cond))):
