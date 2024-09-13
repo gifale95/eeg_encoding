@@ -52,7 +52,7 @@ seed = 20200220
 # Channel selection, epoching, baseline correction and frequency downsampling of
 # the test and training data partitions.
 # Then, the conditions are sorted and the EEG data is reshaped to:
-# Image conditions × EGG repetitions × EEG channels × EEG time points
+# Image conditions × EEG repetitions × EEG channels × EEG time points
 # This step is applied independently to the data of each partition and session.
 epoched_test, _, ch_names, times = epoching(args, 'test', seed)
 epoched_train, img_conditions_train, _, _ = epoching(args, 'training', seed)
