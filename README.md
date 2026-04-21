@@ -6,8 +6,6 @@ Alessandro T. Gifford, Kshitij Dwivedi, Gemma Roig, Radoslaw M. Cichy
 
 If you experience problems with the code, please create a pull request or report the bug directly to Ale via email (alessandro.gifford@gmail.com).
 
-Please visit the [dataset page][dataset_page] for the data, paper, dataset tutorial and more.
-
 [Here][videos] you will find some useful videos on our EEG dataset.
 
 
@@ -60,8 +58,6 @@ If you use any of our data or code, partly or as it is, please cite our paper:
 
 Gifford AT, Dwivedi K, Roig G, Cichy RM. 2022. A large and rich EEG dataset for modeling human visual object recognition. _NeuroImage_, 264:119754. DOI: [https://doi.org/10.1016/j.neuroimage.2022.119754][paper_link]
 
-
-[dataset_page]: https://www.alegifford.com/projects/eeg_dataset/
 [videos]: https://www.youtube.com/playlist?list=PLAkLSNuCebPPv_S3gTjYIFvQ82hyezIld
 [paper_link]: https://doi.org/10.1016/j.neuroimage.2022.119754
 [conda]: https://www.anaconda.com/
